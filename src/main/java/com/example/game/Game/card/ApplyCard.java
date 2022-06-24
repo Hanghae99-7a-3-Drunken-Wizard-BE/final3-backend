@@ -20,14 +20,14 @@ public class ApplyCard {
     public void applyCardtoTarget (Player player, Player targetPlayer, Card card) {
         targetPlayer.setPlayerStatus(new PlayerStatus(targetPlayer.getPlayerStatus(), card));
         player.setPlayerStatus(playerStatus.manaUse(player.getPlayerStatus(), card));
-        System.out.println(player.getUsername()+"이(가)"+targetPlayer.getUsername()+"를 "
-                +card.getCardName()+"으로 "+card.cardType+"했습니다");
-        System.out.println(player.getUsername()+"의 상태 :");
-        System.out.println("체력 : "+player.getPlayerStatus().getHealth());
-        System.out.println("마나 : "+player.getPlayerStatus().getMana());
-        System.out.println(targetPlayer.getUsername()+"의 상태 :");
-        System.out.println("체력 : "+targetPlayer.getPlayerStatus().getHealth());
-        System.out.println("마나 : "+targetPlayer.getPlayerStatus().getMana());
+//        System.out.println(player.getUsername()+"이(가)"+targetPlayer.getUsername()+"를 "
+//                +card.getCardName()+"으로 "+card.cardType+"했습니다");
+//        System.out.println(player.getUsername()+"의 상태 :");
+//        System.out.println("체력 : "+player.getPlayerStatus().getHealth());
+//        System.out.println("마나 : "+player.getPlayerStatus().getMana());
+//        System.out.println(targetPlayer.getUsername()+"의 상태 :");
+//        System.out.println("체력 : "+targetPlayer.getPlayerStatus().getHealth());
+//        System.out.println("마나 : "+targetPlayer.getPlayerStatus().getMana());
     }
 
     public void applyCardtoAll (Player player, List<Player> players, Card card) {
