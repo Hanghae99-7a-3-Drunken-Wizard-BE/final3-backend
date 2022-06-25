@@ -1,10 +1,10 @@
 package com.example.game;
 
-import com.example.game.Game.card.ApplyCard;
-import com.example.game.Game.card.magic.attack.MagicMissile;
-import com.example.game.Game.player.Player;
-import com.example.game.Game.player.PlayerStatus;
-import com.example.game.Game.player.User;
+import com.example.game.game.card.ApplyCard;
+import com.example.game.game.card.magic.attack.MagicMissile;
+import com.example.game.game.player.Player;
+import com.example.game.game.player.PlayerStatus;
+import com.example.game.game.player.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
