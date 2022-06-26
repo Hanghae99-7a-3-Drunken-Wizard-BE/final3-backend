@@ -1,15 +1,24 @@
 package com.example.game.Game.card;
 
 import com.example.game.Game.player.Player;
+import com.example.game.Game.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 @RequiredArgsConstructor
 public class ApplyCardToCharacter {
 
-        public void applyCardtoSelf (Player player, Card card){
+    private final PlayerRepository playerRepository;
+
+        @Transactional
+        public void applyCardtoSelf (Long id, Card card){
+        Player player = playerRepository.findById(id).orElseThrow(
+                ()->new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         player.statusUpdate(card);
         player.applyManaCost(card);
     }

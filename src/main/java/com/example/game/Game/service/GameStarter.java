@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -24,6 +25,7 @@ public class GameStarter {
 
     private final GameRepository gameRepository;
 
+    @Transactional
     public GameRoom createGameRoom (List<User> userInLobby){
         GameRoom gameRoom = new GameRoom();
         LinkedList<Card> deck = new LinkedList<>();
