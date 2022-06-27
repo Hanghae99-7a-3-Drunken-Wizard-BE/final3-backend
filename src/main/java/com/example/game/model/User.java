@@ -32,18 +32,31 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column(unique = true)
+    private Long kakaoId;
+
+    // UserService 생성자
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.nickname = requestDto.getNickname();
-        this. email = requestDto.getEmail();
+        this.email = requestDto.getEmail();
+        this.kakaoId = null;
     }
 
-    public User(String username, String password, String nickname, String email){
+    // KakaoService 생성자
+    public User(String nickname, String password, String email, Long kakaoId){
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.kakaoId = kakaoId;
+    }
+
+    // testRunner 생성자
+    public User(String username, String password, String nickname, String email) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
     }
-
 }
