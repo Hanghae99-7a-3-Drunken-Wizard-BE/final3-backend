@@ -28,13 +28,13 @@ public class Card {
     public Target target;
 
     @Column
-    public int manaCost;
+    public Integer manaCost;
 
     @Column
-    public int healthModifier;
+    public Integer healthModifier;
 
     @Column
-    public int manaModifier;
+    public Integer manaModifier;
 
     @Column
     public Boolean Shield;

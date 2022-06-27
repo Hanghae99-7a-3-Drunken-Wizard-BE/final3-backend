@@ -96,11 +96,15 @@ public class Player {
     }
 
     public void statusUpdate(Card card){
-        if (this.weakDuration > 0) {this.health += card.getHealthModifier() +1;}
-        else if (this.weakDuration < 0) {this.health += card.getHealthModifier() -1;}
-        else{this.health += card.getHealthModifier();}
+        if (this.weakDuration > 0) {this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()-1) : this.health;}
+        else if (this.weakDuration < 0) {this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()+1) : this.health;}
+        else{this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()) : this.health;}
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
-        this.mana += card.getManaModifier();
+        this.mana = (card.getManaModifier()!= null) ?
+                ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()) : this.mana;
         this.dead = this.health <= 0;
         this.poisonedDuration = (card.getPoisonDuration()!= null) ?
                 ((card.getPoisonDuration()==0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
@@ -121,11 +125,15 @@ public class Player {
     }
 
     public void statusUpdateWithDamageModifierPositive(Card card){
-        if (this.weakDuration > 0) {this.health += card.getHealthModifier();}
-        else if (this.weakDuration < 0) {this.health += card.getHealthModifier() -2;}
-        else{this.health += card.getHealthModifier()-1;}
+        if (this.weakDuration > 0) {this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()-2) : this.health;}
+        else if (this.weakDuration < 0) {this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()) : this.health;}
+        else{this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()-1) : this.health;}
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
-        this.mana += card.getManaModifier()-1;
+        this.mana = (card.getManaModifier()!= null) ?
+                ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()-1) : this.mana;;
         this.dead = this.health <= 0;
         this.poisonedDuration = (card.getPoisonDuration()!= null) ?
                 ((card.getPoisonDuration()==0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
@@ -146,11 +154,15 @@ public class Player {
     }
 
     public void statusUpdateWithDamageModifierNegative(Card card){
-        if (this.weakDuration > 0) {this.health += card.getHealthModifier()+2;}
-        else if (this.weakDuration < 0) {this.health += card.getHealthModifier();}
-        else{this.health += card.getHealthModifier()+1;}
+        if (this.weakDuration > 0) {this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()) : this.health;}
+        else if (this.weakDuration < 0) {this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()+2) : this.health;}
+        else{this.health = (card.getHealthModifier()!= null) ?
+                ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()+1) : this.health;}
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
-        this.mana += card.getManaModifier()+1;
+        this.mana = (card.getManaModifier()!= null) ?
+                ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()+1) : this.mana;
         this.dead = this.health <= 0;
         this.poisonedDuration = (card.getPoisonDuration()!= null) ?
                 ((card.getPoisonDuration()==0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
@@ -171,15 +183,18 @@ public class Player {
     }
 
     public void applyManaCost(Card card) {
-        this.mana += card.manaCost;
+        this.mana = (card.getManaCost()!= null) ?
+                ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()) : this.mana;
     }
 
     public void applyManaCostWithModifierPositive(Card card) {
-        this.mana += card.manaCost+1;
+        this.mana = (card.getManaCost()!= null) ?
+                ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()+1) : this.mana;
     }
 
     public void applyManaCostWithModifierNegative(Card card) {
-        this.mana += card.manaCost-1;
+        this.mana = (card.getManaCost()!= null) ?
+                ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()-1) : this.mana;
     }
 
 }
