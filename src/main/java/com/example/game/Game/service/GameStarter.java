@@ -50,8 +50,11 @@ public class GameStarter {
         Collections.shuffle(deck);
         gameRoom.setDeck(deck);
         List<Player> playerList = new ArrayList<>();
-        for (User user : userInLobby) {
-            playerList.add(new Player(user, gameRoom));
+        for (int i = 0; i < userInLobby.size(); i++) {
+            Player player = new Player(userInLobby.get(i),gameRoom);
+            player.setTurnOrder(i+1);
+            player.setTeam((i==0)||(i==2));
+            playerList.add(player);
         }
         gameRoom.setPlayerList(playerList);
         return gameRepository.save(gameRoom);

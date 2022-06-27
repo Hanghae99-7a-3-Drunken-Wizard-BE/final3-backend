@@ -15,5 +15,11 @@ public class Petrification extends Card {
         this.target = Target.SELECT;
         this.manaCost = -3;
         this.petrifyDuration = 2;
+        this.poisonDuration = 0;
+        this.stunDuration = 0;
+        this.sleepDuration = 0;
+        this.muteDuration = 0;
+        this.damageModifierDuration = 0;
+        this.manaCostModifierDuration = 0;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.game.Game;
 
+import com.example.game.Game.card.ApplyCardToCharacter;
 import com.example.game.Game.player.User;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.UserRepository;
@@ -21,6 +22,7 @@ public class testRunner implements ApplicationRunner {
     private final GameStarter gameStarter;
     private final GameCloser gameCloser;
     private final UserRepository userRepository;
+    private final ApplyCardToCharacter applyCardToCharacter;
 
 
     @Override
@@ -42,6 +44,8 @@ public class testRunner implements ApplicationRunner {
         userRepository.saveAll(userList);
 
         GameRoom gameRoom = gameStarter.createGameRoom(userList);
+
+        applyCardToCharacter.cardInitiator(1L, 2L, 1L);
 
 
 

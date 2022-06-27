@@ -1,6 +1,9 @@
 package com.example.game.Game.card;
 
+import com.example.game.Game.GameRoom;
 import com.example.game.Game.player.Player;
+import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,56 +17,51 @@ import java.util.stream.Collectors;
 public class ApplyCardToCharacter {
 
     private final PlayerRepository playerRepository;
+    private final CardRepository cardRepository;
 
-        @Transactional
-        public void applyCardtoSelf (Long id, Card card){
-        Player player = playerRepository.findById(id).orElseThrow(
-                ()->new NullPointerException("해당 플레이어가 존재하지 않습니다"));
-        player.statusUpdate(card);
-        player.applyManaCost(card);
+    @Transactional
+    public void cardInitiator (Long id, Long targetId, Long cardId){
+        Card card = cardRepository.findByCardId(cardId);
+        Player player = playerRepository.findById(id).orElseThrow(()->new NullPointerException("플레이어 없음"));
+        if (card.getTarget()==Target.ME){
+            applyCardtoTarget(player, player, card);
+        }
+        if (card.getTarget()==Target.SELECT){
+            Player targetPlayer = playerRepository.findById(targetId).orElseThrow(()->new NullPointerException("플레이어 없음"));
+            applyCardtoTarget(player, targetPlayer, card);
+        }
+        if (card.getTarget()==Target.ALL) {
+            GameRoom gameRoom = player.getGameRoom();
+            List<Player> players = playerRepository.findByGameRoom(gameRoom);
+            applyCardtoMultipleTarget(player, players, card);
+        }
+        if (card.getTarget()==Target.ALLY) {
+            GameRoom gameRoom = player.getGameRoom();
+            List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, player.isTeam());
+            applyCardtoMultipleTarget(player, players, card);
+        }
+        if (card.getTarget()==Target.ENEMY) {
+            GameRoom gameRoom = player.getGameRoom();
+            List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, !player.isTeam());
+            applyCardtoMultipleTarget(player, players, card);
+        }
     }
 
+    @Transactional
+    public void applyCardtoTarget (Player player, Player targetPlayer, Card card){
+        targetPlayer.statusUpdate(card);
+        player.applyManaCost(card);
+        playerRepository.save(player);
+        playerRepository.save(targetPlayer);
+    }
+
+    @Transactional
+    public void applyCardtoMultipleTarget (Player player, List<Player> players, Card card) {
+        for (Player playerInList : players) {
+            playerInList.statusUpdate(card);}
+            player.applyManaCost(card);
+        playerRepository.saveAll(players);
+        playerRepository.save(player);
+    }
 }
-
-
-
-//    private final PlayerStatus playerStatus;
-//
-
-//
-//    public void applyCardtoTarget (Player player, Player targetPlayer, Card card) {
-//        targetPlayer.setPlayerStatus(new PlayerStatus(targetPlayer.getPlayerStatus(), card));
-//        player.setPlayerStatus(playerStatus.manaUse(player.getPlayerStatus(), card));
-//        System.out.println(player.getUsername()+"이(가)"+targetPlayer.getUsername()+"를 "
-//                +card.getCardName()+"으로 "+card.cardType+"했습니다");
-//        System.out.println(player.getUsername()+"의 상태 :");
-//        System.out.println("체력 : "+player.getPlayerStatus().getHealth());
-//        System.out.println("마나 : "+player.getPlayerStatus().getMana());
-//        System.out.println(targetPlayer.getUsername()+"의 상태 :");
-//        System.out.println("체력 : "+targetPlayer.getPlayerStatus().getHealth());
-//        System.out.println("마나 : "+targetPlayer.getPlayerStatus().getMana());
-//    }
-//
-//    public void applyCardtoAll (Player player, List<Player> players, Card card) {
-//        for (Player playerInList : players) {
-//            playerInList.setPlayerStatus(new PlayerStatus(playerInList.getPlayerStatus(), card));
-//            player.setPlayerStatus(playerStatus.manaUse(player.getPlayerStatus(), card));
-//        }
-//    }
-//
-//    public void applyCardtoEnemys (Player player, List<Player> players, Card card) {
-//        List<Player> enemys = players.stream().filter(p -> p.getTeam()!=player.getTeam()).collect(Collectors.toList());
-//        for(Player enemy : players) {
-//            enemy.setPlayerStatus(new PlayerStatus(enemy.getPlayerStatus(), card));
-//        }
-//        player.setPlayerStatus(playerStatus.manaUse(player.getPlayerStatus(), card));
-//    }
-//
-//    public void applyCardtoAllys (Player player, List<Player> players, Card card) {
-//        List<Player> allys = players.stream().filter(p -> p.getTeam()==player.getTeam()).collect(Collectors.toList());
-//        for(Player ally : players) {
-//            ally.setPlayerStatus(new PlayerStatus(ally.getPlayerStatus(), card));
-//        }
-//        player.setPlayerStatus(playerStatus.manaUse(player.getPlayerStatus(), card));
-//    }
 

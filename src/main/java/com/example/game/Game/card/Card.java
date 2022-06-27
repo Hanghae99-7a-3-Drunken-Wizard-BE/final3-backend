@@ -34,31 +34,31 @@ public class Card {
     public int healthModifier;
 
     @Column
-    public Boolean Shield;
-
-    @Column
     public int manaModifier;
 
     @Column
-    public int poisonDuration;
+    public Boolean Shield;
 
     @Column
-    public int stunDuration;
+    public Integer poisonDuration;
 
     @Column
-    public int muteDuration;
+    public Integer stunDuration;
 
     @Column
-    public int petrifyDuration;
+    public Integer muteDuration;
 
     @Column
-    public int weakDuration;
+    public Integer petrifyDuration;
 
     @Column
-    public int damageModifierDuration;
+    public Integer weakDuration;
 
     @Column
-    public int manaCostModifierDuration;
+    public Integer damageModifierDuration;
+
+    @Column
+    public Integer manaCostModifierDuration;
 
     @Column
     public Integer sleepDuration;

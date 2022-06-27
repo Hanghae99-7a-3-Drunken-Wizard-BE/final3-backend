@@ -68,7 +68,7 @@ public class Player {
     public int manaCostModifierDuration;
 
     @Column
-    private Integer sleepDuration;
+    private int sleepDuration;
 
     @Column
     @OneToMany
@@ -91,6 +91,7 @@ public class Player {
         this.damageModifierDuration = 0;
         this.manaCostModifierDuration = 0;
         this.sleepDuration = 0;
+        this.weakDuration = 0;
         this.gameRoom = gameRoom;
     }
 
@@ -101,16 +102,22 @@ public class Player {
         this.shield = card.getShield() != null;
         this.mana += card.getManaModifier();
         this.dead = this.health <= 0;
-        this.poisonedDuration += card.getPoisonDuration();
-        this.stunnedDuration += card.getStunDuration();
-        this.mutedDuration += card.getMuteDuration();
-        this.petrifiedDuration += card.getPetrifyDuration();
-        this.damageModifierDuration += card.getDamageModifierDuration();
-        this.weakDuration += card.getWeakDuration();
-        this.manaCostModifierDuration += card.getManaCostModifierDuration();
+        this.poisonedDuration = (card.getPoisonDuration()!= null) ?
+                ((card.getPoisonDuration()==0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
+        this.stunnedDuration = (card.getStunDuration()!= null) ?
+                ((card.getStunDuration()==0) ? 0 : this.stunnedDuration + card.getStunDuration()) : this.stunnedDuration;
+        this.mutedDuration = (card.getMuteDuration()!= null) ?
+                ((card.getMuteDuration()==0) ? 0 : this.mutedDuration + card.getMuteDuration()) : this.mutedDuration;
+        this.petrifiedDuration = (card.getPetrifyDuration()!= null) ?
+                ((card.getPetrifyDuration()==0) ? 0 : this.petrifiedDuration + card.getPetrifyDuration()) : this.petrifiedDuration;
+        this.damageModifierDuration = (card.getDamageModifierDuration()!= null) ?
+                ((card.getDamageModifierDuration()==0) ? 0 : this.damageModifierDuration + card.getDamageModifierDuration()) : this.damageModifierDuration;
+        this.weakDuration = (card.getWeakDuration()!= null) ?
+                ((card.getWeakDuration()==0) ? 0 : this.weakDuration + card.getWeakDuration()) : this.weakDuration;
+        this.manaCostModifierDuration = (card.getManaCostModifierDuration()!= null) ?
+                ((card.getManaCostModifierDuration()==0) ? 0 : this.manaCostModifierDuration + card.getManaCostModifierDuration()) : this.manaCostModifierDuration;
         this.sleepDuration = (card.getSleepDuration()!= null) ?
-                ((card.sleepDuration==0) ? 0 : this.sleepDuration + card.getSleepDuration()) : this.sleepDuration;
-
+                ((card.getSleepDuration()==0) ? 0 : this.sleepDuration + card.getSleepDuration()) : this.sleepDuration;
     }
 
     public void applyManaCost(Card card) {
