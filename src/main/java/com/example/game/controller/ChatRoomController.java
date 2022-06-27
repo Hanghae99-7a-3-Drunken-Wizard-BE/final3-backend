@@ -1,8 +1,9 @@
 package com.example.game.controller;
 
 import com.example.game.model.ChatRoom;
-import com.example.game.model.User;
+import com.example.game.model.LoginInfo;
 import com.example.game.repository.ChatRoomRepository;
+import com.example.game.security.UserDetailsImpl;
 import com.example.game.security.jwt.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/chat")
@@ -22,42 +22,45 @@ public class ChatRoomController {
     private final ChatRoomRepository chatRoomRepository;
     private final JwtTokenUtils jwtTokenUtils;
 
-    // 채팅 리스트 화면
     @GetMapping("/room")
-    public String rooms(Model model) {
+    public String rooms() {
         return "/chat/room";
     }
-    // 모든 채팅방 목록 반환
+
     @GetMapping("/rooms")
     @ResponseBody
     public List<ChatRoom> room() {
-        return chatRoomRepository.findAllRoom();
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllRoom();
+        chatRooms.stream().forEach(room -> room.setUserCount(chatRoomRepository.getUserCount(room.getRoomId())));
+        return chatRooms;
     }
-    // 채팅방 생성
+
     @PostMapping("/room")
     @ResponseBody
     public ChatRoom createRoom(@RequestParam String name) {
         return chatRoomRepository.createChatRoom(name);
     }
-    // 채팅방 입장 화면
+
     @GetMapping("/room/enter/{roomId}")
     public String roomDetail(Model model, @PathVariable String roomId) {
         model.addAttribute("roomId", roomId);
         return "/chat/roomdetail";
     }
-    // 특정 채팅방 조회
+
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public ChatRoom roomInfo(@PathVariable String roomId) {
         return chatRoomRepository.findRoomById(roomId);
     }
 
-    // 채팅방 입장
     @GetMapping("/user")
     @ResponseBody
-    public User getUserInfo() {
+    public LoginInfo getUserInfo(UserDetailsImpl userDetails) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
-        return User.builder().token(jwtTokenUtils.generateJwtToken(userDetails)).build();
+        return LoginInfo.builder()
+                .name(name)
+                .token(JwtTokenUtils.generateJwtToken(userDetails))
+                .build();
     }
 }
