@@ -79,7 +79,7 @@ public class Player {
     private GameRoom gameRoom;
 
     public Player(User user, GameRoom gameRoom){
-        this.username = user.getUsername();
+        this.username = user.getNickname();
         this.health = 20;
         this.mana = 2;
         this.shield = false;
