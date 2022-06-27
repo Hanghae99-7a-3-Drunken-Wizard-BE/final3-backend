@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Table(name = "USER_PLAYER")
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {

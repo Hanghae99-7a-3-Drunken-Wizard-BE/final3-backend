@@ -2,6 +2,7 @@ package com.example.game.Game.player;
 
 import com.example.game.Game.GameRoom;
 import com.example.game.Game.card.Card;
+import com.example.game.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -78,7 +79,7 @@ public class Player {
     private GameRoom gameRoom;
 
     public Player(User user, GameRoom gameRoom){
-        this.username = user.getUsername();
+        this.username = user.getNickname();
         this.health = 20;
         this.mana = 2;
         this.shield = false;
