@@ -49,17 +49,27 @@ public class ApplyCardToCharacter {
 
     @Transactional
     public void applyCardtoTarget (Player player, Player targetPlayer, Card card){
-        targetPlayer.statusUpdate(card);
-        player.applyManaCost(card);
+        if (player.damageModifierDuration > 0){targetPlayer.statusUpdateWithDamageModifierPositive(card);}
+        else if(player.damageModifierDuration < 0){targetPlayer.statusUpdateWithDamageModifierNegative(card);}
+        else{targetPlayer.statusUpdate(card);}
+        if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
+        else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
+        else{player.applyManaCost(card);}
         playerRepository.save(player);
         playerRepository.save(targetPlayer);
     }
 
     @Transactional
     public void applyCardtoMultipleTarget (Player player, List<Player> players, Card card) {
-        for (Player playerInList : players) {
-            playerInList.statusUpdate(card);}
-            player.applyManaCost(card);
+        if (player.damageModifierDuration > 0){for (Player playerInList : players) {
+            playerInList.statusUpdateWithDamageModifierPositive(card);}}
+        else if(player.damageModifierDuration < 0){for (Player playerInList : players) {
+            playerInList.statusUpdateWithDamageModifierNegative(card);}}
+        else{for (Player playerInList : players) {
+            playerInList.statusUpdate(card);}}
+        if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
+        else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
+        else{player.applyManaCost(card);}
         playerRepository.saveAll(players);
         playerRepository.save(player);
     }
