@@ -2,6 +2,7 @@ package com.example.game.Game.player;
 
 import com.example.game.Game.GameRoom;
 import com.example.game.Game.card.Card;
+import com.example.game.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
