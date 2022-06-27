@@ -1,8 +1,13 @@
 package com.example.game.config.handler;
 
-import com.example.game.model.ChatMessage;
-import com.example.game.repository.ChatRoomRepository;
-import com.example.game.security.jwt.JwtTokenUtils;
+import com.example.game.model.room.Room;
+import com.example.game.model.user.User;
+import com.example.game.model.chat.ChatMessage;
+import com.example.game.repository.chat.RedisRepository;
+import com.example.game.repository.room.EnterUserRepository;
+import com.example.game.repository.room.RoomRepository;
+import com.example.game.repository.user.UserRepository;
+import com.example.game.security.jwt.JwtDecoder;
 import com.example.game.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +18,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
 import java.util.Optional;
 
 @Slf4j
@@ -21,43 +25,85 @@ import java.util.Optional;
 @Component
 public class StompHandler implements ChannelInterceptor {
 
-    private final JwtTokenUtils jwtTokenUtils;
-    private final ChatRoomRepository chatRoomRepository;
+    private final JwtDecoder jwtDecoder;
     private final ChatService chatService;
+    private final RedisRepository redisRepository;
+    private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
+    private final EnterUserRepository enterUserRepository;
+    private final Long min = 0L;
 
-    // websocket을 통해 들어온 요청이 처리 되기전 실행된다.
+
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        if (StompCommand.CONNECT == accessor.getCommand()) { // websocket 연결요청
-            String jwtToken = accessor.getFirstNativeHeader("token");
-            log.info("CONNECT {}", jwtToken);
-            // Header의 jwt token 검증
-            jwtTokenUtils.validateToken(jwtToken);
-        } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) { // 채팅룸 구독요청
-            // header정보에서 구독 destination정보를 얻고, roomId를 추출한다.
+        // websocket 연결시 헤더의 jwt token 검증
+        if (StompCommand.CONNECT == accessor.getCommand()) {
+
+            jwtDecoder.decodeUsername(accessor.getFirstNativeHeader("Authorization"));
+
+        } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) {
+
             String roomId = chatService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
-            // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
             String sessionId = (String) message.getHeaders().get("simpSessionId");
-            chatRoomRepository.setUserEnterInfo(sessionId, roomId);
-            // 채팅방의 인원수를 +1한다.
-            chatRoomRepository.plusUserCount(roomId);
-            // 클라이언트 입장 메시지를 채팅방에 발송한다.(redis publish)
-            String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
-            chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.ENTER).roomId(roomId).sender(name).build());
-            log.info("SUBSCRIBED {}, {}", name, roomId);
-        } else if (StompCommand.DISCONNECT == accessor.getCommand()) { // Websocket 연결 종료
-            // 연결이 종료된 클라이언트 sesssionId로 채팅방 id를 얻는다.
+
+            redisRepository.setUserEnterInfo(sessionId, roomId);
+            //기존 유저카운터 증가
+//            redisRepository.plusUserCount(roomId);
+//            String name = jwtDecoder.decodeUsername(accessor.getFirstNativeHeader("Authorization").substring(7));
+            String name = jwtDecoder.decodeUsername(accessor.getFirstNativeHeader("Authorization"));
+
+
+            redisRepository.setNickname(sessionId, name);
+            try {
+                chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.ENTER).roomId(roomId).sender(name).build());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+            if (roomId != null) {
+                Room room = roomRepository.findByroomId(roomId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방입니다."));
+                room.setUserCount(redisRepository.getUserCount(roomId));
+                if (redisRepository.getUserCount(roomId) < 0) {
+                    room.setUserCount(min);
+                }
+//                roomRepository.save(room);
+            }
+
+        } else if (StompCommand.DISCONNECT == accessor.getCommand()) {
             String sessionId = (String) message.getHeaders().get("simpSessionId");
-            String roomId = chatRoomRepository.getUserEnterRoomId(sessionId);
-            // 채팅방의 인원수를 -1한다.
-            chatRoomRepository.minusUserCount(roomId);
-            // 클라이언트 퇴장 메시지를 채팅방에 발송한다.(redis publish)
-            String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
-            chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.QUIT).roomId(roomId).sender(name).build());
-            // 퇴장한 클라이언트의 roomId 맵핑 정보를 삭제한다.
-            chatRoomRepository.removeUserEnterInfo(sessionId);
-            log.info("DISCONNECTED {}, {}", sessionId, roomId);
+
+            String roomId = redisRepository.getUserEnterRoomId(sessionId);
+            String name = redisRepository.getNickname(sessionId);
+
+            if (roomId != null) {
+                redisRepository.minusUserCount(roomId);
+
+                try {
+                    chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.QUIT).roomId(roomId).sender(name).build());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Room room = roomRepository.findByroomId(roomId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방입니다.(DISCONNECT)"));
+
+//                if (roomId != null) {
+//                    System.out.println("DISCONNECT 인원수 증가한걸 적용");
+//                    room.setUserCount(redisRepository.getUserCount(roomId));
+//                    roomRepository.save(room);
+//                }
+
+                User user = userRepository.findByNickname(name);
+                if (enterUserRepository.findByRoomAndUser(room, user).getRoom().getRoomId().equals(roomId)) {
+//                    EnterUser enterUser = enterUserRepository.findByRoomAndUser(room, user);
+//                    enterUserRepository.delete(enterUser);
+                    log.info("USERENTER_DELETE {}, {}", name, roomId);
+                }
+
+                redisRepository.removeUserEnterInfo(sessionId);
+                log.info("DISCONNECTED {}, {}", sessionId, roomId);
+            }
         }
         return message;
     }

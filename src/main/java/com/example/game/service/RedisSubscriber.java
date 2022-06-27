@@ -1,6 +1,6 @@
-package com.example.game.pubsub;
+package com.example.game.service;
 
-import com.example.game.model.ChatMessage;
+import com.example.game.model.chat.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

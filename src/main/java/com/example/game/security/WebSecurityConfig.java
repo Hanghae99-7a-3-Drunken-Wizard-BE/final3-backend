@@ -95,15 +95,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 // "접근 불가" 페이지 URL 설정
                 .accessDeniedPage("/forbidden.html");
-        http
-                .headers()
-                    .frameOptions().sameOrigin()
-                .and()
-                    .formLogin() // 로그인 설정
-                .and()
-                    .authorizeRequests()
-                    .antMatchers("/chat/**").hasRole("USER") // 채팅 서비스에 대한 접근 권한 설정
-                    .anyRequest().permitAll(); // 모든 요청에 대한 접근 권한 설정
     }
 
     @Bean

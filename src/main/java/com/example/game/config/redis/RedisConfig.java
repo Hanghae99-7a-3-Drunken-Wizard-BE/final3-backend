@@ -1,6 +1,6 @@
-package com.example.game.config;
+package com.example.game.config.redis;
 
-import com.example.game.pubsub.RedisSubscriber;
+import com.example.game.service.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +39,7 @@ public class RedisConfig {
 
     /**
      * 실제 메시지를 처리하는 subscriber 설정 추가
+     * 메세지를 구독자에게 보내는 역할을 함
      */
     @Bean
     public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {

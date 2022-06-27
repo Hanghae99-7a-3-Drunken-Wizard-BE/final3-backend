@@ -7,7 +7,14 @@ import com.example.game.Game.player.PlayerStatus;
 import com.example.game.Game.player.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
+@EnableScheduling // 스케줄링 사용
+@EnableJpaAuditing  // 생성 시간/수정 시간 자동 업데이트
 @SpringBootApplication
 public class GameApplication {
 
@@ -23,11 +30,11 @@ public class GameApplication {
         Player player2 = new Player(user2);
         MagicMissile magicMissile = new MagicMissile();
         applyCard.applyCardtoTarget(player1, player2, magicMissile);
-
     }
 
-
-
-
-
+    // 타임스탬프시간 맞추기
+    @PostConstruct
+    public void started(){
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.game.controller;
 
-import com.example.game.dto.request.DubCheckRequestDto;
-import com.example.game.dto.request.SignupRequestDto;
+import com.example.game.dto.user.DubCheckRequestDto;
+import com.example.game.dto.user.SignupRequestDto;
 import com.example.game.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

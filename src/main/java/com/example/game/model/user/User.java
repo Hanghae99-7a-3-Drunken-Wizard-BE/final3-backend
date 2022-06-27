@@ -1,6 +1,6 @@
-package com.example.game.model;
+package com.example.game.model.user;
 
-import com.example.game.dto.request.SignupRequestDto;
+import com.example.game.dto.user.SignupRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
