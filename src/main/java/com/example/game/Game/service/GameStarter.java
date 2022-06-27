@@ -3,10 +3,6 @@ package com.example.game.Game.service;
 import com.example.game.Game.GameRoom;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.card.magic.attack.*;
-import com.example.game.Game.card.magic.curse.Mute;
-import com.example.game.Game.card.magic.curse.Petrification;
-import com.example.game.Game.card.magic.enchantment.ChannelingMana;
-import com.example.game.Game.card.magic.enchantment.Heal;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.model.User;
@@ -29,22 +25,22 @@ public class GameStarter {
     public GameRoom createGameRoom (List<User> userInLobby){
         GameRoom gameRoom = new GameRoom();
         LinkedList<Card> deck = new LinkedList<>();
-        for (int i = 0; i < 1; i++) {
-            deck.add(new ChannelingMana(gameRoom));
+        for (int i = 0; i < 20; i++) {
+            deck.add(new MagicMissile(gameRoom));
         }
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 6; i++) {
             deck.add(new BoulderStrike(gameRoom));
         }
-        for (int i = 0; i < 1; i++) {
-            deck.add(new Mute(gameRoom));
+        for (int i = 0; i < 6; i++) {
+            deck.add(new DeathRay(gameRoom));
         }
-        for (int i = 0; i < 1; i++) {
-            deck.add(new Petrification(gameRoom));
+        for (int i = 0; i < 6; i++) {
+            deck.add(new FireBall(gameRoom));
         }
-        for (int i = 0; i < 1; i++) {
-            deck.add(new Heal(gameRoom));
+        for (int i = 0; i < 6; i++) {
+            deck.add(new PoisonArrow(gameRoom));
         }
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 6; i++) {
             deck.add(new ManaSiphon(gameRoom));
         }
         Collections.shuffle(deck);
