@@ -1,8 +1,12 @@
 package com.example.game.controller;
 
 import com.example.game.model.ChatRoom;
+import com.example.game.model.User;
 import com.example.game.repository.ChatRoomRepository;
+import com.example.game.security.jwt.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,7 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final JwtTokenUtils jwtTokenUtils;
 
     // 채팅 리스트 화면
     @GetMapping("/room")
@@ -45,5 +50,14 @@ public class ChatRoomController {
     @ResponseBody
     public ChatRoom roomInfo(@PathVariable String roomId) {
         return chatRoomRepository.findRoomById(roomId);
+    }
+
+    // 채팅방 입장
+    @GetMapping("/user")
+    @ResponseBody
+    public User getUserInfo() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        return User.builder().token(jwtTokenUtils.generateJwtToken(userDetails)).build();
     }
 }

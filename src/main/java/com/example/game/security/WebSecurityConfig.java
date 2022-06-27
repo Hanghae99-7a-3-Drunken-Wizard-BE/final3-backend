@@ -19,8 +19,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.web.servlet.function.RequestPredicates.headers;
 
 @Configuration
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
@@ -62,13 +65,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.csrf().disable(); // CSRF 비활성화
 
         // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         /*
          * 1.
          * UsernamePasswordAuthenticationFilter 이전에 FormLoginFilter, JwtFilter 를 등록합니다.
@@ -93,6 +95,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 // "접근 불가" 페이지 URL 설정
                 .accessDeniedPage("/forbidden.html");
+        http
+                .headers()
+                    .frameOptions().sameOrigin()
+                .and()
+                    .formLogin() // 로그인 설정
+                .and()
+                    .authorizeRequests()
+                    .antMatchers("/chat/**").hasRole("USER") // 채팅 서비스에 대한 접근 권한 설정
+                    .anyRequest().permitAll(); // 모든 요청에 대한 접근 권한 설정
     }
 
     @Bean
@@ -131,8 +142,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        skipPathList.add("POST, https://kauth.kakao.com/**");
 //        skipPathList.add("POST, https://kapi.kakao.com/**");
 //        skipPathList.add("GET, http://localhost:3000/user/**");
-
-
 
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(
