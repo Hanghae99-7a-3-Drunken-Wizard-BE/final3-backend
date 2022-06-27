@@ -28,7 +28,7 @@ public class Player {
 
     private boolean onReady;
 
-    public Player (User user) {
+    public Player (UserPlayer user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.playerStatus = new PlayerStatus();

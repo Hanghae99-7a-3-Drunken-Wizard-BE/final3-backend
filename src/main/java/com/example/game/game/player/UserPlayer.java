@@ -5,14 +5,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class User {
+public class UserPlayer {
     private Long id;
     private String username;
     private String password;
     private int winCount;
     private int loseCount;
 
-    public User(Long id, String username, String password, int winCount, int loseCount) {
+    public UserPlayer(Long id, String username, String password, int winCount, int loseCount) {
         this.id = id;
         this.username = username;
         this.password = password;
