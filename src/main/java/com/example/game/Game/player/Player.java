@@ -81,7 +81,7 @@ public class Player {
     public Player(User user, GameRoom gameRoom){
         this.username = user.getNickname();
         this.health = 20;
-        this.mana = 2;
+        this.mana = 20;
         this.shield = false;
         this.dead = false;
         this.poisonedDuration = 0;
@@ -182,6 +182,20 @@ public class Player {
                 ((card.getSleepDuration()==0) ? 0 : this.sleepDuration + card.getSleepDuration()) : this.sleepDuration;
     }
 
+    public void applyHeal(Card card){
+        this.health += card.getHealthModifier();
+        this.poisonedDuration = 0;
+    }
+
+    public void applyHealWithDamageModifierPositive(Card card){
+        this.health += card.getHealthModifier() +1;
+        this.poisonedDuration = 0;
+    }
+
+    public void applyHealWithDamageModifierNegative(Card card){
+        this.health += card.getHealthModifier() -1;
+    }
+
     public void applyManaCost(Card card) {
         this.mana = (card.getManaCost()!= null) ?
                 ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()) : this.mana;
@@ -195,6 +209,21 @@ public class Player {
     public void applyManaCostWithModifierNegative(Card card) {
         this.mana = (card.getManaCost()!= null) ?
                 ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()-1) : this.mana;
+    }
+
+    public void applyHealManaCostForHealer(Card card) {
+        this.mana = (card.getManaCost()!= null) ?
+                ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()+1) : this.mana;
+    }
+
+    public void applyHealManaCostWithModifierPositiveForHealer(Card card) {
+        this.mana = (card.getManaCost()!= null) ?
+                ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()+2) : this.mana;
+    }
+
+    public void applyHealManaCostWithModifierNegativeForHealer(Card card) {
+        this.mana = (card.getManaCost()!= null) ?
+                ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()) : this.mana;
     }
 
 }
