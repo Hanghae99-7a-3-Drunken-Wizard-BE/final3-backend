@@ -43,12 +43,12 @@ public class testRunner implements ApplicationRunner {
 
         GameRoom gameRoom = gameStarter.createGameRoom(userList);
 
-        applyCardToCharacter.cardInitiator(1L, 2L, 1L);
-
-
-
-
-
+        applyCardToCharacter.cardInitiator(1L, 2L, 4L);
+        applyCardToCharacter.cardInitiator(1L, 1L, 1L);
+        applyCardToCharacter.cardInitiator(3L, 3L, 2L);
+        applyCardToCharacter.cardInitiator(4L, 4L, 3L);
+        applyCardToCharacter.cardInitiator(1L, 3L, 4L);
+        applyCardToCharacter.cardInitiator(1L, 4L, 4L);
 
     }
 }
