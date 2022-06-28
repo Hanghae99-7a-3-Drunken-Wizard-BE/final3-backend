@@ -18,40 +18,41 @@ public class ApplyCardToCharacter {
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
 
-    @Transactional
     public void cardInitiator (Long id, Long targetId, Long cardId){
         Card card = cardRepository.findByCardId(cardId);
         Player player = playerRepository.findById(id).orElseThrow(()->new NullPointerException("플레이어 없음"));
         Player targetPlayer = playerRepository.findById(targetId).orElseThrow(()->new NullPointerException("플레이어 없음"));
-        if (card.getCardName().equals("Heal")){
-            applyHealtoTarget(player, targetPlayer, card);
-        }
-        else if (card.getCardName().equals("Party Heal")){
-            GameRoom gameRoom = player.getGameRoom();
-            List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, player.isTeam());
-            applyHealtoMultipleTarget(player, players, card);
-        }
+        if(card.getCardType().equals(CardType.EVENT)){/*스페셜 카드의 적용을 위해 공백으로 남김*/}
+        else if(card.getCardType().equals(CardType.ITEM)){applyItemtoTarget(player, targetPlayer, card);}
         else {
-            if (card.getTarget() == Target.ME) {
-                applyCardtoTarget(player, player, card);
-            }
-            if (card.getTarget() == Target.SELECT) {
-                applyCardtoTarget(player, targetPlayer, card);
-            }
-            if (card.getTarget() == Target.ALL) {
-                GameRoom gameRoom = player.getGameRoom();
-                List<Player> players = playerRepository.findByGameRoom(gameRoom);
-                applyCardtoMultipleTarget(player, players, card);
-            }
-            if (card.getTarget() == Target.ALLY) {
+            if (card.getCardName().equals("Heal")) {
+                applyHealtoTarget(player, targetPlayer, card);
+            } else if (card.getCardName().equals("Party Heal")) {
                 GameRoom gameRoom = player.getGameRoom();
                 List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, player.isTeam());
-                applyCardtoMultipleTarget(player, players, card);
-            }
-            if (card.getTarget() == Target.ENEMY) {
-                GameRoom gameRoom = player.getGameRoom();
-                List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, !player.isTeam());
-                applyCardtoMultipleTarget(player, players, card);
+                applyHealtoMultipleTarget(player, players, card);
+            } else {
+                if (card.getTarget() == Target.ME) {
+                    applyCardtoTarget(player, player, card);
+                }
+                if (card.getTarget() == Target.SELECT) {
+                    applyCardtoTarget(player, targetPlayer, card);
+                }
+                if (card.getTarget() == Target.ALL) {
+                    GameRoom gameRoom = player.getGameRoom();
+                    List<Player> players = playerRepository.findByGameRoom(gameRoom);
+                    applyCardtoMultipleTarget(player, players, card);
+                }
+                if (card.getTarget() == Target.ALLY) {
+                    GameRoom gameRoom = player.getGameRoom();
+                    List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, player.isTeam());
+                    applyCardtoMultipleTarget(player, players, card);
+                }
+                if (card.getTarget() == Target.ENEMY) {
+                    GameRoom gameRoom = player.getGameRoom();
+                    List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, !player.isTeam());
+                    applyCardtoMultipleTarget(player, players, card);
+                }
             }
         }
     }
@@ -72,6 +73,7 @@ public class ApplyCardToCharacter {
         playerRepository.save(player);
         playerRepository.save(targetPlayer);
     }
+
 
     @Transactional
     public void applyCardtoTarget (Player player, Player targetPlayer, Card card){
@@ -118,6 +120,13 @@ public class ApplyCardToCharacter {
             else{player.applyManaCost(card);}}
         playerRepository.saveAll(players);
         playerRepository.save(player);
+    }
+
+    @Transactional
+    public void applyItemtoTarget(Player player, Player targetPlayer, Card card){
+        targetPlayer.statusUpdate(card);
+        playerRepository.save(player);
+        playerRepository.save(targetPlayer);
     }
 }
 
