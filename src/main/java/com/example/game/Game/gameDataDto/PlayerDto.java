@@ -4,19 +4,15 @@ import com.example.game.Game.card.Card;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class PlayerResponseDto {
+public class PlayerDto {
     private Long playerId;
     private String username;
     private boolean team;
@@ -34,9 +30,9 @@ public class PlayerResponseDto {
     public int weakDuration;
     public int manaCostModifierDuration;
     private int sleepDuration;
-    private String cardsOnHand;
+    private List<CardsDto> cardsOnHand;
 
-    public PlayerResponseDto(Player player) throws JsonProcessingException{
+    public PlayerDto(Player player) throws JsonProcessingException{
         this.playerId = player.getPlayerId();
 
         this.username = player.getUsername();
@@ -71,12 +67,11 @@ public class PlayerResponseDto {
 
         this.sleepDuration = player.getSleepDuration();
 
-        List<CardsResponseDto> cardIds = new ArrayList<>();
+        List<CardsDto> cardIds = new ArrayList<>();
         List<Card> cards = player.getCardsOnHand();
         for (Card card : cards) {
-            cardIds.add(new CardsResponseDto(card.getCardId()));
+            cardIds.add(new CardsDto(card));
         }
-        ObjectWriter ow = new ObjectMapper().writer();
-        this.cardsOnHand = ow.writeValueAsString(cardIds);
+        this.cardsOnHand = cardIds;
     }
 }

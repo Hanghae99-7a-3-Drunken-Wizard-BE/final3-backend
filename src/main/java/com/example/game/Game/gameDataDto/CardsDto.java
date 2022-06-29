@@ -1,14 +1,15 @@
 package com.example.game.Game.gameDataDto;
 
+import com.example.game.Game.card.Card;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CardsResponseDto {
+public class CardsDto {
     private Long cardId;
 
-    public CardsResponseDto (Long cardId) {
-        this.cardId = cardId;
+    public CardsDto(Card card) {
+        this.cardId = card.getCardId();
     }
 }

@@ -2,10 +2,8 @@ package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
 import com.example.game.Game.card.Card;
-import com.example.game.Game.card.magic.curse.Petrification;
-import com.example.game.Game.card.magic.enchantment.Heal;
-import com.example.game.Game.gameDataDto.GameStarterDto;
-import com.example.game.Game.gameDataDto.PlayerResponseDto;
+import com.example.game.Game.gameDataDto.response.GameStarterResponseDto;
+import com.example.game.Game.gameDataDto.PlayerDto;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.PlayerRepository;
@@ -55,9 +53,9 @@ public class testRunner implements ApplicationRunner {
         userRepository.saveAll(userList);
 
         GameRoom gameRoom = gameStarter.createGameRoom(userList);
-        GameStarterDto gameStarterDto = new GameStarterDto(gameRoom);
+        GameStarterResponseDto gameStarterResponseDto = new GameStarterResponseDto(gameRoom);
         ObjectWriter ow = new ObjectMapper().writer();
-        String dtoToString = ow.writeValueAsString(gameStarterDto);
+        String dtoToString = ow.writeValueAsString(gameStarterResponseDto);
         System.out.println(dtoToString);
 
         applyCardToCharacter.cardInitiator(1L, 2L, 4L);
@@ -75,7 +73,7 @@ public class testRunner implements ApplicationRunner {
 
         Player player = playerRepository.findById(1L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
         player.setCardsOnHand(cards);
-        PlayerResponseDto responseDto = new PlayerResponseDto(player);
+        PlayerDto responseDto = new PlayerDto(player);
 
         ObjectMapper mapper = new ObjectMapper();
         try{
