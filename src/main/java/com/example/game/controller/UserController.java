@@ -37,5 +37,4 @@ public class UserController {
     public void kakaoLogin(@RequestParam String code) throws JsonProcessingException {
         kakaoUserService.kakaoLogin(code);
     }
-
 }
