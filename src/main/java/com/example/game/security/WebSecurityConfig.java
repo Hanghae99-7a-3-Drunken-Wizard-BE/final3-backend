@@ -63,23 +63,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
-        // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        /*
-         * 1.
-         * UsernamePasswordAuthenticationFilter 이전에 FormLoginFilter, JwtFilter 를 등록합니다.
-         * FormLoginFilter : 로그인 인증을 실시합니다.
-         * JwtFilter       : 서버에 접근시 JWT 확인 후 인증을 실시합니다.
-         */
         http
                 .addFilter(corsFilter)
                 .addFilterBefore(formLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-
         http.authorizeRequests()
                 .anyRequest()
                 .permitAll()
@@ -92,7 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 // "접근 불가" 페이지 URL 설정
-                .accessDeniedPage("/forbidden.html");
+                .accessDeniedPage("/");
     }
 
     @Bean
@@ -117,15 +107,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthFilter jwtFilter() throws Exception {
         List<String> skipPathList = new ArrayList<>();
 
+        skipPathList.add("GET,/**"); // static 폴더 접근 허용
         // h2-console 허용
         skipPathList.add("GET,/h2-console/**");
         skipPathList.add("POST,/h2-console/**");
         // 회원 관리 API 허용
         skipPathList.add("POST,/user/signup");
         skipPathList.add("GET,/");
-        skipPathList.add("POST,/loginCheck");
         skipPathList.add("POST,/dupCheck");
-        skipPathList.add("OPTIONS,/");
         //카카오 콜백 API 허용
         skipPathList.add("GET,/user/kakao/**");
         skipPathList.add("POST, https://kauth.kakao.com/**");
