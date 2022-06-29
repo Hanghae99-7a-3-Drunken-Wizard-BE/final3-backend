@@ -1,10 +1,21 @@
 package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
+import com.example.game.Game.card.Card;
+import com.example.game.Game.card.magic.curse.Petrification;
+import com.example.game.Game.card.magic.enchantment.Heal;
+import com.example.game.Game.gameDataDto.GameStarterDto;
+import com.example.game.Game.gameDataDto.PlayerResponseDto;
+import com.example.game.Game.player.Player;
+import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.Game.service.GameCloser;
 import com.example.game.Game.service.GameStarter;
 import com.example.game.model.User;
 import com.example.game.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -21,6 +32,8 @@ public class testRunner implements ApplicationRunner {
     private final GameCloser gameCloser;
     private final UserRepository userRepository;
     private final ApplyCardToCharacter applyCardToCharacter;
+    private final PlayerRepository playerRepository;
+    private final CardRepository cardRepository;
 
 
     @Override
@@ -42,6 +55,10 @@ public class testRunner implements ApplicationRunner {
         userRepository.saveAll(userList);
 
         GameRoom gameRoom = gameStarter.createGameRoom(userList);
+        GameStarterDto gameStarterDto = new GameStarterDto(gameRoom);
+        ObjectWriter ow = new ObjectMapper().writer();
+        String dtoToString = ow.writeValueAsString(gameStarterDto);
+        System.out.println(dtoToString);
 
         applyCardToCharacter.cardInitiator(1L, 2L, 4L);
         applyCardToCharacter.cardInitiator(1L, 1L, 1L);
@@ -49,6 +66,23 @@ public class testRunner implements ApplicationRunner {
         applyCardToCharacter.cardInitiator(4L, 4L, 3L);
         applyCardToCharacter.cardInitiator(1L, 3L, 4L);
         applyCardToCharacter.cardInitiator(1L, 4L, 4L);
+
+        List<Card> cards = new ArrayList<>();
+        Card card1 = cardRepository.findByCardId(1L);
+        Card card2 = cardRepository.findByCardId(2L);
+        cards.add(card1);
+        cards.add(card2);
+
+        Player player = playerRepository.findById(1L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
+        player.setCardsOnHand(cards);
+        PlayerResponseDto responseDto = new PlayerResponseDto(player);
+
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+        String json = mapper.writeValueAsString(responseDto);
+        System.out.println(json);} catch (JsonMappingException e) {e.printStackTrace();}
+
+
 
     }
 }

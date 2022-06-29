@@ -14,14 +14,13 @@ public class PreTurn {
     private final PlayerRepository playerRepository;
 
     @Transactional
-    public boolean PreTurn(Long id) {
+    public boolean PreTurn(Long gameRoomId, Long id) {
         Player player = playerRepository.findById(id).orElseThrow(
                 ()->new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         if(player.getPoisonedDuration() > 0){player.setHealth(player.getHealth()-1);}
         if(player.getStunnedDuration() > 0){return false;}
         if(player.getPetrifiedDuration() > 0){return false;}
-        if(player.getSleepDuration()
-                > 0){return false;}
+        if(player.getSleepDuration() > 0){return false;}
         return true;
     }
 }
