@@ -28,7 +28,7 @@ public class UserController {
 
     // 아이디 중복체크
     @PostMapping("/user/dubcheck")
-    public boolean dubCheck(@RequestBody DubCheckRequestDto requestDto){
+    public String dubCheck(@RequestBody DubCheckRequestDto requestDto){
         return userService.dubCheck(requestDto);
     }
 
@@ -36,5 +36,6 @@ public class UserController {
     @GetMapping("/user/kakao/callback")
     public void kakaoLogin(@RequestParam String code) throws JsonProcessingException {
         kakaoUserService.kakaoLogin(code);
+
     }
 }

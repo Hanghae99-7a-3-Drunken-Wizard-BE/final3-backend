@@ -29,8 +29,9 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public boolean dubCheck(DubCheckRequestDto requestDto) {
-        return !userRepository.findByUsername(requestDto.getUsername()).isPresent();
+    public String dubCheck(DubCheckRequestDto requestDto) {
+        return userRepository.findByUsername(requestDto.getUsername()).isPresent() ?
+        "중복되는 아이디입니다." : "사용 가능한 아이디 입니다.";
     }
 
 }
