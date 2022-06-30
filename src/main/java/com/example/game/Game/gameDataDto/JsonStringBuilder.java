@@ -43,8 +43,8 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String additionalDrawResponseDtoJsonBuilder(Player player, Card card) throws JsonProcessingException {
-        AdditionalDrawResponseDto responseDto = new AdditionalDrawResponseDto(player, card);
+    public String additionalDrawResponseDtoJsonBuilder(Player player, Card card, boolean drawSuccess) throws JsonProcessingException {
+        AdditionalDrawResponseDto responseDto = new AdditionalDrawResponseDto(player, card, drawSuccess);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
@@ -67,6 +67,12 @@ public class JsonStringBuilder  {
 
     public String endTurnResponseDtoJsonBuilder(Player player, Player nextPlayer) throws JsonProcessingException {
         EndTurnResponseDto responseDto = new EndTurnResponseDto(player, nextPlayer);
+        ObjectWriter ow = new ObjectMapper().writer();
+        return ow.writeValueAsString(responseDto);
+    }
+
+    public String noMoreDrawResponseDtoJsonBuilder() throws JsonProcessingException {
+        NoMoreDrawResponseDto responseDto = new NoMoreDrawResponseDto();
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }

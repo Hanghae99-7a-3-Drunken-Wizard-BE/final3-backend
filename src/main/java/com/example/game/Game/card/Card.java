@@ -71,8 +71,8 @@ public class Card {
     public SpecialEffect specialEffect;
 
     @ManyToOne
-    @JoinColumn(name = "gameRoom_Id")
-    public GameRoom gameRoom;
+    @JoinColumn(name = "deck_Id")
+    public Deck gameDeck;
 
     @Column
     public Long onHand;

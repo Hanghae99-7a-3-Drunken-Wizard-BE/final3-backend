@@ -2,11 +2,17 @@ package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
 import com.example.game.Game.card.Card;
+import com.example.game.Game.card.Deck;
+import com.example.game.Game.card.magic.attack.BoulderStrike;
+import com.example.game.Game.card.magic.curse.WeaknessExposure;
+import com.example.game.Game.card.magic.enchantment.MagicAmplification;
+import com.example.game.Game.card.magic.enchantment.MagicArmor;
 import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
 import com.example.game.Game.gameDataDto.response.GameStarterResponseDto;
 import com.example.game.Game.gameDataDto.PlayerDto;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.DeckRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.Game.service.GameCloser;
 import com.example.game.Game.service.GameStarter;
@@ -34,6 +40,7 @@ public class testRunner implements ApplicationRunner {
     private final ApplyCardToCharacter applyCardToCharacter;
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
+    private final DeckRepository deckRepository;
     private final PreTurn preTurn;
 
 
@@ -54,6 +61,16 @@ public class testRunner implements ApplicationRunner {
         userList.add(user4);
 
         userRepository.saveAll(userList);
+
+        Deck deck = new Deck();
+        List<Card> allCards = new ArrayList<>();
+        allCards.add(new MagicAmplification(deck));
+        allCards.add(new WeaknessExposure(deck));
+        allCards.add(new MagicArmor(deck));
+        allCards.add(new BoulderStrike(deck));
+        deck.setGameDeck(allCards);
+
+        deckRepository.save(deck);
 
         GameRoom gameRoom = gameStarter.createGameRoom(userList);
         GameStarterResponseDto gameStarterResponseDto = new GameStarterResponseDto(gameRoom);

@@ -14,18 +14,9 @@ public class AdditionalDrawResponseDto {
     private Long cardId;
     private boolean drawSuccess;
 
-    public AdditionalDrawResponseDto(Player player, Card card) {
+    public AdditionalDrawResponseDto(Player player, Card card, boolean drawSuccess) {
         this.playerId = player.getPlayerId();
         this.cardId = card.getCardId();
-        if (player.getCharactorClass().equals(CharactorClass.INVOKER)
-                && card.getCardType().equals(CardType.ATTACK)){
-            this.drawSuccess = true;}
-        else if (player.getCharactorClass().equals(CharactorClass.ENCHANTER)
-                && card.getCardType().equals(CardType.ENCHANTMENT)){
-            this.drawSuccess = true;}
-        else if (player.getCharactorClass().equals(CharactorClass.WAROCK)
-                && card.getCardType().equals(CardType.CURSE)){
-            this.drawSuccess = true;}
-        else {this.drawSuccess = false;}
+        this.drawSuccess = drawSuccess;
     }
 }
