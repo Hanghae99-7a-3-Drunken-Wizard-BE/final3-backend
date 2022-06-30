@@ -68,8 +68,10 @@ public class testRunner implements ApplicationRunner {
         allCards.add(new MagicAmplification(deck));
         allCards.add(new WeaknessExposure(deck));
         allCards.add(new MagicArmor(deck));
-        allCards.add(new BoulderStrike(deck));
         allCards.add(new Shield(deck));
+        allCards.add(new Shield(deck));
+        allCards.add(new BoulderStrike(deck));
+        allCards.add(new BoulderStrike(deck));
         deck.setGameDeck(allCards);
 
         deckRepository.save(deck);
@@ -88,14 +90,22 @@ public class testRunner implements ApplicationRunner {
         Card card3 = cardRepository.findByCardId(3L);
         Card card4 = cardRepository.findByCardId(4L);
         Card card5 = cardRepository.findByCardId(5L);
+        Card card6 = cardRepository.findByCardId(6L);
+        Card card7 = cardRepository.findByCardId(7L);
         cards.add(card1);
         cards.add(card2);
+        cards.add(card3);
+        cards.add(card4);
+        cards.add(card5);
+        cards.add(card6);
+        cards.add(card7);
         player.setCardsOnHand(cards);
+        playerRepository.save(player);
 
-        applyCardToCharacter.cardInitiator(1L, 2L, 5L);
+        applyCardToCharacter.cardInitiator(1L, 2L, 4L);
         applyCardToCharacter.cardInitiator(1L, 3L, 5L);
-        applyCardToCharacter.cardInitiator(1L, 3L, 4L);
-        applyCardToCharacter.cardInitiator(1L, 4L, 4L);
+        applyCardToCharacter.cardInitiator(1L, 3L, 6L);
+        applyCardToCharacter.cardInitiator(1L, 4L, 7L);
 
 
 

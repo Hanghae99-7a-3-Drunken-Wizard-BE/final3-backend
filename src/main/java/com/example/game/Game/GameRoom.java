@@ -41,7 +41,7 @@ public class GameRoom {
     }
 
     public void addTograveyard(Card card){
-        this.deck.add(card);
+        this.graveyard.add(card);
     }
 
     public void removeFromDeck(List<Card> cards) {

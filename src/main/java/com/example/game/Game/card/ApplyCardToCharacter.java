@@ -75,8 +75,8 @@ public class ApplyCardToCharacter {
             else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
             else{player.applyManaCost(card);}}
         player.removeFromHand(card);
-        playerRepository.save(player);
-        playerRepository.save(targetPlayer);
+        player.getGameRoom().addTograveyard(card);
+
     }
 
 
@@ -92,8 +92,8 @@ public class ApplyCardToCharacter {
         else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
         else{player.applyManaCost(card);}
         player.removeFromHand(card);
-        playerRepository.save(player);
-        playerRepository.save(targetPlayer);
+        player.getGameRoom().addTograveyard(card);
+
     }
 
     @Transactional
@@ -111,8 +111,8 @@ public class ApplyCardToCharacter {
         else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
         else{player.applyManaCost(card);}
         player.removeFromHand(card);
-        playerRepository.saveAll(players);
-        playerRepository.save(player);
+        player.getGameRoom().addTograveyard(card);
+
     }
 
     @Transactional
@@ -135,8 +135,8 @@ public class ApplyCardToCharacter {
             else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
             else{player.applyManaCost(card);}}
         player.removeFromHand(card);
-        playerRepository.saveAll(players);
-        playerRepository.save(player);
+        player.getGameRoom().addTograveyard(card);
+
     }
 
     @Transactional
@@ -144,8 +144,8 @@ public class ApplyCardToCharacter {
         if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}
         player.removeFromHand(card);
-        playerRepository.save(player);
-        playerRepository.save(targetPlayer);
+        player.getGameRoom().addTograveyard(card);
+
     }
 }
 

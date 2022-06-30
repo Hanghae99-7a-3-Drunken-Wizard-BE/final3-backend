@@ -109,23 +109,7 @@ public class Player {
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
         this.mana = (card.getManaModifier()!= null) ?
                 ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()) : this.mana;
-        this.dead = this.health <= 0;
-        this.poisonedDuration = (card.getPoisonDuration()!= null) ?
-                ((card.getPoisonDuration()==0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
-        this.stunnedDuration = (card.getStunDuration()!= null) ?
-                ((card.getStunDuration()==0) ? 0 : this.stunnedDuration + card.getStunDuration()) : this.stunnedDuration;
-        this.mutedDuration = (card.getMuteDuration()!= null) ?
-                ((card.getMuteDuration()==0) ? 0 : this.mutedDuration + card.getMuteDuration()) : this.mutedDuration;
-        this.petrifiedDuration = (card.getPetrifyDuration()!= null) ?
-                ((card.getPetrifyDuration()==0) ? 0 : this.petrifiedDuration + card.getPetrifyDuration()) : this.petrifiedDuration;
-        this.damageModifierDuration = (card.getDamageModifierDuration()!= null) ?
-                ((card.getDamageModifierDuration()==0) ? 0 : this.damageModifierDuration + card.getDamageModifierDuration()) : this.damageModifierDuration;
-        this.weakDuration = (card.getWeakDuration()!= null) ?
-                ((card.getWeakDuration()==0) ? 0 : this.weakDuration + card.getWeakDuration()) : this.weakDuration;
-        this.manaCostModifierDuration = (card.getManaCostModifierDuration()!= null) ?
-                ((card.getManaCostModifierDuration()==0) ? 0 : this.manaCostModifierDuration + card.getManaCostModifierDuration()) : this.manaCostModifierDuration;
-        this.sleepDuration = (card.getSleepDuration()!= null) ?
-                ((card.getSleepDuration()==0) ? 0 : this.sleepDuration + card.getSleepDuration()) : this.sleepDuration;
+        applyAdditionalEffect(card);
     }
 
     public void statusUpdateWithDamageModifierPositive(Card card){
@@ -138,23 +122,7 @@ public class Player {
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
         this.mana = (card.getManaModifier()!= null) ?
                 ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()-1) : this.mana;;
-        this.dead = this.health <= 0;
-        this.poisonedDuration = (card.getPoisonDuration()!= null) ?
-                ((card.getPoisonDuration()==0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
-        this.stunnedDuration = (card.getStunDuration()!= null) ?
-                ((card.getStunDuration()==0) ? 0 : this.stunnedDuration + card.getStunDuration()) : this.stunnedDuration;
-        this.mutedDuration = (card.getMuteDuration()!= null) ?
-                ((card.getMuteDuration()==0) ? 0 : this.mutedDuration + card.getMuteDuration()) : this.mutedDuration;
-        this.petrifiedDuration = (card.getPetrifyDuration()!= null) ?
-                ((card.getPetrifyDuration()==0) ? 0 : this.petrifiedDuration + card.getPetrifyDuration()) : this.petrifiedDuration;
-        this.damageModifierDuration = (card.getDamageModifierDuration()!= null) ?
-                ((card.getDamageModifierDuration()==0) ? 0 : this.damageModifierDuration + card.getDamageModifierDuration()) : this.damageModifierDuration;
-        this.weakDuration = (card.getWeakDuration()!= null) ?
-                ((card.getWeakDuration()==0) ? 0 : this.weakDuration + card.getWeakDuration()) : this.weakDuration;
-        this.manaCostModifierDuration = (card.getManaCostModifierDuration()!= null) ?
-                ((card.getManaCostModifierDuration()==0) ? 0 : this.manaCostModifierDuration + card.getManaCostModifierDuration()) : this.manaCostModifierDuration;
-        this.sleepDuration = (card.getSleepDuration()!= null) ?
-                ((card.getSleepDuration()==0) ? 0 : this.sleepDuration + card.getSleepDuration()) : this.sleepDuration;
+        applyAdditionalEffect(card);
     }
 
     public void statusUpdateWithDamageModifierNegative(Card card){
@@ -167,6 +135,10 @@ public class Player {
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
         this.mana = (card.getManaModifier()!= null) ?
                 ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()+1) : this.mana;
+        applyAdditionalEffect(card);
+    }
+
+    public void applyAdditionalEffect(Card card){
         this.dead = this.health <= 0;
         this.poisonedDuration = (card.getPoisonDuration()!= null) ?
                 ((card.getPoisonDuration()==0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
@@ -184,6 +156,7 @@ public class Player {
                 ((card.getManaCostModifierDuration()==0) ? 0 : this.manaCostModifierDuration + card.getManaCostModifierDuration()) : this.manaCostModifierDuration;
         this.sleepDuration = (card.getSleepDuration()!= null) ?
                 ((card.getSleepDuration()==0) ? 0 : this.sleepDuration + card.getSleepDuration()) : this.sleepDuration;
+
     }
 
     public void applyHeal(Card card){
