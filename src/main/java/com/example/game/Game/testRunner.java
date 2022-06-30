@@ -7,6 +7,7 @@ import com.example.game.Game.card.magic.attack.BoulderStrike;
 import com.example.game.Game.card.magic.curse.WeaknessExposure;
 import com.example.game.Game.card.magic.enchantment.MagicAmplification;
 import com.example.game.Game.card.magic.enchantment.MagicArmor;
+import com.example.game.Game.card.magic.enchantment.Shield;
 import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
 import com.example.game.Game.gameDataDto.response.GameStarterResponseDto;
 import com.example.game.Game.gameDataDto.PlayerDto;
@@ -68,6 +69,7 @@ public class testRunner implements ApplicationRunner {
         allCards.add(new WeaknessExposure(deck));
         allCards.add(new MagicArmor(deck));
         allCards.add(new BoulderStrike(deck));
+        allCards.add(new Shield(deck));
         deck.setGameDeck(allCards);
 
         deckRepository.save(deck);
@@ -78,33 +80,23 @@ public class testRunner implements ApplicationRunner {
         String dtoToString = ow.writeValueAsString(gameStarterResponseDto);
         System.out.println(dtoToString);
 
-        applyCardToCharacter.cardInitiator(1L, 2L, 4L);
-        applyCardToCharacter.cardInitiator(1L, 1L, 1L);
-        applyCardToCharacter.cardInitiator(3L, 3L, 2L);
-        applyCardToCharacter.cardInitiator(4L, 4L, 3L);
-        applyCardToCharacter.cardInitiator(1L, 3L, 4L);
-        applyCardToCharacter.cardInitiator(1L, 4L, 4L);
-
-        System.out.println(gameRoom.getDeck().get(1));
-        System.out.println(gameRoom.getDeck().get(2));
+        Player player = playerRepository.findById(1L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
 
         List<Card> cards = new ArrayList<>();
         Card card1 = cardRepository.findByCardId(1L);
         Card card2 = cardRepository.findByCardId(2L);
+        Card card3 = cardRepository.findByCardId(3L);
+        Card card4 = cardRepository.findByCardId(4L);
+        Card card5 = cardRepository.findByCardId(5L);
         cards.add(card1);
         cards.add(card2);
-
-        Player player = playerRepository.findById(1L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
         player.setCardsOnHand(cards);
-        PlayerDto responseDto = new PlayerDto(player);
 
-        ObjectMapper mapper = new ObjectMapper();
-        try{
-        String json = mapper.writeValueAsString(responseDto);
-        System.out.println(json);} catch (JsonMappingException e) {e.printStackTrace();}
+        applyCardToCharacter.cardInitiator(1L, 2L, 5L);
+        applyCardToCharacter.cardInitiator(1L, 3L, 5L);
+        applyCardToCharacter.cardInitiator(1L, 3L, 4L);
+        applyCardToCharacter.cardInitiator(1L, 4L, 4L);
 
-        CardSelectRequestDto requestDto = new CardSelectRequestDto(player, cards);
-        preTurn.cardDrawResponse(requestDto);
 
 
 

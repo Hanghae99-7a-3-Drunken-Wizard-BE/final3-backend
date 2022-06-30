@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Entity
@@ -229,11 +230,13 @@ public class Player {
                 ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()) : this.mana;
     }
 
+    @Transactional
     public void addOnHand(Card card){
         this.cardsOnHand.add(card);
     }
 
-    public void removeOnHand(Card card){
+    @Transactional
+    public void removeFromHand(Card card){
         this.cardsOnHand.remove(card);
     }
 

@@ -18,6 +18,7 @@ public class ApplyCardToCharacter {
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
 
+    @Transactional
     public void cardInitiator (Long id, Long targetId, Long cardId){
         Card card = cardRepository.findByCardId(cardId);
         Player player = playerRepository.findById(id).orElseThrow(()->new NullPointerException("플레이어 없음"));
@@ -59,9 +60,12 @@ public class ApplyCardToCharacter {
 
     @Transactional
     public void applyHealtoTarget(Player player, Player targetPlayer, Card card) {
-        if (player.damageModifierDuration > 0){targetPlayer.applyHealWithDamageModifierPositive(card);}
-        else if(player.damageModifierDuration < 0){targetPlayer.applyHealWithDamageModifierNegative(card);}
-        else{targetPlayer.applyHeal(card);}
+        if (player.damageModifierDuration > 0){if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.applyHealWithDamageModifierPositive(card);}}
+        else if(player.damageModifierDuration < 0){if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.applyHealWithDamageModifierNegative(card);}}
+        else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.applyHeal(card);}}
         if (player.getCharactorClass().equals(CharactorClass.HEALER)){
             if(player.manaCostModifierDuration > 0){player.applyHealManaCostWithModifierPositiveForHealer(card);}
             else if (player.manaCostModifierDuration < 0) {player.applyHealManaCostWithModifierNegativeForHealer(card);}
@@ -70,6 +74,7 @@ public class ApplyCardToCharacter {
             if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
             else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
             else{player.applyManaCost(card);}}
+        player.removeFromHand(card);
         playerRepository.save(player);
         playerRepository.save(targetPlayer);
     }
@@ -77,12 +82,16 @@ public class ApplyCardToCharacter {
 
     @Transactional
     public void applyCardtoTarget (Player player, Player targetPlayer, Card card){
-        if (player.damageModifierDuration > 0){targetPlayer.statusUpdateWithDamageModifierPositive(card);}
-        else if(player.damageModifierDuration < 0){targetPlayer.statusUpdateWithDamageModifierNegative(card);}
-        else{targetPlayer.statusUpdate(card);}
+        if (player.damageModifierDuration > 0){if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.statusUpdateWithDamageModifierPositive(card);}}
+        else if(player.damageModifierDuration < 0){if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.statusUpdateWithDamageModifierNegative(card);}}
+        else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}}
         if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
         else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
         else{player.applyManaCost(card);}
+        player.removeFromHand(card);
         playerRepository.save(player);
         playerRepository.save(targetPlayer);
     }
@@ -90,14 +99,18 @@ public class ApplyCardToCharacter {
     @Transactional
     public void applyCardtoMultipleTarget (Player player, List<Player> players, Card card) {
         if (player.damageModifierDuration > 0){for (Player playerInList : players) {
-            playerInList.statusUpdateWithDamageModifierPositive(card);}}
+            if (playerInList.isShield()&&!(player==playerInList)){
+                playerInList.setShield(false);} else{playerInList.statusUpdateWithDamageModifierPositive(card);}}}
         else if(player.damageModifierDuration < 0){for (Player playerInList : players) {
-            playerInList.statusUpdateWithDamageModifierNegative(card);}}
+            if (playerInList.isShield()&&!(player==playerInList)){
+                playerInList.setShield(false);} else{playerInList.statusUpdateWithDamageModifierNegative(card);}}}
         else{for (Player playerInList : players) {
-            playerInList.statusUpdate(card);}}
+            if (playerInList.isShield()&&!(player==playerInList)){
+                playerInList.setShield(false);} else{playerInList.statusUpdate(card);}}}
         if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
         else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
         else{player.applyManaCost(card);}
+        player.removeFromHand(card);
         playerRepository.saveAll(players);
         playerRepository.save(player);
     }
@@ -105,11 +118,14 @@ public class ApplyCardToCharacter {
     @Transactional
     public void applyHealtoMultipleTarget (Player player, List<Player> players, Card card) {
         if (player.damageModifierDuration > 0){for (Player playerInList : players) {
-            playerInList.applyHealWithDamageModifierPositive(card);}}
+            if (playerInList.isShield()&&!(player==playerInList)){
+                playerInList.setShield(false);} else{playerInList.applyHealWithDamageModifierPositive(card);}}}
         else if(player.damageModifierDuration < 0){for (Player playerInList : players) {
-            playerInList.applyHealWithDamageModifierNegative(card);}}
+            if (playerInList.isShield()&&!(player==playerInList)){
+                playerInList.setShield(false);} else{playerInList.applyHealWithDamageModifierNegative(card);}}}
         else{for (Player playerInList : players) {
-            playerInList.applyHeal(card);}}
+            if (playerInList.isShield()&&!(player==playerInList)){
+                playerInList.setShield(false);} else{playerInList.applyHeal(card);}}}
         if (player.getCharactorClass().equals(CharactorClass.HEALER)){
             if(player.manaCostModifierDuration > 0){player.applyHealManaCostWithModifierPositiveForHealer(card);}
             else if (player.manaCostModifierDuration < 0) {player.applyHealManaCostWithModifierNegativeForHealer(card);}
@@ -118,13 +134,16 @@ public class ApplyCardToCharacter {
             if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
             else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
             else{player.applyManaCost(card);}}
+        player.removeFromHand(card);
         playerRepository.saveAll(players);
         playerRepository.save(player);
     }
 
     @Transactional
     public void applyItemtoTarget(Player player, Player targetPlayer, Card card){
-        targetPlayer.statusUpdate(card);
+        if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}
+        player.removeFromHand(card);
         playerRepository.save(player);
         playerRepository.save(targetPlayer);
     }
