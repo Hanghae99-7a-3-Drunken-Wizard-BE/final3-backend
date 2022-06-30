@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DrawPlayerRequestDto {
+public class PlayerRequestDto {
     private Long playerId;
 }

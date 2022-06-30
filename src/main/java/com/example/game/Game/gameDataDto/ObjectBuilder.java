@@ -1,7 +1,9 @@
 package com.example.game.Game.gameDataDto;
 
+import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
+import com.example.game.Game.gameDataDto.request.PlayerRequestDto;
 import com.example.game.Game.gameDataDto.request.UseCardDto;
-import com.example.game.Game.gameDataDto.request.DrawPlayerRequestDto;
+import com.example.game.Game.gameDataDto.subDataDto.CardsDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
@@ -12,14 +14,14 @@ import java.util.List;
 @Component
 public class ObjectBuilder {
 
-    public DrawPlayerRequestDto checkPlayer(String PlayerToCheck) throws JsonProcessingException {
+    public PlayerRequestDto checkPlayer(String PlayerToCheck) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(PlayerToCheck, DrawPlayerRequestDto.class);
+        return objectMapper.readValue(PlayerToCheck, PlayerRequestDto.class);
     }
 
-    public List<CardsDto> drawnCards(String drawnCardList) throws JsonProcessingException {
+    public CardSelectRequestDto drawnCards(String drawnCardList) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return Arrays.asList(objectMapper.readValue(drawnCardList, CardsDto[].class));
+        return objectMapper.readValue(drawnCardList, CardSelectRequestDto.class);
     }
 
     public UseCardDto cardUse(String cardUse) throws JsonProcessingException {

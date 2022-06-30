@@ -3,6 +3,8 @@ package com.example.game.Game.gameDataDto;
 import com.example.game.Game.GameRoom;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.response.*;
+import com.example.game.Game.gameDataDto.subDataDto.CardsDto;
+import com.example.game.Game.gameDataDto.subDataDto.PlayerDto;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

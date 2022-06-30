@@ -1,4 +1,4 @@
-package com.example.game.Game.gameDataDto;
+package com.example.game.Game.gameDataDto.subDataDto;
 
 import com.example.game.Game.card.Card;
 import lombok.Getter;
