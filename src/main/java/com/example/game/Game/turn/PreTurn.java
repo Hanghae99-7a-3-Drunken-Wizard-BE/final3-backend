@@ -92,7 +92,7 @@ public class PreTurn {
             return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder();
         }
     }
-    
+
     public String actionTurnCheck(PlayerRequestDto requestDto) throws JsonProcessingException {
         Player player = playerRepository.findById(requestDto.getPlayerId()).orElseThrow(
                 ()->new NullPointerException("해당 유저가 존재하지 않습니다"));
