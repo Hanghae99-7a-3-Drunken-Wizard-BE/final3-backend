@@ -75,7 +75,7 @@ public class Player {
 
     @Column
     @OneToMany
-    private List<Card> cardsOnHand = new LinkedList<>();
+    private List<Card> cardsOnHand = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "gameRoom_Id")
@@ -227,6 +227,14 @@ public class Player {
     public void applyHealManaCostWithModifierNegativeForHealer(Card card) {
         this.mana = (card.getManaCost()!= null) ?
                 ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()) : this.mana;
+    }
+
+    public void addOnHand(Card card){
+        this.cardsOnHand.add(card);
+    }
+
+    public void removeOnHand(Card card){
+        this.cardsOnHand.remove(card);
     }
 
 }

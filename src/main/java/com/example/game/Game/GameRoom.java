@@ -21,11 +21,30 @@ public class GameRoom {
     private Long gameRoomId;
 
     @Column
-    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany
     private List<Card> deck;
+
+    @Column
+    @OneToMany
+    private List<Card> graveyard;
 
     @Column
     @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Player> playerList;
 
+    public void addToDeck(List<Card> cards){
+        this.deck.addAll(cards);
+    }
+
+    public void removeFromDeck(Card card){
+        this.deck.remove(card);
+    }
+
+    public void addTograveyard(Card card){
+        this.deck.add(card);
+    }
+
+    public void removeFromDeck(List<Card> cards) {
+        this.deck.removeAll(cards);
+    }
 }

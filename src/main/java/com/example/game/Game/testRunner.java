@@ -2,15 +2,21 @@ package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
 import com.example.game.Game.card.Card;
-import com.example.game.Game.card.magic.curse.Petrification;
-import com.example.game.Game.card.magic.enchantment.Heal;
-import com.example.game.Game.gameDataDto.GameStarterDto;
-import com.example.game.Game.gameDataDto.PlayerResponseDto;
+import com.example.game.Game.card.Deck;
+import com.example.game.Game.card.magic.attack.BoulderStrike;
+import com.example.game.Game.card.magic.curse.WeaknessExposure;
+import com.example.game.Game.card.magic.enchantment.MagicAmplification;
+import com.example.game.Game.card.magic.enchantment.MagicArmor;
+import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
+import com.example.game.Game.gameDataDto.response.GameStarterResponseDto;
+import com.example.game.Game.gameDataDto.PlayerDto;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.DeckRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.Game.service.GameCloser;
 import com.example.game.Game.service.GameStarter;
+import com.example.game.Game.turn.PreTurn;
 import com.example.game.model.User;
 import com.example.game.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -34,6 +40,8 @@ public class testRunner implements ApplicationRunner {
     private final ApplyCardToCharacter applyCardToCharacter;
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
+    private final DeckRepository deckRepository;
+    private final PreTurn preTurn;
 
 
     @Override
@@ -54,10 +62,20 @@ public class testRunner implements ApplicationRunner {
 
         userRepository.saveAll(userList);
 
+        Deck deck = new Deck();
+        List<Card> allCards = new ArrayList<>();
+        allCards.add(new MagicAmplification(deck));
+        allCards.add(new WeaknessExposure(deck));
+        allCards.add(new MagicArmor(deck));
+        allCards.add(new BoulderStrike(deck));
+        deck.setGameDeck(allCards);
+
+        deckRepository.save(deck);
+
         GameRoom gameRoom = gameStarter.createGameRoom(userList);
-        GameStarterDto gameStarterDto = new GameStarterDto(gameRoom);
+        GameStarterResponseDto gameStarterResponseDto = new GameStarterResponseDto(gameRoom);
         ObjectWriter ow = new ObjectMapper().writer();
-        String dtoToString = ow.writeValueAsString(gameStarterDto);
+        String dtoToString = ow.writeValueAsString(gameStarterResponseDto);
         System.out.println(dtoToString);
 
         applyCardToCharacter.cardInitiator(1L, 2L, 4L);
@@ -67,6 +85,9 @@ public class testRunner implements ApplicationRunner {
         applyCardToCharacter.cardInitiator(1L, 3L, 4L);
         applyCardToCharacter.cardInitiator(1L, 4L, 4L);
 
+        System.out.println(gameRoom.getDeck().get(1));
+        System.out.println(gameRoom.getDeck().get(2));
+
         List<Card> cards = new ArrayList<>();
         Card card1 = cardRepository.findByCardId(1L);
         Card card2 = cardRepository.findByCardId(2L);
@@ -75,12 +96,16 @@ public class testRunner implements ApplicationRunner {
 
         Player player = playerRepository.findById(1L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
         player.setCardsOnHand(cards);
-        PlayerResponseDto responseDto = new PlayerResponseDto(player);
+        PlayerDto responseDto = new PlayerDto(player);
 
         ObjectMapper mapper = new ObjectMapper();
         try{
         String json = mapper.writeValueAsString(responseDto);
         System.out.println(json);} catch (JsonMappingException e) {e.printStackTrace();}
+
+        CardSelectRequestDto requestDto = new CardSelectRequestDto(player, cards);
+        preTurn.cardDrawResponse(requestDto);
+
 
 
 
