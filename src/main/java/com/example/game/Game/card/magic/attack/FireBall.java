@@ -16,5 +16,6 @@ public class FireBall extends Card {
         this.healthModifier = -2;
         this.manaCost = -4;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

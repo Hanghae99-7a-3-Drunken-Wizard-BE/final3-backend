@@ -15,5 +15,6 @@ public class LeftoverOctopus extends Card {
         this.cardType = ITEM;
         this.target = Target.ME;
         this.healthModifier = 2;
+        this.onHand = 0L;
     }
 }

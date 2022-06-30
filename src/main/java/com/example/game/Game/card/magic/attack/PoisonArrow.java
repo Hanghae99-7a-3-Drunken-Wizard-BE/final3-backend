@@ -17,5 +17,6 @@ public class PoisonArrow extends Card {
         this.manaCost = -4;
         this.poisonDuration = 3;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

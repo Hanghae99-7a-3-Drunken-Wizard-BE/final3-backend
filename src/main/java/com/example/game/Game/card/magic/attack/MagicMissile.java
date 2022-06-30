@@ -17,5 +17,6 @@ public class MagicMissile extends Card {
         this.healthModifier = -3;
         this.manaCost = -2;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

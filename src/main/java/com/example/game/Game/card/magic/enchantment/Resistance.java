@@ -18,6 +18,7 @@ public class Resistance extends Card {
         this.stunDuration = -1;
         this.muteDuration = -1;
         this.petrifyDuration = -1;
+        this.onHand = 0L;
     }
 }
 

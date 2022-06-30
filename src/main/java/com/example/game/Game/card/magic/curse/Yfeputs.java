@@ -16,5 +16,6 @@ public class Yfeputs extends Card {
         this.target = Target.SELECT;
         this.manaCost = -3;
         this.stunDuration = 1;
+        this.onHand = 0L;
     }
 }

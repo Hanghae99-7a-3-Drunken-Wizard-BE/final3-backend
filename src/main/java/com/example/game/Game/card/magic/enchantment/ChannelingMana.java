@@ -15,5 +15,6 @@ public class ChannelingMana extends Card {
         this.target = Target.ME;
         this.healthModifier = -3;
         this.manaCost = 3;
+        this.onHand = 0L;
     }
 }

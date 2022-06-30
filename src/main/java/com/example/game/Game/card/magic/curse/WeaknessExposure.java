@@ -16,5 +16,6 @@ public class WeaknessExposure extends Card {
         this.target = Target.SELECT;
         this.manaCost = -2;
         this.weakDuration = 2;
+        this.onHand = 0L;
     }
 }

@@ -18,6 +18,7 @@ public class Sleep extends Card {
         this.sleepDuration = 5;
         this.stunDuration = 0;
         this.muteDuration = 0;
+        this.onHand = 0L;
 
     }
 }

@@ -15,5 +15,6 @@ public class BeerMug extends Card {
         this.target = Target.SELECT;
         this.healthModifier = -1;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

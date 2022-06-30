@@ -18,5 +18,6 @@ public class Panacea extends Card {
         this.stunDuration = 0;
         this.muteDuration = 0;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

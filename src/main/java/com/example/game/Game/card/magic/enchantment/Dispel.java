@@ -24,5 +24,6 @@ public class Dispel extends Card {
         this. damageModifierDuration = 0;
         this.manaCostModifierDuration = 0;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

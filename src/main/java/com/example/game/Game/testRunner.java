@@ -2,6 +2,7 @@ package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
 import com.example.game.Game.card.Card;
+import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
 import com.example.game.Game.gameDataDto.response.GameStarterResponseDto;
 import com.example.game.Game.gameDataDto.PlayerDto;
 import com.example.game.Game.player.Player;
@@ -9,6 +10,7 @@ import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.Game.service.GameCloser;
 import com.example.game.Game.service.GameStarter;
+import com.example.game.Game.turn.PreTurn;
 import com.example.game.model.User;
 import com.example.game.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,6 +34,7 @@ public class testRunner implements ApplicationRunner {
     private final ApplyCardToCharacter applyCardToCharacter;
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
+    private final PreTurn preTurn;
 
 
     @Override
@@ -65,6 +68,9 @@ public class testRunner implements ApplicationRunner {
         applyCardToCharacter.cardInitiator(1L, 3L, 4L);
         applyCardToCharacter.cardInitiator(1L, 4L, 4L);
 
+        System.out.println(gameRoom.getDeck().get(1));
+        System.out.println(gameRoom.getDeck().get(2));
+
         List<Card> cards = new ArrayList<>();
         Card card1 = cardRepository.findByCardId(1L);
         Card card2 = cardRepository.findByCardId(2L);
@@ -79,6 +85,10 @@ public class testRunner implements ApplicationRunner {
         try{
         String json = mapper.writeValueAsString(responseDto);
         System.out.println(json);} catch (JsonMappingException e) {e.printStackTrace();}
+
+        CardSelectRequestDto requestDto = new CardSelectRequestDto(player, cards);
+        preTurn.cardDrawResponse(requestDto);
+
 
 
 

@@ -1,7 +1,7 @@
 package com.example.game.Game.gameDataDto.response;
 
 import com.example.game.Game.card.Card;
-import com.example.game.Game.gameDataDto.subDataDto.PlayerDto;
+import com.example.game.Game.gameDataDto.PlayerDto;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;

@@ -35,7 +35,7 @@ public class GameStarter {
         deck.add(new MagicArmor(gameRoom));
         deck.add(new BoulderStrike(gameRoom));
 
-//        Collections.shuffle(deck);
+        Collections.shuffle(deck);
         gameRoom.setDeck(deck);
         List<CharactorClass> classes =
                 Arrays.asList(

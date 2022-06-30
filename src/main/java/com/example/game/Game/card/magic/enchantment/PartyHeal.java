@@ -15,5 +15,6 @@ public class PartyHeal extends Card {
         this.target = Target.ALLY;
         this.healthModifier = 3;
         this.manaCost = -6;
+        this.onHand = 0L;
     }
 }

@@ -17,5 +17,6 @@ public class ManaSiphon extends Card {
         this.manaCost = 2;
         this.manaModifier = -3;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

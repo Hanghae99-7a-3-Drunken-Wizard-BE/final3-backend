@@ -16,5 +16,6 @@ public class DeathRay extends Card {
         this.healthModifier = -6;
         this.manaCost = -5;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

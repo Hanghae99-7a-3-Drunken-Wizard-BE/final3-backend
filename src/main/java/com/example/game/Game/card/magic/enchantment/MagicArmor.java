@@ -16,5 +16,6 @@ public class MagicArmor extends Card {
         this.target = Target.SELECT;
         this.manaCost = -2;
         this.weakDuration = -3;
+        this.onHand = 0L;
     }
 }

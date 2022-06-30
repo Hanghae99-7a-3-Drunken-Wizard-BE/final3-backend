@@ -15,5 +15,6 @@ public class MagicAmplification extends Card {
         this.target = Target.SELECT;
         this.manaCost = -2;
         this.damageModifierDuration = 3;
+        this.onHand = 0L;
     }
 }

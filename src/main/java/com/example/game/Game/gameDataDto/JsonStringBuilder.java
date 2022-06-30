@@ -4,7 +4,6 @@ import com.example.game.Game.GameRoom;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.gameDataDto.subDataDto.CardsDto;
-import com.example.game.Game.gameDataDto.subDataDto.PlayerDto;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +23,7 @@ public class JsonStringBuilder  {
     }
 
     public String playerResponseDtoJsonBuilder(Player player) throws JsonProcessingException {
-        PlayerDto responseDto = new PlayerDto(player);
+        com.example.game.Game.gameDataDto.PlayerDto responseDto = new com.example.game.Game.gameDataDto.PlayerDto(player);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
@@ -57,9 +56,9 @@ public class JsonStringBuilder  {
     }
 
     public String cardUseResponseJsonBuilder(List<Player> players) throws JsonProcessingException {
-        List<PlayerDto> playerDtos = new ArrayList<>();
+        List<com.example.game.Game.gameDataDto.PlayerDto> playerDtos = new ArrayList<>();
         for (Player player : players) {
-            PlayerDto playerDto = new PlayerDto(player);
+            com.example.game.Game.gameDataDto.PlayerDto playerDto = new com.example.game.Game.gameDataDto.PlayerDto(player);
             playerDtos.add(playerDto);
         }
         ObjectWriter ow = new ObjectMapper().writer();

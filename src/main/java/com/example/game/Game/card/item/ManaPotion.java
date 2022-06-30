@@ -15,5 +15,6 @@ public class ManaPotion extends Card {
         this.cardType = ITEM;
         this.target = Target.ME;
         this.manaModifier = 3;
+        this.onHand = 0L;
     }
 }

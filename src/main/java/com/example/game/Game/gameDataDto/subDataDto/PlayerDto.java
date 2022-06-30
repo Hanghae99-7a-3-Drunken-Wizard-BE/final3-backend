@@ -1,6 +1,7 @@
 package com.example.game.Game.gameDataDto;
 
 import com.example.game.Game.card.Card;
+import com.example.game.Game.gameDataDto.subDataDto.CardsDto;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;

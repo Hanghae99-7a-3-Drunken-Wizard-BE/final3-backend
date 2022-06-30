@@ -18,5 +18,6 @@ public class BoulderStrike extends Card {
         this.manaCost = -4;
         this.stunDuration = 1;
         this.sleepDuration = 0;
+        this.onHand = 0L;
     }
 }

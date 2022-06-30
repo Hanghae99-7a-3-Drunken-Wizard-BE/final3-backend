@@ -16,5 +16,6 @@ public class Venom extends Card {
         this.target = Target.SELECT;
         this.manaCost = -3;
         this.poisonDuration = 5;
+        this.onHand = 0L;
     }
 }

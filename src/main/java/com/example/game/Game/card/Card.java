@@ -74,4 +74,7 @@ public class Card {
     @JoinColumn(name = "gameRoom_Id")
     public GameRoom gameRoom;
 
+    @Column
+    public Long onHand;
+
 }

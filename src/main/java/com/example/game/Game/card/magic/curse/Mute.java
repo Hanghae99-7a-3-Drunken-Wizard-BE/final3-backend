@@ -15,5 +15,6 @@ public class Mute extends Card {
         this.target = Target.SELECT;
         this.manaCost = -3;
         this.muteDuration = 2;
+        this.onHand = 0L;
     }
 }

@@ -21,5 +21,6 @@ public class Petrification extends Card {
         this.muteDuration = 0;
         this.damageModifierDuration = 0;
         this.manaCostModifierDuration = 0;
+        this.onHand = 0L;
     }
 }

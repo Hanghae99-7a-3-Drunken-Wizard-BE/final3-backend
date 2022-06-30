@@ -15,5 +15,6 @@ public class Shield extends Card {
         this.target = Target.SELECT;
         this.Shield = true;
         this.manaCost = -2;
+        this.onHand = 0L;
     }
 }

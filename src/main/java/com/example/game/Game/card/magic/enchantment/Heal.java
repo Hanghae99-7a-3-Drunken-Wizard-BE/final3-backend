@@ -16,5 +16,6 @@ public class Heal extends Card {
         this.healthModifier = 3;
         this.manaCost = -4;
         this.poisonDuration = 0;
+        this.onHand = 0L;
     }
 }
