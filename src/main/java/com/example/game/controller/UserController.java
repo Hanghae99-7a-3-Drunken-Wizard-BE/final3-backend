@@ -27,15 +27,14 @@ public class UserController {
     }
 
     // 아이디 중복체크
-    @PostMapping("/user/dubcheck")
-    public String dubCheck(@RequestBody DubCheckRequestDto requestDto){
+    @PostMapping("/user/dubcheck")  // get 으로 요청이 옴 띠용
+    public boolean dubCheck(@RequestBody DubCheckRequestDto requestDto){
         return userService.dubCheck(requestDto);
     }
 
     // 카카오 아이디
-    @GetMapping("/user/kakao/callback")
-    public void kakaoLogin(@RequestParam String code) throws JsonProcessingException {
-        kakaoUserService.kakaoLogin(code);
-
+    @GetMapping("/user/kakao/callback") // username, nickname 같이 보내기
+    public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        kakaoUserService.kakaoLogin(code, response);
     }
 }

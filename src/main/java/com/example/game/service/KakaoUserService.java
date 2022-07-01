@@ -4,6 +4,7 @@ import com.example.game.dto.KakaoUserInfoDto;
 import com.example.game.model.User;
 import com.example.game.repository.UserRepository;
 import com.example.game.security.UserDetailsImpl;
+import com.example.game.security.jwt.JwtTokenUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
@@ -33,7 +35,7 @@ public class KakaoUserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void kakaoLogin(String code) throws JsonProcessingException {
+    public void kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code);
 
@@ -44,7 +46,7 @@ public class KakaoUserService {
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. 강제 로그인 처리
-        forceLogin(kakaoUser);
+        forceLogin(kakaoUser, response);
     }
 
     private String getAccessToken(String code) throws JsonProcessingException {
@@ -130,9 +132,19 @@ public class KakaoUserService {
         return kakaoUser;
     }
 
-    private void forceLogin(User kakaoUser) {
+    private void forceLogin(User kakaoUser, HttpServletResponse response) {
         UserDetails userDetails = new UserDetailsImpl(kakaoUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 추가 작,
+        UserDetailsImpl userDetails1 = ((UserDetailsImpl) authentication.getPrincipal());
+
+        System.out.println("userDetails1 : " + userDetails1.toString());
+
+        final String token = JwtTokenUtils.generateJwtToken(userDetails1);
+
+        System.out.println("token값:" + token);
+        response.addHeader("Authorization", "BEARER" + " " + token);
     }
 }
