@@ -9,12 +9,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 @Component
 @RequiredArgsConstructor
 public class EndTurn {
     private final PlayerRepository playerRepository;
     private final JsonStringBuilder jsonStringBuilder;
 
+    @Transactional
     public String EndTrunCheck(PlayerRequestDto requestDto) throws JsonProcessingException {
         Player player = playerRepository.findById(requestDto.getPlayerId()).orElseThrow(
                 ()->new NullPointerException("플레이어 없음")

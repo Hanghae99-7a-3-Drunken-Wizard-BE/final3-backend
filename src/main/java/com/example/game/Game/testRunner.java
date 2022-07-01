@@ -79,7 +79,10 @@ public class testRunner implements ApplicationRunner {
         String dtoToString = ow.writeValueAsString(gameStarterResponseDto);
         System.out.println(dtoToString);
 
-        Player player = playerRepository.findById(1L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
+        Player player1 = playerRepository.findById(1L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
+        Player player2 = playerRepository.findById(2L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
+        Player player3 = playerRepository.findById(3L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
+        Player player4 = playerRepository.findById(4L).orElseThrow(()-> new NullPointerException("플레이어 없음"));
 
         List<Card> cards = new ArrayList<>();
         Card card1 = cardRepository.findByCardId(1L);
@@ -89,20 +92,21 @@ public class testRunner implements ApplicationRunner {
         Card card5 = cardRepository.findByCardId(5L);
         Card card6 = cardRepository.findByCardId(6L);
         Card card7 = cardRepository.findByCardId(7L);
-        cards.add(card1);
-        cards.add(card2);
-        cards.add(card3);
         cards.add(card4);
         cards.add(card5);
         cards.add(card6);
         cards.add(card7);
-        player.setCardsOnHand(cards);
-        playerRepository.save(player);
+        player1.setCardsOnHand(cards);
+        playerRepository.save(player1);
 
-        applyCardToCharacter.cardInitiator(1L, 2L, 4L);
-        applyCardToCharacter.cardInitiator(1L, 3L, 5L);
-        applyCardToCharacter.cardInitiator(1L, 3L, 6L);
-        applyCardToCharacter.cardInitiator(1L, 4L, 7L);
+        System.out.println(player1.getUsername());
+        System.out.println(player2.getUsername());
+        System.out.println(card4.getCardName());
+
+        applyCardToCharacter.cardInitiator(player1, player2, card4);
+        applyCardToCharacter.cardInitiator(player1, player3, card5);
+        applyCardToCharacter.cardInitiator(player1, player3, card6);
+        applyCardToCharacter.cardInitiator(player1, player4, card7);
 
 
 

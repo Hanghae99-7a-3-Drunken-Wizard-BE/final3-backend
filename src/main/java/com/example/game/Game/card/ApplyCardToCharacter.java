@@ -4,6 +4,7 @@ import com.example.game.Game.GameRoom;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ public class ApplyCardToCharacter {
 
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
+    private final GameRepository gameRepository;
 
     @Transactional
     public void cardInitiator (Player player, Player targetPlayer, Card card){
@@ -67,8 +69,10 @@ public class ApplyCardToCharacter {
             targetPlayer.setShield(false);} else{targetPlayer.applyHeal(card);}}
         if (player.getCharactorClass().equals(CharactorClass.HEALER)){healManaCostApplyForHealer(player, card);}
         else{manaCostApply(player, card);}
+        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
+        gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-        player.getGameRoom().addTograveyard(card);
+
 
     }
 
@@ -82,9 +86,9 @@ public class ApplyCardToCharacter {
         else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}}
         manaCostApply(player, card);
+        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
+        gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-        player.getGameRoom().addTograveyard(card);
-
     }
 
     @Transactional
@@ -99,8 +103,9 @@ public class ApplyCardToCharacter {
             if (playerInList.isShield()&&!(player==playerInList)){
                 playerInList.setShield(false);} else{playerInList.statusUpdate(card);}}}
         manaCostApply(player, card);
+        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
+        gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-        player.getGameRoom().addTograveyard(card);
 
     }
 
@@ -117,8 +122,9 @@ public class ApplyCardToCharacter {
                 playerInList.setShield(false);} else{playerInList.applyHeal(card);}}}
         if (player.getCharactorClass().equals(CharactorClass.HEALER)){healManaCostApplyForHealer(player, card);}
         else{manaCostApply(player, card);}
+        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
+        gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-        player.getGameRoom().addTograveyard(card);
 
     }
 
@@ -126,8 +132,9 @@ public class ApplyCardToCharacter {
     public void applyItemtoTarget(Player player, Player targetPlayer, Card card){
         if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}
+        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
+        gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-        player.getGameRoom().addTograveyard(card);
     }
 
     @Transactional
@@ -137,8 +144,9 @@ public class ApplyCardToCharacter {
         if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
         else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
         else{player.applyManaCost(card);}
+        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
+        gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-        player.getGameRoom().addTograveyard(card);
     }
 
     @Transactional
