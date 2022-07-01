@@ -2,8 +2,9 @@ package com.example.game.Game.gameDataDto;
 
 import com.example.game.Game.GameRoom;
 import com.example.game.Game.card.Card;
+import com.example.game.Game.gameDataDto.response.PlayerDto;
 import com.example.game.Game.gameDataDto.response.*;
-import com.example.game.Game.gameDataDto.subDataDto.CardsDto;
+import com.example.game.Game.gameDataDto.response.CardsDto;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,8 +23,8 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String playerResponseDtoJsonBuilder(Player player) throws JsonProcessingException {
-        com.example.game.Game.gameDataDto.PlayerDto responseDto = new com.example.game.Game.gameDataDto.PlayerDto(player);
+    public String poisonDamageCheckResponseDtoJsonBuilder(Player player, boolean gameOver) throws JsonProcessingException {
+        PoisonDamageCheckResponseDto responseDto = new PoisonDamageCheckResponseDto(player, gameOver);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
@@ -55,14 +56,10 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String cardUseResponseJsonBuilder(List<Player> players) throws JsonProcessingException {
-        List<com.example.game.Game.gameDataDto.PlayerDto> playerDtos = new ArrayList<>();
-        for (Player player : players) {
-            com.example.game.Game.gameDataDto.PlayerDto playerDto = new com.example.game.Game.gameDataDto.PlayerDto(player);
-            playerDtos.add(playerDto);
-        }
+    public String cardUseResponseDtoJsonBuilder(List<Player> players, boolean gameOver) throws JsonProcessingException {
+        CardUseResponseDto responseDto = new CardUseResponseDto(players, gameOver);
         ObjectWriter ow = new ObjectMapper().writer();
-        return ow.writeValueAsString(playerDtos);
+        return ow.writeValueAsString(responseDto);
     }
 
     public String endTurnResponseDtoJsonBuilder(Player player, Player nextPlayer) throws JsonProcessingException {

@@ -9,4 +9,5 @@ import java.util.List;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     List<Player> findByGameRoom(GameRoom gameRoom);
     List<Player> findByGameRoomAndTeam(GameRoom gameRoom, boolean team);
+    Player findByGameRoomAndTurnOrder(GameRoom gameRoom, int turnOrder);
 }

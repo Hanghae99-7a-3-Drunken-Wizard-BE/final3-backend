@@ -4,10 +4,10 @@ import com.example.game.Game.GameRoom;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.card.CardType;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
+import com.example.game.Game.gameDataDto.response.PlayerDto;
 import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
 import com.example.game.Game.gameDataDto.request.PlayerRequestDto;
-import com.example.game.Game.gameDataDto.response.AdditionalDrawResponseDto;
-import com.example.game.Game.gameDataDto.subDataDto.CardsDto;
+import com.example.game.Game.gameDataDto.response.CardsDto;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +28,17 @@ public class PreTurn {
     private final CardRepository cardRepository;
     private final JsonStringBuilder jsonStringBuilder;
 
+
+    @Transactional
+    public String preturnStartCheck(PlayerRequestDto requestDto) throws JsonProcessingException {
+        Long playerId = requestDto.getPlayerId();
+        Player player = playerRepository.findById(playerId).orElseThrow(
+                () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
+        player.applyPoison();
+        List<Player> playerTeam = playerRepository.findByGameRoomAndTeam(player.getGameRoom(), player.isTeam());
+        boolean gameOver = (playerTeam.get(0).isDead() && playerTeam.get(1).isDead());
+        return jsonStringBuilder.poisonDamageCheckResponseDtoJsonBuilder(player, gameOver);
+    }
 
 
     @Transactional

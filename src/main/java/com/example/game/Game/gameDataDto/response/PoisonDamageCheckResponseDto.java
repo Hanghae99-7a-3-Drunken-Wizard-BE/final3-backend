@@ -7,12 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EndTurnResponseDto {
+public class PoisonDamageCheckResponseDto {
     private PlayerDto player;
-    private Long nextPlayerId;
+    private boolean gameOver;
 
-    public EndTurnResponseDto (Player player, Player nextPlayer) throws JsonProcessingException {
+    public PoisonDamageCheckResponseDto (Player player, boolean gameOver) throws JsonProcessingException {
         this.player = new PlayerDto(player);
-        this.nextPlayerId = nextPlayer.getPlayerId();
+        this.gameOver = gameOver;
     }
+
 }

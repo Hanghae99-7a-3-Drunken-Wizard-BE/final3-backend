@@ -100,6 +100,7 @@ public class Player {
     }
 
     public void statusUpdate(Card card){
+        if(this.petrifiedDuration <= 0) {
         if (this.weakDuration > 0) {this.health = (card.getHealthModifier()!= null) ?
                 ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()-1) : this.health;}
         else if (this.weakDuration < 0) {this.health = (card.getHealthModifier()!= null) ?
@@ -109,10 +110,12 @@ public class Player {
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
         this.mana = (card.getManaModifier()!= null) ?
                 ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()) : this.mana;
-        applyAdditionalEffect(card);
+        this.dead = this.health <= 0;
+        applyAdditionalEffect(card);}
     }
 
     public void statusUpdateWithDamageModifierPositive(Card card){
+        if(this.petrifiedDuration <= 0) {
         if (this.weakDuration > 0) {this.health = (card.getHealthModifier()!= null) ?
                 ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()-2) : this.health;}
         else if (this.weakDuration < 0) {this.health = (card.getHealthModifier()!= null) ?
@@ -122,10 +125,12 @@ public class Player {
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
         this.mana = (card.getManaModifier()!= null) ?
                 ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()-1) : this.mana;;
-        applyAdditionalEffect(card);
+        this.dead = this.health <= 0;
+        applyAdditionalEffect(card);}
     }
 
     public void statusUpdateWithDamageModifierNegative(Card card){
+        if(this.petrifiedDuration <= 0) {
         if (this.weakDuration > 0) {this.health = (card.getHealthModifier()!= null) ?
                 ((card.getHealthModifier()==0) ? 0 : this.health + card.getHealthModifier()) : this.health;}
         else if (this.weakDuration < 0) {this.health = (card.getHealthModifier()!= null) ?
@@ -135,11 +140,11 @@ public class Player {
         this.shield = (card.getShield()!= null) ? (card.getShield()) : false;
         this.mana = (card.getManaModifier()!= null) ?
                 ((card.getManaModifier()==0) ? 0 : this.mana + card.getManaModifier()+1) : this.mana;
-        applyAdditionalEffect(card);
+        this.dead = this.health <= 0;
+        applyAdditionalEffect(card);}
     }
 
     public void applyAdditionalEffect(Card card){
-        this.dead = this.health <= 0;
         this.poisonedDuration = (card.getPoisonDuration()!= null) ?
                 ((card.getPoisonDuration()==0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
         this.stunnedDuration = (card.getStunDuration()!= null) ?
@@ -160,17 +165,20 @@ public class Player {
     }
 
     public void applyHeal(Card card){
+        if(this.petrifiedDuration <= 0) {
         this.health += card.getHealthModifier();
-        this.poisonedDuration = 0;
+        this.poisonedDuration = 0;}
     }
 
     public void applyHealWithDamageModifierPositive(Card card){
+        if(this.petrifiedDuration <= 0) {
         this.health += card.getHealthModifier() +1;
-        this.poisonedDuration = 0;
+        this.poisonedDuration = 0;}
     }
 
     public void applyHealWithDamageModifierNegative(Card card){
-        this.health += card.getHealthModifier() -1;
+        if(this.petrifiedDuration <= 0) {
+        this.health += card.getHealthModifier() -1;}
     }
 
     public void applyManaCost(Card card) {
@@ -203,14 +211,30 @@ public class Player {
                 ((card.getManaCost()==0) ? 0 : this.mana + card.getManaCost()) : this.mana;
     }
 
-    @Transactional
     public void addOnHand(Card card){
         this.cardsOnHand.add(card);
     }
 
-    @Transactional
     public void removeFromHand(Card card){
         this.cardsOnHand.remove(card);
     }
 
+    public void applyPoison() {
+        this.health += (this.poisonedDuration > 0) ? -1 : 0;
+    }
+
+    public void applyDispel(Card card) {
+        applyAdditionalEffect(card);
+    }
+
+    public void durationDecrease() {
+        if (this.poisonedDuration > 0) {this.poisonedDuration -= 1;}
+        if (this.stunnedDuration > 0) {this.stunnedDuration -= 1;}
+        if (this.mutedDuration > 0) {this.mutedDuration -= 1;}
+        if (this.petrifiedDuration > 0) {this.petrifiedDuration -= 1;}
+        if (this.damageModifierDuration > 0) {this.damageModifierDuration -= 1;}
+        if (this.weakDuration > 0) {this.weakDuration -= 1;}
+        if (this.manaCostModifierDuration > 0) {this.manaCostModifierDuration -= 1;}
+        if (this.sleepDuration > 0) {this.sleepDuration -= 1;}
+    }
 }

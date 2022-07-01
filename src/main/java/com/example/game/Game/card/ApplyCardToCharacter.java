@@ -19,10 +19,7 @@ public class ApplyCardToCharacter {
     private final CardRepository cardRepository;
 
     @Transactional
-    public void cardInitiator (Long id, Long targetId, Long cardId){
-        Card card = cardRepository.findByCardId(cardId);
-        Player player = playerRepository.findById(id).orElseThrow(()->new NullPointerException("플레이어 없음"));
-        Player targetPlayer = playerRepository.findById(targetId).orElseThrow(()->new NullPointerException("플레이어 없음"));
+    public void cardInitiator (Player player, Player targetPlayer, Card card){
         if(card.getCardType().equals(CardType.EVENT)){/*스페셜 카드의 적용을 위해 공백으로 남김*/}
         else if(card.getCardType().equals(CardType.ITEM)){applyItemtoTarget(player, targetPlayer, card);}
         else {
@@ -32,6 +29,8 @@ public class ApplyCardToCharacter {
                 GameRoom gameRoom = player.getGameRoom();
                 List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, player.isTeam());
                 applyHealtoMultipleTarget(player, players, card);
+            } else if (card.getCardName().equals("Dispel")) {
+                applyDispel(player, targetPlayer, card);
             } else {
                 if (card.getTarget() == Target.ME) {
                     applyCardtoTarget(player, player, card);
@@ -66,14 +65,8 @@ public class ApplyCardToCharacter {
             targetPlayer.setShield(false);} else{targetPlayer.applyHealWithDamageModifierNegative(card);}}
         else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.applyHeal(card);}}
-        if (player.getCharactorClass().equals(CharactorClass.HEALER)){
-            if(player.manaCostModifierDuration > 0){player.applyHealManaCostWithModifierPositiveForHealer(card);}
-            else if (player.manaCostModifierDuration < 0) {player.applyHealManaCostWithModifierNegativeForHealer(card);}
-            else{player.applyHealManaCostForHealer(card);}}
-        else{
-            if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
-            else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
-            else{player.applyManaCost(card);}}
+        if (player.getCharactorClass().equals(CharactorClass.HEALER)){healManaCostApplyForHealer(player, card);}
+        else{manaCostApply(player, card);}
         player.removeFromHand(card);
         player.getGameRoom().addTograveyard(card);
 
@@ -88,9 +81,7 @@ public class ApplyCardToCharacter {
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdateWithDamageModifierNegative(card);}}
         else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}}
-        if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
-        else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
-        else{player.applyManaCost(card);}
+        manaCostApply(player, card);
         player.removeFromHand(card);
         player.getGameRoom().addTograveyard(card);
 
@@ -107,9 +98,7 @@ public class ApplyCardToCharacter {
         else{for (Player playerInList : players) {
             if (playerInList.isShield()&&!(player==playerInList)){
                 playerInList.setShield(false);} else{playerInList.statusUpdate(card);}}}
-        if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
-        else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
-        else{player.applyManaCost(card);}
+        manaCostApply(player, card);
         player.removeFromHand(card);
         player.getGameRoom().addTograveyard(card);
 
@@ -126,14 +115,8 @@ public class ApplyCardToCharacter {
         else{for (Player playerInList : players) {
             if (playerInList.isShield()&&!(player==playerInList)){
                 playerInList.setShield(false);} else{playerInList.applyHeal(card);}}}
-        if (player.getCharactorClass().equals(CharactorClass.HEALER)){
-            if(player.manaCostModifierDuration > 0){player.applyHealManaCostWithModifierPositiveForHealer(card);}
-            else if (player.manaCostModifierDuration < 0) {player.applyHealManaCostWithModifierNegativeForHealer(card);}
-            else{player.applyHealManaCostForHealer(card);}}
-        else{
-            if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
-            else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
-            else{player.applyManaCost(card);}}
+        if (player.getCharactorClass().equals(CharactorClass.HEALER)){healManaCostApplyForHealer(player, card);}
+        else{manaCostApply(player, card);}
         player.removeFromHand(card);
         player.getGameRoom().addTograveyard(card);
 
@@ -145,7 +128,31 @@ public class ApplyCardToCharacter {
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}
         player.removeFromHand(card);
         player.getGameRoom().addTograveyard(card);
+    }
 
+    @Transactional
+    public void applyDispel(Player player, Player targetPlayer, Card card){
+        if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.applyAdditionalEffect(card);}
+        if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
+        else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
+        else{player.applyManaCost(card);}
+        player.removeFromHand(card);
+        player.getGameRoom().addTograveyard(card);
+    }
+
+    @Transactional
+    public void manaCostApply(Player player, Card card){
+        if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
+        else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
+        else{player.applyManaCost(card);}
+    }
+
+    @Transactional
+    public void healManaCostApplyForHealer(Player player, Card card){
+        if(player.manaCostModifierDuration > 0){player.applyHealManaCostWithModifierPositiveForHealer(card);}
+        else if (player.manaCostModifierDuration < 0) {player.applyHealManaCostWithModifierNegativeForHealer(card);}
+        else{player.applyHealManaCostForHealer(card);}
     }
 }
 

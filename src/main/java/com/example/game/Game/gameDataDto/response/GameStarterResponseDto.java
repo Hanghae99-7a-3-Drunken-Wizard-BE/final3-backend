@@ -1,7 +1,6 @@
 package com.example.game.Game.gameDataDto.response;
 
 import com.example.game.Game.GameRoom;
-import com.example.game.Game.gameDataDto.PlayerDto;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;

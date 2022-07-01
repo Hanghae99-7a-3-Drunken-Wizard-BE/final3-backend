@@ -1,7 +1,7 @@
 package com.example.game.Game.gameDataDto.request;
 
 import com.example.game.Game.card.Card;
-import com.example.game.Game.gameDataDto.subDataDto.CardsDto;
+import com.example.game.Game.gameDataDto.response.CardsDto;
 import com.example.game.Game.player.Player;
 import lombok.Getter;
 import lombok.Setter;
