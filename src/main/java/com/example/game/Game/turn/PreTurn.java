@@ -11,6 +11,7 @@ import com.example.game.Game.gameDataDto.response.CardsDto;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class PreTurn {
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
     private final JsonStringBuilder jsonStringBuilder;
+    private final GameRepository gameRepository;
 
 
     @Transactional
@@ -66,7 +68,7 @@ public class PreTurn {
         Long playerId = requestDto.getPlayerId();
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
-        GameRoom gameRoom = player.getGameRoom();
+        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
         List<CardsDto> selectedCards = requestDto.getSelectedCards();
         for (CardsDto selectedCard : selectedCards) {
             Card card = cardRepository.findByCardId(selectedCard.getCardId());
@@ -95,7 +97,8 @@ public class PreTurn {
                 player.addOnHand(additionalCard);
                 gameRoom.removeFromDeck(additionalCard);
                 drawSuccess = true;}
-            else {drawSuccess = false; gameRoom.removeFromDeck(additionalCard);}
+            else {drawSuccess = false; gameRoom.removeFromDeck(additionalCard);
+            gameRoom.addTograveyard(additionalCard);}
 
             return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(player, additionalCard, drawSuccess);
         } else {
