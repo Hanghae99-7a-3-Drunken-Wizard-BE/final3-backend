@@ -7,6 +7,7 @@ import com.example.game.Game.card.Target;
 import static com.example.game.Game.card.CardType.ATTACK;
 
 public class ManaSiphon extends Card {
+
     public ManaSiphon (GameRoom gameRoom) {
         this.gameRoom = gameRoom;
         this.cardName = "Mana Siphon";

@@ -18,6 +18,10 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+<<<<<<< HEAD
+=======
+    @Column(name="user_id")
+>>>>>>> b91063f6740ff4b828df08d08e283578356e4079
     private Long id;
 
     @Column(nullable = false, unique = true)

@@ -73,5 +73,4 @@ public class Card {
     @ManyToOne
     @JoinColumn(name = "gameRoom_Id")
     public GameRoom gameRoom;
-
 }

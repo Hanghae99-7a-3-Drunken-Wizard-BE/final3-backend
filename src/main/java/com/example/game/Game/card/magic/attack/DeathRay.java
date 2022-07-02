@@ -7,6 +7,7 @@ import com.example.game.Game.card.Target;
 import static com.example.game.Game.card.CardType.ATTACK;
 
 public class DeathRay extends Card {
+
     public DeathRay(GameRoom gameRoom) {
         this.gameRoom = gameRoom;
         this.cardName = "Death Ray";
