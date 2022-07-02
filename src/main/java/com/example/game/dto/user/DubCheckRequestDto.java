@@ -1,4 +1,4 @@
-package com.example.game.dto.request;
+package com.example.game.dto.user;
 
 import lombok.Getter;
 
