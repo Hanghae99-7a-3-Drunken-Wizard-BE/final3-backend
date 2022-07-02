@@ -2,16 +2,11 @@ package com.example.game.Game.service;
 
 import com.example.game.Game.GameRoom;
 import com.example.game.Game.card.Card;
-import com.example.game.Game.card.Deck;
-import com.example.game.Game.card.magic.attack.*;
-import com.example.game.Game.card.magic.curse.WeaknessExposure;
-import com.example.game.Game.card.magic.enchantment.MagicAmplification;
-import com.example.game.Game.card.magic.enchantment.MagicArmor;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.DeckRepository;
 import com.example.game.Game.repository.GameRepository;
-import com.example.game.model.User;
+import com.example.game.model.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
