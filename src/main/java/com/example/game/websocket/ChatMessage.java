@@ -3,20 +3,28 @@ package com.example.game.websocket;
 import com.example.game.security.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ChatMessage {
 
-    private String roomId;
-    private String sender;
     private String message;
+//    private String roomId;
+    private String sender;
 
-    public ChatMessage(UserDetailsImpl userDetails) {
-        this.roomId = roomId;
-        this.sender = userDetails.getUser().getNickname();
+    private MessageType type;
+
+    public enum MessageType {
+        CHAT, LEAVE, JOIN
+    }
+
+    public ChatMessage(String message, UserDetailsImpl userDetails) {
         this.message = message;
+//        this.roomId = chatRoom.getRoomId();
+        this.sender = userDetails.getUser().getNickname();
     }
 }
