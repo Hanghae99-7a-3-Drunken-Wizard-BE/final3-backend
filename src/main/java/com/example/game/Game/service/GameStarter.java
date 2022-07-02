@@ -27,10 +27,6 @@ public class GameStarter {
 
     @Transactional
     public GameRoom createGameRoom (List<User> userInLobby){
-
-
-
-
         GameRoom gameRoom = new GameRoom();
         List<Card> gameCards = deckRepository.getById(1L).getGameDeck();
         List<Card> gameDeck = new ArrayList<>(gameCards);

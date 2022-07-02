@@ -5,6 +5,7 @@ import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.response.PlayerDto;
 import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.gameDataDto.response.CardsDto;
+import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,5 +73,10 @@ public class JsonStringBuilder  {
         NoMoreDrawResponseDto responseDto = new NoMoreDrawResponseDto();
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
+    }
+
+    public String discard(DiscardDto discardDto) throws JsonProcessingException {
+        ObjectWriter ow = new ObjectMapper().writer();
+        return ow.writeValueAsString(discardDto);
     }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -46,5 +47,11 @@ public class GameRoom {
 
     public void removeFromDeck(List<Card> cards) {
         this.deck.removeAll(cards);
+    }
+
+    public void graveyardToDeck () {
+        Collections.shuffle(this.graveyard);
+        this.deck.addAll(this.graveyard);
+        this.graveyard.clear();
     }
 }

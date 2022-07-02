@@ -8,8 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UseCardDto {
-    private Long playerId;
-    private Long targetPlayerID;
-    private Long cardId;
+public class EndGameRequestDto {
+    private Long gameId;
 }

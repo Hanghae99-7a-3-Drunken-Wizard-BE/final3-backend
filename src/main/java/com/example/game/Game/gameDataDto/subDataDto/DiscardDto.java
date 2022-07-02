@@ -1,6 +1,5 @@
-package com.example.game.Game.gameDataDto.request;
+package com.example.game.Game.gameDataDto.subDataDto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UseCardDto {
+public class DiscardDto {
     private Long playerId;
-    private Long targetPlayerID;
     private Long cardId;
 }

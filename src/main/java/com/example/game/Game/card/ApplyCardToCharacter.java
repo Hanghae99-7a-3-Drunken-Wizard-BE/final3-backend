@@ -72,10 +72,7 @@ public class ApplyCardToCharacter {
         GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
         gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-
-
     }
-
 
     @Transactional
     public void applyCardtoTarget (Player player, Player targetPlayer, Card card){
@@ -106,7 +103,6 @@ public class ApplyCardToCharacter {
         GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
         gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-
     }
 
     @Transactional
@@ -125,7 +121,6 @@ public class ApplyCardToCharacter {
         GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
         gameRoom.addTograveyard(card);
         player.removeFromHand(card);
-
     }
 
     @Transactional
