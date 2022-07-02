@@ -27,8 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-//3.35.214.100
-
 @Service
 @RequiredArgsConstructor
 public class KakaoUserService {
@@ -88,6 +86,7 @@ public class KakaoUserService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        System.out.println("헤더까지는 받음 헤더 : " + headers);
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
@@ -98,6 +97,7 @@ public class KakaoUserService {
                 kakaoUserInfoRequest,
                 String.class
         );
+        System.out.println("유저정보 받는 post는 통과함");
 
         String responseBody = response.getBody();
 
@@ -118,6 +118,7 @@ public class KakaoUserService {
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
+        System.out.println("카톡유저확인 클래스 들어옴");
         Long kakaoId = kakaoUserInfo.getId();
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
                 .orElse(null);
@@ -141,14 +142,22 @@ public class KakaoUserService {
     }
 
     private void forceLogin(User kakaoUser, HttpServletResponse response) {
+
+        System.out.println("jwtTokenCreate 클래스 들어옴");
+
         UserDetails userDetails = new UserDetailsImpl(kakaoUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        System.out.println("강제로그인 시도까지 함");
 
         UserDetailsImpl userDetails1 = ((UserDetailsImpl) authentication.getPrincipal());
 
+        System.out.println("userDetails1 : " + userDetails1.toString());
+
         final String token = JwtTokenUtils.generateJwtToken(userDetails1);
+
+        System.out.println("token값:" + token);
 
         response.addHeader("Authorization", "BEARER" + " " + token);
     }

@@ -1,5 +1,6 @@
 package com.example.game.security;
 
+import com.example.game.model.User;
 import com.example.game.security.jwt.JwtTokenUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;

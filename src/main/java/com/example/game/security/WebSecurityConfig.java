@@ -80,9 +80,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .permitAll()
                 .and()
-                .exceptionHandling()
+                .exceptionHandling();
                 // "접근 불가" 페이지 URL 설정
-                .accessDeniedPage("/");
+//                .accessDeniedPage("/");
     }
 
     @Bean
@@ -112,9 +112,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("GET,/h2-console/**");
         skipPathList.add("POST,/h2-console/**");
         // 회원 관리 API 허용
+        skipPathList.add("POST,/login");
         skipPathList.add("POST,/user/signup");
-        skipPathList.add("GET,/");
         skipPathList.add("POST,/user/dubcheck");
+        skipPathList.add("GET,/");
         //카카오 콜백 API 허용
         skipPathList.add("GET,/user/kakao/**");
 
