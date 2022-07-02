@@ -13,7 +13,7 @@ public class GameCloser {
     private final GameRepository gameRepository;
 
     @Transactional
-    public void closeGameRoom(Long id) {
+    public void closeGameRoom(String id) {
         GameRoom gameRoom = gameRepository.findByGameRoomId(id);
         gameRepository.delete(gameRoom);
     }

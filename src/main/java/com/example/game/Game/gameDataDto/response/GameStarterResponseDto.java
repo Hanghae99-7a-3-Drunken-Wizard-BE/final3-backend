@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class GameStarterResponseDto {
-    private Long gameId;
+    private String gameId;
     private List<PlayerDto> players;
 
     public GameStarterResponseDto(GameRoom gameRoom) throws JsonProcessingException {

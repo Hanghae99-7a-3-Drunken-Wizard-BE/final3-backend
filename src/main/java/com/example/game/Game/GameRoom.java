@@ -3,6 +3,7 @@ package com.example.game.Game;
 
 import com.example.game.Game.card.Card;
 import com.example.game.Game.player.Player;
+import com.example.game.model.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,9 @@ public class GameRoom {
 
     @Id
     private String gameRoomId = UUID.randomUUID().toString();
+
+    @Column
+    private String roomName;
 
     @Column
     @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
