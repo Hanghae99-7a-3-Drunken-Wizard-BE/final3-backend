@@ -1,9 +1,9 @@
 package com.example.game.service;
 
-import com.example.game.dto.request.DubCheckRequestDto;
-import com.example.game.dto.request.SignupRequestDto;
-import com.example.game.model.User;
-import com.example.game.repository.UserRepository;
+import com.example.game.dto.user.DubCheckRequestDto;
+import com.example.game.dto.user.SignupRequestDto;
+import com.example.game.model.user.User;
+import com.example.game.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

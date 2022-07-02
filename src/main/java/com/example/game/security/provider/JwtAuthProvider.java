@@ -1,11 +1,12 @@
 package com.example.game.security.provider;
 
-import com.example.game.model.User;
-import com.example.game.repository.UserRepository;
+import com.example.game.model.user.User;
+import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
 import com.example.game.security.jwt.JwtDecoder;
 import com.example.game.security.jwt.JwtPreProcessingToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthProvider implements AuthenticationProvider {

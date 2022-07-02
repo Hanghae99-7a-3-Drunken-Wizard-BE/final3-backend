@@ -1,7 +1,7 @@
 package com.example.game.security;
 
-import com.example.game.model.User;
-import com.example.game.repository.UserRepository;
+import com.example.game.model.user.User;
+import com.example.game.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,80 +1,38 @@
 package com.example.game.Game.card;
 
-import com.example.game.Game.GameRoom;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-
-@Entity
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
-public class Card {
+public abstract class Card {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cardId;
-
-    @Column
     public String cardName;
 
-    @Column
     public String description;
 
-    @Column
     public CardType cardType;
 
-    @Column
     public Target target;
 
-    @Column
-    public Integer manaCost;
+    public int manaCost;
 
-    @Column
-    public Integer healthModifier;
+    public int healthModifier;
 
-    @Column
-    public Integer manaModifier;
-
-    @Column
     public Boolean Shield;
 
-    @Column
-    public Integer poisonDuration;
+    public int damageModifier;
 
-    @Column
-    public Integer stunDuration;
+    public int manaModifier;
 
-    @Column
-    public Integer muteDuration;
+    public int poisonDuration;
 
-    @Column
-    public Integer petrifyDuration;
+    public int stunDuration;
 
-    @Column
-    public Integer weakDuration;
+    public int muteDuration;
 
-    @Column
-    public Integer damageModifierDuration;
+    public int petrifyDuration;
 
-    @Column
-    public Integer manaCostModifierDuration;
-
-    @Column
-    public Integer sleepDuration;
-
-    @OneToOne
-    @JoinColumn
     public SpecialEffect specialEffect;
-
-    @ManyToOne
-    @JoinColumn(name = "deck_Id")
-    public Deck gameDeck;
-
-    @Column
-    public Long onHand;
 
 }
