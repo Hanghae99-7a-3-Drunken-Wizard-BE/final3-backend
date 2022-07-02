@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
+//3.35.214.100
+
 @Service
 @RequiredArgsConstructor
 public class KakaoUserService {
@@ -38,6 +40,8 @@ public class KakaoUserService {
     public void kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code);
+        System.out.println("param 코드 " + code);
+        System.out.println("엑세스 토큰 변환 되는지 " + accessToken);
 
         // 2. 토큰으로 카카오 API 호출
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
@@ -58,7 +62,7 @@ public class KakaoUserService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "a726ea61587396de89413a1bf0c9771b");              // rest api 키
-        body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");  // 플랫폼
+        body.add("redirect_uri", "http://localhost:3000/auth/kakao/callback");  // 플랫폼
         body.add("code", code);
 
         // HTTP 요청 보내기
@@ -96,11 +100,14 @@ public class KakaoUserService {
         );
 
         String responseBody = response.getBody();
+
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         Long id = jsonNode.get("id").asLong();
+
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
+
         String email = (jsonNode.get("kakao_account")
                 .get("email") != null) ? jsonNode.get("kakao_account")
                 .get("email").asText() : null;
@@ -117,6 +124,7 @@ public class KakaoUserService {
         if (kakaoUser == null) {
             // 회원가입
             // username: kakao nickname
+            String username = UUID.randomUUID().toString();
             String nickname = kakaoUserInfo.getNickname();
 
             // password: random UUID
@@ -126,7 +134,7 @@ public class KakaoUserService {
             // email: kakao email
             String email = kakaoUserInfo.getEmail();
 
-            kakaoUser = new User(nickname, encodedPassword, email, kakaoId);
+            kakaoUser = new User(username ,nickname, encodedPassword, email, kakaoId);
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
@@ -137,14 +145,11 @@ public class KakaoUserService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 추가 작,
-        UserDetailsImpl userDetails1 = ((UserDetailsImpl) authentication.getPrincipal());
 
-        System.out.println("userDetails1 : " + userDetails1.toString());
+        UserDetailsImpl userDetails1 = ((UserDetailsImpl) authentication.getPrincipal());
 
         final String token = JwtTokenUtils.generateJwtToken(userDetails1);
 
-        System.out.println("token값:" + token);
         response.addHeader("Authorization", "BEARER" + " " + token);
     }
 }

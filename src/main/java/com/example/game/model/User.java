@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Random;
 
 @Entity
 @Getter
@@ -45,7 +46,8 @@ public class User {
     }
 
     // KakaoService 생성자
-    public User(String nickname, String password, String email, Long kakaoId){
+    public User(String username, String nickname, String password, String email, Long kakaoId){
+        this.username = username;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
