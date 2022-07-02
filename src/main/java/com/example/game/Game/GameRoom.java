@@ -10,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,8 +19,7 @@ import java.util.List;
 public class GameRoom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gameRoomId;
+    private String gameRoomId = UUID.randomUUID().toString();
 
     @Column
     @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
