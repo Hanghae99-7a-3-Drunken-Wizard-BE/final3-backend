@@ -82,7 +82,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(corsFilter)
                 .addFilterBefore(formLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-
         http.authorizeRequests()
                 .anyRequest()
                 .permitAll()
@@ -93,9 +92,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .permitAll()
                 .and()
-                .exceptionHandling()
+                .exceptionHandling();
                 // "접근 불가" 페이지 URL 설정
-                .accessDeniedPage("/forbidden.html");
+//                .accessDeniedPage("/");
     }
 
     @Bean
@@ -120,21 +119,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthFilter jwtFilter() throws Exception {
         List<String> skipPathList = new ArrayList<>();
 
+        skipPathList.add("GET,/**"); // static 폴더 접근 허용
         // h2-console 허용
         skipPathList.add("GET,/h2-console/**");
         skipPathList.add("POST,/h2-console/**");
         // 회원 관리 API 허용
+        skipPathList.add("POST,/login");
         skipPathList.add("POST,/user/signup");
+        skipPathList.add("POST,/user/dubcheck");
         skipPathList.add("GET,/");
-        skipPathList.add("POST,/loginCheck");
-        skipPathList.add("POST,/dupCheck");
-        skipPathList.add("OPTIONS,/");
         //카카오 콜백 API 허용
-//        skipPathList.add("GET,/user/kakao/**");
-//        skipPathList.add("POST, https://kauth.kakao.com/**");
-//        skipPathList.add("POST, https://kapi.kakao.com/**");
-//        skipPathList.add("GET, http://localhost:3000/user/**");
 
+        skipPathList.add("GET,/user/kakao/**");
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,
