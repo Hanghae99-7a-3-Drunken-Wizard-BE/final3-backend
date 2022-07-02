@@ -23,7 +23,8 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long playerId;
-
+    @Column
+    private Long userId;
     @Column
     private String username;
 
@@ -84,6 +85,7 @@ public class Player {
 
     public Player(User user, GameRoom gameRoom){
         this.username = user.getNickname();
+        this.userId = user.getId();
         this.health = 20;
         this.mana = 20;
         this.shield = false;
@@ -221,10 +223,6 @@ public class Player {
 
     public void applyPoison() {
         this.health += (this.poisonedDuration > 0) ? -1 : 0;
-    }
-
-    public void applyDispel(Card card) {
-        applyAdditionalEffect(card);
     }
 
     public void durationDecrease() {

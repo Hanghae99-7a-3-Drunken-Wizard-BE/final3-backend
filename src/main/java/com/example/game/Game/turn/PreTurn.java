@@ -79,7 +79,6 @@ public class PreTurn {
         List<CardRequestDto> selectedCards = requestDto.getSelectedCards();
         for (CardRequestDto selectedCard : selectedCards) {
             Card card = cardRepository.findByCardId(selectedCard.getCardId());
-            card.setOnHand(playerId);
             player.addOnHand(card);
             gameRoom.removeFromDeck(card);
         }

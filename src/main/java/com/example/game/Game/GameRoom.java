@@ -22,7 +22,7 @@ public class GameRoom {
     private Long gameRoomId;
 
     @Column
-    @OneToMany
+    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Card> deck;
 
     @Column
