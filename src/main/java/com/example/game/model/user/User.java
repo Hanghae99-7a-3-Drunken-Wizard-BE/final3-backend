@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Random;
 
 @Entity
 @Getter
@@ -33,6 +34,9 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column(unique = true)
+    private Long kakaoId;
+
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
@@ -40,7 +44,17 @@ public class User {
         this. email = requestDto.getEmail();
     }
 
-    public User(String username, String password, String nickname, String email){
+    // KakaoService 생성자
+    public User(String username, String nickname, String password, String email, Long kakaoId){
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.kakaoId = kakaoId;
+    }
+
+    // testRunner 생성자
+    public User(String username, String password, String nickname, String email) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;

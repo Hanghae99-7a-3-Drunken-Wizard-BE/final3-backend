@@ -30,7 +30,6 @@ public class UserService {
     }
 
     public boolean dubCheck(DubCheckRequestDto requestDto) {
-        return !userRepository.findByUsername(requestDto.getUsername()).isPresent();
+        return (!userRepository.findByUsername(requestDto.getUsername()).isPresent());
     }
-
 }
