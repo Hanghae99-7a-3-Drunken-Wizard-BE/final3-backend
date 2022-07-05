@@ -46,13 +46,19 @@ public class GameRoomController {
     public ResponseEntity<String> joinGameRoom(@PathVariable String roomId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
-        if (gameRoom.getUserList().size() >= 4) {
-            return ResponseEntity.badRequest().body("정원 초과");
-        }
+        System.out.println(gameRoom.getRoomName());
+//        if (gameRoom.getUserList().size() >= 4) {
+//            return ResponseEntity.badRequest().body("정원 초과");
+//        }
+        System.out.println(userDetails.getUsername());
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         gameRoom.addUser(user);
+        System.out.println(gameRoom.getUserList().get(0).getUsername());
+        System.out.println(roomId);
         user.setRoomId(roomId);
+        userRepository.save(user);
+        gameRoomRepository.save(gameRoom);
         GameMessage message = new GameMessage();
         message.setRoomId(roomId);
         message.setContent(userDetails.getUser().getNickname() + "님이 입장하셨습니다.");

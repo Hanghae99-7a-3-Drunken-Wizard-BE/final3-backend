@@ -9,20 +9,23 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
-    private final UserDetailsImpl userDetails;
     private final UserRepository userRepository;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-
+        System.out.println("STOMPHANDLER ACTIVE");
         try {
         if (StompCommand.CONNECT == accessor.getCommand()) {
-            User user = userRepository.getById(userDetails.getUser().getId());
+            Long id = (Long)accessor.getSessionAttributes().get("id");
+            User user = userRepository.getById(id);
+            System.out.println(id);
             String sessionId = accessor.getSessionId();
             user.setSessionId(sessionId);
             userRepository.save(user);
