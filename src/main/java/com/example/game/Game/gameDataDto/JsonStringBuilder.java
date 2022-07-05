@@ -1,8 +1,7 @@
 package com.example.game.Game.gameDataDto;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.example.game.Game.card.Card;
-import com.example.game.Game.gameDataDto.response.PlayerDto;
 import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.gameDataDto.response.CardsDto;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
@@ -18,8 +17,8 @@ import java.util.List;
 @Component
 public class JsonStringBuilder  {
 
-    public String gameStarter(GameRoom gameRoom) throws JsonProcessingException {
-        GameStarterResponseDto responseDto = new GameStarterResponseDto(gameRoom);
+    public String gameStarter(Game game) throws JsonProcessingException {
+        GameStarterResponseDto responseDto = new GameStarterResponseDto(game);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }

@@ -1,6 +1,6 @@
 package com.example.game.Game.card;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
@@ -28,8 +28,8 @@ public class ApplyCardToCharacter {
             if (card.getCardName().equals("Heal")) {
                 applyHealtoTarget(player, targetPlayer, card);
             } else if (card.getCardName().equals("Party Heal")) {
-                GameRoom gameRoom = player.getGameRoom();
-                List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, player.isTeam());
+                Game game = player.getGame();
+                List<Player> players = playerRepository.findByGameAndTeam(game, player.isTeam());
                 applyHealtoMultipleTarget(player, players, card);
             } else if (card.getCardName().equals("Dispel")) {
                 applyDispel(player, targetPlayer, card);
@@ -41,18 +41,18 @@ public class ApplyCardToCharacter {
                     applyCardtoTarget(player, targetPlayer, card);
                 }
                 if (card.getTarget() == Target.ALL) {
-                    GameRoom gameRoom = player.getGameRoom();
-                    List<Player> players = playerRepository.findByGameRoom(gameRoom);
+                    Game game = player.getGame();
+                    List<Player> players = playerRepository.findByGame(game);
                     applyCardtoMultipleTarget(player, players, card);
                 }
                 if (card.getTarget() == Target.ALLY) {
-                    GameRoom gameRoom = player.getGameRoom();
-                    List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, player.isTeam());
+                    Game game = player.getGame();
+                    List<Player> players = playerRepository.findByGameAndTeam(game, player.isTeam());
                     applyCardtoMultipleTarget(player, players, card);
                 }
                 if (card.getTarget() == Target.ENEMY) {
-                    GameRoom gameRoom = player.getGameRoom();
-                    List<Player> players = playerRepository.findByGameRoomAndTeam(gameRoom, !player.isTeam());
+                    Game game = player.getGame();
+                    List<Player> players = playerRepository.findByGameAndTeam(game, !player.isTeam());
                     applyCardtoMultipleTarget(player, players, card);
                 }
             }
@@ -69,8 +69,8 @@ public class ApplyCardToCharacter {
             targetPlayer.setShield(false);} else{targetPlayer.applyHeal(card);}}
         if (player.getCharactorClass().equals(CharactorClass.HEALER)){healManaCostApplyForHealer(player, card);}
         else{manaCostApply(player, card);}
-        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
-        gameRoom.addTograveyard(card);
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        game.addTograveyard(card);
         player.removeFromHand(card);
     }
 
@@ -83,8 +83,8 @@ public class ApplyCardToCharacter {
         else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}}
         manaCostApply(player, card);
-        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
-        gameRoom.addTograveyard(card);
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        game.addTograveyard(card);
         player.removeFromHand(card);
     }
 
@@ -100,8 +100,8 @@ public class ApplyCardToCharacter {
             if (playerInList.isShield()&&!(player==playerInList)){
                 playerInList.setShield(false);} else{playerInList.statusUpdate(card);}}}
         manaCostApply(player, card);
-        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
-        gameRoom.addTograveyard(card);
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        game.addTograveyard(card);
         player.removeFromHand(card);
     }
 
@@ -118,8 +118,8 @@ public class ApplyCardToCharacter {
                 playerInList.setShield(false);} else{playerInList.applyHeal(card);}}}
         if (player.getCharactorClass().equals(CharactorClass.HEALER)){healManaCostApplyForHealer(player, card);}
         else{manaCostApply(player, card);}
-        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
-        gameRoom.addTograveyard(card);
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        game.addTograveyard(card);
         player.removeFromHand(card);
     }
 
@@ -127,8 +127,8 @@ public class ApplyCardToCharacter {
     public void applyItemtoTarget(Player player, Player targetPlayer, Card card){
         if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}
-        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
-        gameRoom.addTograveyard(card);
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        game.addTograveyard(card);
         player.removeFromHand(card);
     }
 
@@ -139,8 +139,8 @@ public class ApplyCardToCharacter {
         if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
         else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
         else{player.applyManaCost(card);}
-        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
-        gameRoom.addTograveyard(card);
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        game.addTograveyard(card);
         player.removeFromHand(card);
     }
 

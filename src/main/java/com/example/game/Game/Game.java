@@ -3,7 +3,6 @@ package com.example.game.Game;
 
 import com.example.game.Game.card.Card;
 import com.example.game.Game.player.Player;
-import com.example.game.model.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,22 +10,18 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class GameRoom {
+public class Game {
 
     @Id
-    private String gameRoomId = UUID.randomUUID().toString();
+    private String roomId;
 
     @Column
-    private String roomName;
-
-    @Column
-    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Card> deck;
 
     @Column
@@ -34,8 +29,12 @@ public class GameRoom {
     private List<Card> graveyard;
 
     @Column
-    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Player> playerList;
+
+    public Game(String roomId) {
+        this.roomId = roomId;
+    }
 
     public void addToDeck(List<Card> cards){
         this.deck.addAll(cards);
@@ -57,5 +56,9 @@ public class GameRoom {
         Collections.shuffle(this.graveyard);
         this.deck.addAll(this.graveyard);
         this.graveyard.clear();
+    }
+
+    public void shuffleDeck() {
+        Collections.shuffle(this.deck);
     }
 }

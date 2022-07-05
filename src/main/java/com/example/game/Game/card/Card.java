@@ -1,6 +1,6 @@
 package com.example.game.Game.card;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
@@ -71,6 +71,6 @@ public class Card {
     public SpecialEffect specialEffect;
 
     @ManyToOne
-    @JoinColumn(name = "gameRoom_Id")
-    public GameRoom gameRoom;
+    @JoinColumn(name = "room_Id")
+    public Game game;
 }

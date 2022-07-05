@@ -1,6 +1,6 @@
 package com.example.game.Game.player;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.example.game.Game.card.Card;
 import com.example.game.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.*;
 
 @Entity
@@ -80,10 +79,10 @@ public class Player {
     private List<Card> cardsOnHand = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "gameRoom_Id")
-    private GameRoom gameRoom;
+    @JoinColumn(name = "room_Id")
+    private Game game;
 
-    public Player(User user, GameRoom gameRoom){
+    public Player(User user, Game game){
         this.username = user.getNickname();
         this.userId = user.getId();
         this.health = 20;
@@ -98,7 +97,7 @@ public class Player {
         this.manaCostModifierDuration = 0;
         this.sleepDuration = 0;
         this.weakDuration = 0;
-        this.gameRoom = gameRoom;
+        this.game = game;
     }
 
     public void statusUpdate(Card card){

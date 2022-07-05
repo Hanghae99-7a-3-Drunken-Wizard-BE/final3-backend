@@ -1,6 +1,6 @@
 package com.example.game.Game.service;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.card.item.BeerMug;
 import com.example.game.Game.card.item.LeftoverOctopus;
@@ -13,6 +13,7 @@ import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.model.user.User;
+import com.example.game.websocket.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,92 +23,94 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class GameStarter {
-
+private final GameRoomRepository gameRoomRepository;
     private final GameRepository gameRepository;
 
     @Transactional
-    public GameRoom createGameRoom (List<User> userInLobby){
-        GameRoom gameRoom = new GameRoom();
+    public Game createGameRoom (String roomId){
+        List<User> userInLobby = gameRoomRepository.findByRoomId(roomId).getUserList();
+        if(userInLobby.size() != 4) {return null;}
+        Game game = new Game(roomId);
         List<Card> gameDeck = new ArrayList<>();
 
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new BoulderStrike(gameRoom));
+            gameDeck.add(new BoulderStrike(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new DeathRay(gameRoom));
+            gameDeck.add(new DeathRay(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new FireBall(gameRoom));
+            gameDeck.add(new FireBall(game));
         }
         for (int i = 0; i < 10; i++) {
-            gameDeck.add(new MagicMissile(gameRoom));
+            gameDeck.add(new MagicMissile(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new ManaSiphon(gameRoom));
+            gameDeck.add(new ManaSiphon(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new PoisonArrow(gameRoom));
+            gameDeck.add(new PoisonArrow(game));
         }
         for (int i = 0; i < 2; i++) {
-            gameDeck.add(new ChannelingMana(gameRoom));
+            gameDeck.add(new ChannelingMana(game));
         }
         for (int i = 0; i < 6; i++) {
-            gameDeck.add(new Heal(gameRoom));
+            gameDeck.add(new Heal(game));
         }
         for (int i = 0; i < 2; i++) {
-            gameDeck.add(new PartyHeal(gameRoom));
+            gameDeck.add(new PartyHeal(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Resistance(gameRoom));
+            gameDeck.add(new Resistance(game));
         }
         for (int i = 0; i < 6; i++) {
-            gameDeck.add(new Shield(gameRoom));
+            gameDeck.add(new Shield(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Dispel(gameRoom));
+            gameDeck.add(new Dispel(game));
         }
         for (int i = 0; i < 2; i++) {
-            gameDeck.add(new MagicAmplification(gameRoom));
+            gameDeck.add(new MagicAmplification(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new MagicArmor(gameRoom));
+            gameDeck.add(new MagicArmor(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Mute(gameRoom));
+            gameDeck.add(new Mute(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Petrification(gameRoom));
+            gameDeck.add(new Petrification(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new WeaknessExposure(gameRoom));
+            gameDeck.add(new WeaknessExposure(game));
         }
         for (int i = 0; i < 6; i++) {
-            gameDeck.add(new Venom(gameRoom));
+            gameDeck.add(new Venom(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Yfeputs(gameRoom));
+            gameDeck.add(new Yfeputs(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Sleep(gameRoom));
+            gameDeck.add(new Sleep(game));
         }
         for (int i = 0; i < 4; i++) {
-            gameDeck.add(new MagicAttenuation(gameRoom));
+            gameDeck.add(new MagicAttenuation(game));
         }
         for (int i = 0; i < 9; i++) {
-            gameDeck.add(new BeerMug(gameRoom));
+            gameDeck.add(new BeerMug(game));
         }
         for (int i = 0; i < 7; i++) {
-            gameDeck.add(new LeftoverOctopus(gameRoom));
+            gameDeck.add(new LeftoverOctopus(game));
         }
         for (int i = 0; i < 7; i++) {
-            gameDeck.add(new ManaPotion(gameRoom));
+            gameDeck.add(new ManaPotion(game));
         }
         for (int i = 0; i < 7; i++) {
-            gameDeck.add(new Panacea(gameRoom));
+            gameDeck.add(new Panacea(game));
         }
 
         Collections.shuffle(gameDeck);
-        gameRoom.setDeck(gameDeck);
+        game.setDeck(gameDeck);
         List<Boolean> preEmptive = Arrays.asList(true, false);
         List<Integer> order = new ArrayList<>();
         List<Integer> orderFirst = Arrays.asList(1,3);
@@ -128,13 +131,13 @@ public class GameStarter {
         else{order.addAll(orderSecond);order.addAll(orderFirst);}
         List<Player> playerList = new ArrayList<>();
         for (int i = 0; i < userInLobby.size(); i++) {
-            Player player = new Player(userInLobby.get(i),gameRoom);
+            Player player = new Player(userInLobby.get(i), game);
             player.setTeam(i<2);
             player.setTurnOrder(order.get(i));
             player.setCharactorClass(classes.get(i));
             playerList.add(player);
         }
-        gameRoom.setPlayerList(playerList);
-        return gameRepository.save(gameRoom);
+        game.setPlayerList(playerList);
+        return gameRepository.save(game);
     }
 }

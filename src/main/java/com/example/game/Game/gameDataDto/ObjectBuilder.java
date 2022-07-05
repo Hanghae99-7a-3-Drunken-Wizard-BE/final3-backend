@@ -1,9 +1,6 @@
 package com.example.game.Game.gameDataDto;
 
-import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
-import com.example.game.Game.gameDataDto.request.EndGameRequestDto;
-import com.example.game.Game.gameDataDto.request.PlayerRequestDto;
-import com.example.game.Game.gameDataDto.request.UseCardDto;
+import com.example.game.Game.gameDataDto.request.*;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,5 +32,10 @@ public class ObjectBuilder {
     public DiscardDto discard(String discard) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(discard, DiscardDto.class);
+    }
+
+    public GameStartRequestDto gameStart(String gameStart) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(gameStart, GameStartRequestDto.class);
     }
 }
