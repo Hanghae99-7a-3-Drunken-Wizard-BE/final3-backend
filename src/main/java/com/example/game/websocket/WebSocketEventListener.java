@@ -1,5 +1,8 @@
 package com.example.game.websocket;
 
+import com.example.game.model.user.User;
+import com.example.game.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +14,13 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Component
+@RequiredArgsConstructor
 public class WebSocketEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+
+    private final UserRepository userRepository;
+    private final GameRoomRepository gameRoomRepository;
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
@@ -31,11 +38,17 @@ public class WebSocketEventListener {
         if(nickname != null) {
             logger.info("User Disconnected : " + nickname);
 
+            User user = userRepository.getBySessionId(headerAccessor.getSessionId());
+            if (user.getRoomId() != null) {
+                GameRoom room = gameRoomRepository.findByRoomId(user.getRoomId());
+                room.removeUser(user);
+                user.setRoomId(null);
+
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setType(ChatMessage.MessageType.LEAVE);
             chatMessage.setSender(nickname);
-
             messagingTemplate.convertAndSend("/sub/public", chatMessage);
+            }
         }
     }
 }
