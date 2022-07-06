@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class UserController {
 
     // 카카오 아이디
     @GetMapping("/user/kakao/callback") // username, nickname 같이 보내기
-    public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
         kakaoUserService.kakaoLogin(code, response);
     }
 }
