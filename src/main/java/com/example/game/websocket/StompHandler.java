@@ -21,10 +21,12 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         System.out.println("STOMPHANDLER ACTIVE");
+
         try {
-        if (StompCommand.CONNECT == accessor.getCommand()) {
-            Long id = (Long)accessor.getSessionAttributes().get("id");
-            User user = userRepository.getById(id);
+        if (StompCommand.SUBSCRIBE == accessor.getCommand() ||
+                StompCommand.CONNECT == accessor.getCommand()) {
+            String id = (String)accessor.getMessageHeaders().get("id");
+            User user = userRepository.getByUsername(id);
             System.out.println(id);
             String sessionId = accessor.getSessionId();
             user.setSessionId(sessionId);

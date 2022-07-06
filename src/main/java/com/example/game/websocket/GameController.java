@@ -29,7 +29,7 @@ public class GameController {
     private final ActionTurn actionTurn;
     private final EndTurn endTurn;
 
-    @MessageMapping("/chat/game/{roomId}")
+    @MessageMapping("/game/{roomId}")
     public void gameMessageProxy(@Payload GameMessage message) throws JsonProcessingException {
         if (GameMessage.MessageType.START.equals(message.getType())) {
             gameStarter(message);
@@ -68,7 +68,7 @@ public class GameController {
         gameMessage.setSender(message.getSender());
         gameMessage.setType(GameMessage.MessageType.START);
         gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + message.getRoomId(), gameMessage);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
     private void precheck(GameMessage message) throws JsonProcessingException {
@@ -77,7 +77,7 @@ public class GameController {
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setType(GameMessage.MessageType.PRECHECK);
         gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + message.getRoomId(), gameMessage);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
     private void draw(GameMessage message)  throws JsonProcessingException {
@@ -89,7 +89,7 @@ public class GameController {
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setSender(message.getSender());
         gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + message.getRoomId(), gameMessage);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
     private void select(GameMessage message) throws JsonProcessingException {
@@ -102,7 +102,7 @@ public class GameController {
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setSender(message.getSender());
         gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + message.getRoomId(), gameMessage);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
     private void turnCheck(GameMessage message) throws JsonProcessingException {
@@ -112,7 +112,7 @@ public class GameController {
         gameMessage.setSender(message.getSender());
         gameMessage.setType(GameMessage.MessageType.TURNCHECK);
         gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + message.getRoomId(), gameMessage);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
     private void useCard(GameMessage message) throws JsonProcessingException {
@@ -123,7 +123,7 @@ public class GameController {
         gameMessage.setSender(message.getSender());
         gameMessage.setType(GameMessage.MessageType.USECARD);
         gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + message.getRoomId(), gameMessage);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
     private void discard(GameMessage message) throws JsonProcessingException {
@@ -134,7 +134,7 @@ public class GameController {
         gameMessage.setSender(message.getSender());
         gameMessage.setType(GameMessage.MessageType.DISCARD);
         gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + message.getRoomId(), gameMessage);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
     private void endCheck(GameMessage message) throws JsonProcessingException {
@@ -144,7 +144,7 @@ public class GameController {
         gameMessage.setSender(message.getSender());
         gameMessage.setType(GameMessage.MessageType.ENDCHECK);
         gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + message.getRoomId(), gameMessage);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
     private void endGame(GameMessage message) {

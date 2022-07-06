@@ -19,11 +19,7 @@ import java.util.UUID;
 @Entity
 public class GameRoom extends Timestamped {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Long id;
-
-    @Column
     private String roomId;
 
     @Column

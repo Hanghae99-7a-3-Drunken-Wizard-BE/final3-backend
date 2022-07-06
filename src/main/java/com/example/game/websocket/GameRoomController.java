@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/chat", method = {RequestMethod.GET, RequestMethod.POST})
 @RequiredArgsConstructor
 public class GameRoomController {
     private final GameRoomService gameRoomService;
@@ -22,7 +21,7 @@ public class GameRoomController {
 
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
-    public ResponseEntity<List<GameRoom>> readChatRooms() {
+    public ResponseEntity<List<GameRoom>> readGameRooms() {
         return ResponseEntity.ok().body(gameRoomService.getAllGameRooms());
     }
 
@@ -42,7 +41,7 @@ public class GameRoomController {
         return ResponseEntity.ok().body(gameRoomService.getAllGameRooms());
     }
 
-    @PostMapping("/game/{roomId}/join")
+    @GetMapping("/game/{roomId}/join")
     public ResponseEntity<String> joinGameRoom(@PathVariable String roomId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
@@ -68,8 +67,8 @@ public class GameRoomController {
         return ResponseEntity.ok().body("게임 로비에 입장했습니다.");
     }
 
-    @PostMapping("/game/{roomId}/leave")
-    public ResponseEntity<String> leaveGameRoom(@PathVariable String roomId,
+    @GetMapping("/game/{roomId}/leave")
+    public ResponseEntity<List<GameRoom>> leaveGameRoom(@PathVariable String roomId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
@@ -83,6 +82,6 @@ public class GameRoomController {
         message.setType(GameMessage.MessageType.LEAVE);
         messagingTemplate.convertAndSend("/sub/chat/" + roomId, message);
 
-        return ResponseEntity.ok().body("게임 로비에서 나갔습니다.");
+        return ResponseEntity.ok().body(gameRoomService.getAllGameRooms());
     }
 }
