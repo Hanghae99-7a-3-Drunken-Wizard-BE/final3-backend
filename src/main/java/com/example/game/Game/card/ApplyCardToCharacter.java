@@ -152,7 +152,6 @@ public class ApplyCardToCharacter {
         if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
         else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
         else{player.applyManaCost(card);}
-        bloodmageManaFeedback(player);
     }
 
     @Transactional
@@ -167,6 +166,7 @@ public class ApplyCardToCharacter {
         if(player.getCharactorClass().equals(CharactorClass.BLOODMAGE) && player.getMana() < 0) {
             player.setHealth(player.getHealth() + player.getMana());
             player.setMana(0);
+            player.setDead(player.getHealth() <= 0);
         }
     }
 }

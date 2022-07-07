@@ -234,4 +234,31 @@ public class Player {
         if (this.manaCostModifierDuration > 0) {this.manaCostModifierDuration -= 1;}
         if (this.sleepDuration > 0) {this.sleepDuration -= 1;}
     }
+
+    public void newStatusUpdate (Player player, Player targetPlayer, Card card) {
+        if (this.petrifiedDuration <= 0) {
+            this.health += card.getHealthModifier() + damageModification(player, targetPlayer, card);
+            this.mana += card.getManaModifier();
+            this.dead = this.health <= 0;
+            applyAdditionalEffect(card);
+        }
+    }
+
+    public int damageModification (Player player, Player targetPlayer, Card card) {
+        int armorWeakCheck;
+        if (targetPlayer.getWeakDuration()>0){
+            armorWeakCheck = -1;
+        } else if (targetPlayer.getWeakDuration()<0) {
+            armorWeakCheck = 1;
+        } else {armorWeakCheck = 0;}
+        int amplificationAttenuationCheck;
+        if (player.getDamageModifierDuration() > 0) {
+            amplificationAttenuationCheck = -1;
+        } else if (player.getDamageModifierDuration() < 0) {
+            amplificationAttenuationCheck = 1;
+        } else {amplificationAttenuationCheck = 0;}
+        if (card.getHealthModifier() < 0) {return amplificationAttenuationCheck + armorWeakCheck;}
+        else if (card.getHealthModifier() > 0) {return amplificationAttenuationCheck * -1;}
+        else {return 0;}
+    }
 }

@@ -41,7 +41,7 @@ public class GameRoomController {
         return ResponseEntity.ok().body(gameRoomService.getAllGameRooms());
     }
 
-    @GetMapping("/game/{roomId}/join")
+    @PostMapping("/game/{roomId}/join")
     public ResponseEntity<String> joinGameRoom(@PathVariable String roomId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
@@ -67,7 +67,7 @@ public class GameRoomController {
         return ResponseEntity.ok().body("게임 로비에 입장했습니다.");
     }
 
-    @GetMapping("/game/{roomId}/leave")
+    @PostMapping("/game/{roomId}/leave")
     public ResponseEntity<List<GameRoom>> leaveGameRoom(@PathVariable String roomId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
