@@ -7,6 +7,7 @@ import com.example.game.Game.card.Target;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
+import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
@@ -30,13 +31,16 @@ public class ActionTurn {
 
 
     @Transactional
-    public String cardMoveProcess(UseCardDto useCardDto) throws JsonProcessingException {
-        Player player = playerRepository.findById(useCardDto.getPlayerId()).orElseThrow(
+    public String cardMoveProcess(Long playerId, UseCardDto useCardDto) throws JsonProcessingException {
+        Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
         Player targetPlayer = playerRepository.findById(useCardDto.getTargetPlayerID()).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
         Card card = cardRepository.findByCardId(useCardDto.getCardId());
         applyCardToCharacter.cardInitiator(player,targetPlayer,card);
+        if(player.getMana() < card.manaCost * -1 && player.getCharactorClass() != CharactorClass.BLOODMAGE) {
+            return "마나부족";
+        }
         List<Player> appliedPlayerList = new ArrayList<>();
         if (card.getTarget() == Target.ME) {
             appliedPlayerList.add(player);
@@ -68,8 +72,8 @@ public class ActionTurn {
     }
 
     @Transactional
-    public String discard (DiscardDto discardDto) throws JsonProcessingException {
-        Player player = playerRepository.getById(discardDto.getPlayerId());
+    public String discard (Long playerId, DiscardDto discardDto) throws JsonProcessingException {
+        Player player = playerRepository.getById(playerId);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         Card card = cardRepository.findByCardId(discardDto.getCardId());
         game.addTograveyard(card);

@@ -78,4 +78,10 @@ public class JsonStringBuilder  {
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(discardDto);
     }
+
+    public String endGameResponseDtoJsonBuilder(Boolean winningTeam) throws JsonProcessingException {
+        EndGameResponseDto responseDto = new EndGameResponseDto(winningTeam);
+        ObjectWriter ow = new ObjectMapper().writer();
+        return ow.writeValueAsString(responseDto);
+    }
 }

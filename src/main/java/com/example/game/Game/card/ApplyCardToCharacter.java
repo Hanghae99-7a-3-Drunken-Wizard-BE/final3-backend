@@ -69,6 +69,7 @@ public class ApplyCardToCharacter {
             targetPlayer.setShield(false);} else{targetPlayer.applyHeal(card);}}
         if (player.getCharactorClass().equals(CharactorClass.HEALER)){healManaCostApplyForHealer(player, card);}
         else{manaCostApply(player, card);}
+        bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
         player.removeFromHand(card);
@@ -83,6 +84,7 @@ public class ApplyCardToCharacter {
         else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}}
         manaCostApply(player, card);
+        bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
         player.removeFromHand(card);
@@ -100,6 +102,7 @@ public class ApplyCardToCharacter {
             if (playerInList.isShield()&&!(player==playerInList)){
                 playerInList.setShield(false);} else{playerInList.statusUpdate(card);}}}
         manaCostApply(player, card);
+        bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
         player.removeFromHand(card);
@@ -118,6 +121,7 @@ public class ApplyCardToCharacter {
                 playerInList.setShield(false);} else{playerInList.applyHeal(card);}}}
         if (player.getCharactorClass().equals(CharactorClass.HEALER)){healManaCostApplyForHealer(player, card);}
         else{manaCostApply(player, card);}
+        bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
         player.removeFromHand(card);
@@ -136,9 +140,8 @@ public class ApplyCardToCharacter {
     public void applyDispel(Player player, Player targetPlayer, Card card){
         if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.applyAdditionalEffect(card);}
-        if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
-        else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
-        else{player.applyManaCost(card);}
+        manaCostApply(player, card);
+        bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
         player.removeFromHand(card);
@@ -149,6 +152,7 @@ public class ApplyCardToCharacter {
         if(player.manaCostModifierDuration > 0){player.applyManaCostWithModifierPositive(card);}
         else if (player.manaCostModifierDuration < 0) {player.applyManaCostWithModifierNegative(card);}
         else{player.applyManaCost(card);}
+        bloodmageManaFeedback(player);
     }
 
     @Transactional
@@ -156,6 +160,14 @@ public class ApplyCardToCharacter {
         if(player.manaCostModifierDuration > 0){player.applyHealManaCostWithModifierPositiveForHealer(card);}
         else if (player.manaCostModifierDuration < 0) {player.applyHealManaCostWithModifierNegativeForHealer(card);}
         else{player.applyHealManaCostForHealer(card);}
+    }
+
+    @Transactional
+    public void bloodmageManaFeedback(Player player) {
+        if(player.getCharactorClass().equals(CharactorClass.BLOODMAGE) && player.getMana() < 0) {
+            player.setHealth(player.getHealth() + player.getMana());
+            player.setMana(0);
+        }
     }
 }
 

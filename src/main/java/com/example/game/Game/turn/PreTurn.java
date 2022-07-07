@@ -67,8 +67,7 @@ public class PreTurn {
     }
 
     @Transactional
-    public String cardDrawResponse(CardSelectRequestDto requestDto) throws JsonProcessingException {
-        Long playerId = requestDto.getPlayerId();
+    public String cardDrawResponse(Long playerId,CardSelectRequestDto requestDto) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());

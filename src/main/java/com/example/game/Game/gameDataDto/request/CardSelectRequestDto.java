@@ -15,6 +15,5 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class CardSelectRequestDto {
-    private Long playerId;
     private List<CardRequestDto> selectedCards;
 }

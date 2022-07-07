@@ -8,6 +8,7 @@ import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
 import com.example.game.Game.service.GameStarter;
 import com.example.game.Game.turn.ActionTurn;
+import com.example.game.Game.turn.EndGame;
 import com.example.game.Game.turn.EndTurn;
 import com.example.game.Game.turn.PreTurn;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +29,7 @@ public class GameController {
     private final PreTurn preTurn;
     private final ActionTurn actionTurn;
     private final EndTurn endTurn;
+    private final EndGame endGame;
 
     @MessageMapping("/game/{roomId}")
     public void gameMessageProxy(@Payload GameMessage message) throws JsonProcessingException {
@@ -94,7 +96,7 @@ public class GameController {
 
     private void select(GameMessage message) throws JsonProcessingException {
         CardSelectRequestDto requestDto = objectBuilder.drawnCards(message.getContent());
-        String messageContent = preTurn.cardDrawResponse(requestDto);
+        String messageContent = preTurn.cardDrawResponse(message.getSender(), requestDto);
         GameMessage gameMessage = new GameMessage();
         if (messageContent.contains("endDraw")) {
             gameMessage.setType(GameMessage.MessageType.ENDDRAW);
@@ -117,7 +119,7 @@ public class GameController {
 
     private void useCard(GameMessage message) throws JsonProcessingException {
         UseCardDto dto = objectBuilder.cardUse(message.getContent());
-        String messageContent = actionTurn.cardMoveProcess(dto);
+        String messageContent = actionTurn.cardMoveProcess(message.getSender(), dto);
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setSender(message.getSender());
@@ -128,7 +130,7 @@ public class GameController {
 
     private void discard(GameMessage message) throws JsonProcessingException {
         DiscardDto dto = objectBuilder.discard(message.getContent());
-        String messageContent = actionTurn.discard(dto);
+        String messageContent = actionTurn.discard(message.getSender(), dto);
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setSender(message.getSender());
@@ -147,7 +149,14 @@ public class GameController {
         messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
-    private void endGame(GameMessage message) {
+    private void endGame(GameMessage message) throws JsonProcessingException {
+        String messageContent = endGame.gameEnd(message.getRoomId());
+        GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(message.getRoomId());
+        gameMessage.setSender(message.getSender());
+        gameMessage.setType(GameMessage.MessageType.ENDGAME);
+        gameMessage.setContent(messageContent);
+        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
 

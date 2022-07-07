@@ -13,12 +13,10 @@ import java.util.List;
 @Getter
 @Setter
 public class GameStarterResponseDto {
-    private String roomId;
     private List<PlayerDto> players;
     private List<CardMappingDto> cards;
 
     public GameStarterResponseDto(Game game) throws JsonProcessingException {
-        this.roomId = game.getRoomId();
         List<PlayerDto> responseDtos = new ArrayList<>();
         List<Player> playerList = game.getPlayerList();
         for(Player player : playerList) {

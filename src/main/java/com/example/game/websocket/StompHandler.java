@@ -25,10 +25,11 @@ public class StompHandler implements ChannelInterceptor {
         try {
         if (StompCommand.SUBSCRIBE == accessor.getCommand() ||
                 StompCommand.CONNECT == accessor.getCommand()) {
-            String id = (String)accessor.getMessageHeaders().get("id");
-            User user = userRepository.getByUsername(id);
-            System.out.println(id);
+            String username = (String)accessor.getMessageHeaders().get("username");
+            User user = userRepository.getByUsername(username);
+            System.out.println(username+"조회되는중");
             String sessionId = accessor.getSessionId();
+            System.out.println(sessionId+"이건 세션아이디");
             user.setSessionId(sessionId);
             userRepository.save(user);
         }
