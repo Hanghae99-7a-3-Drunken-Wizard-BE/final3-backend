@@ -30,7 +30,7 @@ public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
 
         response.setContentType("application/json; charset=utf-8");
         User user = userDetails.getUser();
-        LoginResponseDto loginResponseDto = new LoginResponseDto(user.getUsername(), user.getNickname());
+        LoginResponseDto loginResponseDto = new LoginResponseDto(user.getUsername(), user.getNickname(), user.getId());
         String result = mapper.writeValueAsString(loginResponseDto);
         response.getWriter().write(result);
 
