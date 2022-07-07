@@ -1,5 +1,6 @@
 //package com.example.game.websocket;
 //
+//import com.example.game.Game.GameRoom;
 //import com.example.game.security.UserDetailsImpl;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.http.HttpStatus;
