@@ -20,20 +20,25 @@ public class StompHandler implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        System.out.println("STOMPHANDLER ACTIVE");
 
-        try {
-        if (StompCommand.SUBSCRIBE == accessor.getCommand() ||
-                StompCommand.CONNECT == accessor.getCommand()) {
-            String username = (String)accessor.getMessageHeaders().get("username");
-            User user = userRepository.getByUsername(username);
-            System.out.println(username+"조회되는중");
+        if(StompCommand.CONNECT == accessor.getCommand() &&
+                accessor.getFirstNativeHeader("id") != null) {
+            String stringId = accessor.getFirstNativeHeader("id");
             String sessionId = accessor.getSessionId();
+            System.out.println(stringId + " 핸들러 preSend 영역" + accessor.getCommand());
+            System.out.println(accessor.getSessionId());
+            Long id = Long.parseLong(stringId);
+            System.out.println(id+" Long 변환 완료");
             System.out.println(sessionId+"이건 세션아이디");
+            User user = userRepository.findById(id).orElseThrow(
+                    ()-> new NullPointerException("왜 안되는지 모르겠다")
+            );
+            System.out.println(user.getUsername());
             user.setSessionId(sessionId);
             userRepository.save(user);
+            System.out.println(user.getSessionId() + "세션 아이디 저장 완료?");
         }
-        } catch (RuntimeException ignored) {}
+
         return message;
     }
 }

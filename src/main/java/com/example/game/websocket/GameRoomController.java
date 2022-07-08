@@ -62,7 +62,7 @@ public class GameRoomController {
         message.setRoomId(roomId);
         message.setContent(userDetails.getUser().getNickname() + "님이 입장하셨습니다.");
         message.setType(GameMessage.MessageType.JOIN);
-        messagingTemplate.convertAndSend("/sub/chat/game/" + roomId, message);
+        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
 
         return ResponseEntity.ok().body("게임 로비에 입장했습니다.");
     }
@@ -80,7 +80,7 @@ public class GameRoomController {
         message.setRoomId(roomId);
         message.setContent(userDetails.getUser().getNickname() + "님이 나갔습니다.");
         message.setType(GameMessage.MessageType.LEAVE);
-        messagingTemplate.convertAndSend("/sub/chat/" + roomId, message);
+        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
 
         return ResponseEntity.ok().body(gameRoomService.getAllGameRooms());
     }

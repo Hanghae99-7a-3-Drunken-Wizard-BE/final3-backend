@@ -20,10 +20,8 @@ import java.util.*;
 public class Player {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long playerId;
-    @Column
-    private Long userId;
+
     @Column
     private String username;
 
@@ -75,7 +73,7 @@ public class Player {
     private int sleepDuration;
 
     @Column
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Card> cardsOnHand = new ArrayList<>();
 
     @ManyToOne
@@ -83,8 +81,8 @@ public class Player {
     private Game game;
 
     public Player(User user, Game game){
+        this.playerId = user.getId();
         this.username = user.getNickname();
-        this.userId = user.getId();
         this.health = 20;
         this.mana = 20;
         this.shield = false;

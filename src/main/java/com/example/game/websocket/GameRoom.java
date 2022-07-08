@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Entity
 public class GameRoom extends Timestamped {
@@ -30,7 +29,7 @@ public class GameRoom extends Timestamped {
     private List<User> userList;
 
     @Builder
-    public GameRoom(String roomId, String nickName, String roomName) {
+    public GameRoom(String roomId, String roomName) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.userList = new ArrayList<>();
@@ -40,6 +39,12 @@ public class GameRoom extends Timestamped {
         this.roomId = UUID.randomUUID().toString();
         this.roomName = requestDto.getRoomName();
         this.userList = new ArrayList<>();
+    }
+
+    public GameRoom(String roomId, String roomName, List<User> userList) {
+        this.roomId = roomId;
+        this.roomName = roomName;
+        this.userList = userList;
     }
 
     public int userCount() {

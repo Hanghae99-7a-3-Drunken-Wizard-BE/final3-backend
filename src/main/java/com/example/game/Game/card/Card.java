@@ -40,7 +40,7 @@ public class Card {
     public Integer manaModifier;
 
     @Column
-    public Boolean Shield;
+    public Boolean shield;
 
     @Column
     public Integer poisonDuration;

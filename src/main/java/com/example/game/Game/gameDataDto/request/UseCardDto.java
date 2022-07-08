@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UseCardDto {
-    private Long targetPlayerID;
+    private Long targetPlayerId;
     private Long cardId;
 }

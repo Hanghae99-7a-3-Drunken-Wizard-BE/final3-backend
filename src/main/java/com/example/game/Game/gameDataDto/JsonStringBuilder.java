@@ -6,19 +6,27 @@ import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.gameDataDto.response.CardsDto;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
 import com.example.game.Game.player.Player;
+import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.PlayerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class JsonStringBuilder  {
 
+    private final PlayerRepository playerRepository;
+    private final CardRepository cardRepository;
+
     public String gameStarter(Game game) throws JsonProcessingException {
-        GameStarterResponseDto responseDto = new GameStarterResponseDto(game);
+        List<Player> playerList = playerRepository.findByGame(game);
+        GameStarterResponseDto responseDto = new GameStarterResponseDto(game, playerList);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
@@ -83,5 +91,15 @@ public class JsonStringBuilder  {
         EndGameResponseDto responseDto = new EndGameResponseDto(winningTeam);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
+    }
+
+    public String cardDataToJson(List<Card> cards) throws JsonProcessingException {
+        List<CardDetailResponseDto> responseDtos = new ArrayList<>();
+        for(Card card : cards) {
+            CardDetailResponseDto responseDto = new CardDetailResponseDto(card);
+            responseDtos.add(responseDto);
+        }
+        ObjectWriter ow = new ObjectMapper().writer();
+        return ow.writeValueAsString(responseDtos);
     }
 }

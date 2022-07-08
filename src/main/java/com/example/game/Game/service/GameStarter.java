@@ -27,9 +27,9 @@ private final GameRoomRepository gameRoomRepository;
     private final GameRepository gameRepository;
 
     @Transactional
-    public Game createGameRoom (String roomId){
+    public void createGameRoom (String roomId){
         List<User> userInLobby = gameRoomRepository.findByRoomId(roomId).getUserList();
-        if(userInLobby.size() != 4) {return null;}
+        if(userInLobby.size() != 4) {return;}
         Game game = new Game(roomId);
         List<Card> gameDeck = new ArrayList<>();
 
@@ -111,10 +111,13 @@ private final GameRoomRepository gameRoomRepository;
 
         Collections.shuffle(gameDeck);
         game.setDeck(gameDeck);
-        List<Boolean> preEmptive = Arrays.asList(true, false);
+        List<Boolean> preEmptive1 = Arrays.asList(true, false);
+        List<Boolean> preEmptive2 = Arrays.asList(true, false);
         List<Integer> order = new ArrayList<>();
-        List<Integer> orderFirst = Arrays.asList(1,3);
-        List<Integer> orderSecond = Arrays.asList(2,4);
+        List<Integer> orderFirst1 = Arrays.asList(1,2);
+        List<Integer> orderFirst2 = Arrays.asList(2,1);
+        List<Integer> orderSecond1 = Arrays.asList(3,4);
+        List<Integer> orderSecond2 = Arrays.asList(4,3);
         List<CharactorClass> classes =
                 Arrays.asList(
                         CharactorClass.INVOKER,
@@ -124,20 +127,26 @@ private final GameRoomRepository gameRoomRepository;
                         CharactorClass.FARSEER,
                         CharactorClass.BLOODMAGE);
         Collections.shuffle(classes);
-        Collections.shuffle(orderFirst);
-        Collections.shuffle(orderSecond);
-        Collections.shuffle(preEmptive);
-        if (preEmptive.get(0)) {order.addAll(orderFirst);order.addAll(orderSecond);}
-        else{order.addAll(orderSecond);order.addAll(orderFirst);}
+        Collections.shuffle(preEmptive1);
+        Collections.shuffle(preEmptive2);
+        if (preEmptive1.get(0)) {
+            if(preEmptive2.get(0)) {
+                order.addAll(orderFirst1);order.addAll(orderSecond1);
+            } else {order.addAll(orderFirst2);order.addAll(orderSecond2);}
+        } else {
+            if(preEmptive2.get(0)) {
+                order.addAll(orderSecond1);order.addAll(orderFirst1);
+            } else {order.addAll(orderSecond2);order.addAll(orderFirst2);}
+        }
         List<Player> playerList = new ArrayList<>();
         for (int i = 0; i < userInLobby.size(); i++) {
             Player player = new Player(userInLobby.get(i), game);
-            player.setTeam(i<2);
+            player.setTeam(i%2 == 0);
             player.setTurnOrder(order.get(i));
             player.setCharactorClass(classes.get(i));
             playerList.add(player);
         }
         game.setPlayerList(playerList);
-        return gameRepository.save(game);
+        gameRepository.save(game);
     }
 }

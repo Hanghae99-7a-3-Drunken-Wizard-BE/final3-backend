@@ -34,7 +34,7 @@ public class ActionTurn {
     public String cardMoveProcess(Long playerId, UseCardDto useCardDto) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
-        Player targetPlayer = playerRepository.findById(useCardDto.getTargetPlayerID()).orElseThrow(
+        Player targetPlayer = playerRepository.findById(useCardDto.getTargetPlayerId()).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
         Card card = cardRepository.findByCardId(useCardDto.getCardId());
         applyCardToCharacter.cardInitiator(player,targetPlayer,card);

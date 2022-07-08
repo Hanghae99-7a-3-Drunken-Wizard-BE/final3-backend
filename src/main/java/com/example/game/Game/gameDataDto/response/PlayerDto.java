@@ -30,7 +30,7 @@ public class PlayerDto {
     public int weakDuration;
     public int manaCostModifierDuration;
     private int sleepDuration;
-    private List<CardsDto> cardsOnHand;
+    private List<CardDetailResponseDto> cardsOnHand;
 
     public PlayerDto(Player player) throws JsonProcessingException{
         this.playerId = player.getPlayerId();
@@ -67,10 +67,10 @@ public class PlayerDto {
 
         this.sleepDuration = player.getSleepDuration();
 
-        List<CardsDto> cardIds = new ArrayList<>();
+        List<CardDetailResponseDto> cardIds = new ArrayList<>();
         List<Card> cards = player.getCardsOnHand();
         for (Card card : cards) {
-            cardIds.add(new CardsDto(card));
+            cardIds.add(new CardDetailResponseDto(card));
         }
         this.cardsOnHand = cardIds;
     }

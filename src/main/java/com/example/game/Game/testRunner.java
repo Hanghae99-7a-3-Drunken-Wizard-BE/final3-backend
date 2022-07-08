@@ -8,6 +8,7 @@ import com.example.game.Game.gameDataDto.request.CardRequestDto;
 import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
 import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.Game.service.GameCloser;
 import com.example.game.Game.service.GameStarter;
@@ -16,6 +17,10 @@ import com.example.game.Game.turn.EndTurn;
 import com.example.game.Game.turn.PreTurn;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
+import com.example.game.websocket.GameController;
+import com.example.game.websocket.GameMessage;
+import com.example.game.websocket.GameRoom;
+import com.example.game.websocket.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -37,6 +42,9 @@ public class testRunner implements ApplicationRunner {
     private final ApplyCardToCharacter applyCardToCharacter;
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
+    private final GameRepository gameRepository;
+    private final GameController gameController;
+    private final GameRoomRepository gameRoomRepository;
     private final PreTurn preTurn;
     private final ActionTurn actionTurn;
     private final EndTurn endTurn;
@@ -48,31 +56,45 @@ public class testRunner implements ApplicationRunner {
 //
 //
 //
-//        User user1 = new User("user1", "111", "nickname1", "email@emal1.com");
-//        User user2 = new User("user2", "111", "nickname2", "email@emal2.com");
-//        User user3 = new User("user3", "111", "nickname3", "email@emal3.com");
-//        User user4 = new User("user4", "111", "nickname4", "email@emal4.com");
+        User user1 = new User("user1", "111", "nickname1", "email@emal1.com");
+        User user2 = new User("user2", "111", "nickname2", "email@emal2.com");
+        User user3 = new User("user3", "111", "nickname3", "email@emal3.com");
+        User user4 = new User("user4", "111", "nickname4", "email@emal4.com");
 //        User user5 = new User("user5", "111", "nickname5", "email@emal5.com");
 //        User user6 = new User("user6", "111", "nickname6", "email@emal6.com");
 //        User user7 = new User("user7", "111", "nickname7", "email@emal7.com");
 //        User user8 = new User("user8", "111", "nickname8", "email@emal8.com");
 //
-//        List<User> userList = new ArrayList<>();
+
+
+        user1.setRoomId("1");
+        user2.setRoomId("1");
+        user3.setRoomId("1");
+        user4.setRoomId("1");
+        List<User> userList = new ArrayList<>();
 //        List<User> userList1 = new ArrayList<>();
 //
-//        userList.add(user1);
-//        userList.add(user2);
-//        userList.add(user3);
-//        userList.add(user4);
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
 //        userList1.add(user5);
 //        userList1.add(user6);
 //        userList1.add(user7);
 //        userList1.add(user8);
 //
-//        userRepository.saveAll(userList);
+        userRepository.saveAll(userList);
 //        userRepository.saveAll(userList1);
 //
-//        Game game1 = gameStarter.createGameRoom("1", userList);
+        GameRoom gameRoom = new GameRoom("1", "testRoom" ,userList);
+        gameRoomRepository.save(gameRoom);
+
+
+//        Game game = gameStarter.createGameRoom("1");
+//        gameRepository.save(game);
+//
+//        List<Card> cards = game1.getDeck();
+//        System.out.println(jsonStringBuilder.cardDataToJson(cards));
 //        Game game2 = gameStarter.createGameRoom("2", userList1);
 //
 //        System.out.println(jsonStringBuilder.gameStarter(game1));

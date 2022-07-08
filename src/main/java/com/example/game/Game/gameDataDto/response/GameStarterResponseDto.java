@@ -14,21 +14,12 @@ import java.util.List;
 @Setter
 public class GameStarterResponseDto {
     private List<PlayerDto> players;
-    private List<CardMappingDto> cards;
 
-    public GameStarterResponseDto(Game game) throws JsonProcessingException {
+    public GameStarterResponseDto(Game game, List<Player> playerList) throws JsonProcessingException {
         List<PlayerDto> responseDtos = new ArrayList<>();
-        List<Player> playerList = game.getPlayerList();
         for(Player player : playerList) {
             responseDtos.add(new PlayerDto(player));
         }
         this.players = responseDtos;
-        List<Card> deck = game.getDeck();
-        List<CardMappingDto> cards = new ArrayList<>();
-        for(Card card : deck) {
-            cards.add(new CardMappingDto(card.getCardId(), card.getCardName()));
-        }
-        this.cards = cards;
-
     }
 }
