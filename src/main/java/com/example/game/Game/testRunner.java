@@ -89,6 +89,17 @@ public class testRunner implements ApplicationRunner {
         GameRoom gameRoom = new GameRoom("1", "testRoom" ,userList);
         gameRoomRepository.save(gameRoom);
 
+        gameStarter.createGameRoom("1");
+
+        Game game = gameRepository.findByRoomId("1");
+        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
+
+        System.out.println(deck.get(0).getCardName());
+        System.out.println(deck.get(1).getCardName());
+        System.out.println(deck.get(2).getCardName());
+        System.out.println(deck.get(3).getCardName());
+
+
 
 //        Game game = gameStarter.createGameRoom("1");
 //        gameRepository.save(game);

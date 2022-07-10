@@ -15,8 +15,8 @@ public class CardDrawResponseDto {
     private int selectable;
     private List<CardDetailResponseDto> cardDrawed;
 
-    public CardDrawResponseDto(Player player, List<Card> cards) throws JsonProcessingException {
-        if (player.getCardsOnHand().size() <= 6) {this.selectable = Math.min(6 - player.getCardsOnHand().size(), 2);}
+    public CardDrawResponseDto(List<Card> cardsOnHand, List<Card> cards) throws JsonProcessingException {
+        if (cardsOnHand.size() <= 6) {this.selectable = Math.min(6 - cardsOnHand.size(), 2);}
         else {throw new RuntimeException("카드소유한계 에러");}
         List<CardDetailResponseDto> cardIds = new ArrayList<>();
         for (Card card : cards) {

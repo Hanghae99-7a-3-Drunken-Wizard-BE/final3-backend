@@ -13,7 +13,7 @@ public class AdditionalDrawResponseDto {
     private CardDetailResponseDto card;
     private boolean drawSuccess;
 
-    public AdditionalDrawResponseDto(Player player, Card card, boolean drawSuccess) {
+    public AdditionalDrawResponseDto(Card card, boolean drawSuccess) {
         this.card = new CardDetailResponseDto(card);
         this.drawSuccess = drawSuccess;
     }

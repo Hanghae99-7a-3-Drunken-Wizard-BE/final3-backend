@@ -6,7 +6,6 @@ import com.example.game.Game.card.CardType;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.request.CardRequestDto;
 import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
-import com.example.game.Game.gameDataDto.request.PlayerRequestDto;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -42,14 +42,15 @@ public class PreTurn {
 
 
     @Transactional
-    public String cardDrawIntiator(Long playerId) throws JsonProcessingException {
+    public String cardDrawInitiator(Long playerId) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         Game game = player.getGame();
-        List<Card> deck = game.getDeck();
-        if (game.getDeck().size() < 3) {shuffleGraveyardToDeck(game);}
+        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
+        List<Card> cardOnHand = cardRepository.findByLyingPlace(playerId);
+        if (deck.size() < 3) {shuffleGraveyardToDeck(game);}
         List<Card> cards = new ArrayList<>();
-        if (player.getCardsOnHand().size() < 6) {
+        if (cardOnHand.size() < 6) {
             if (player.getCharactorClass().equals(CharactorClass.FARSEER)) {
 
                 for (int i = 0; i < 3; i++) {
@@ -71,24 +72,23 @@ public class PreTurn {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        List<Card> cardsOnHand = cardRepository.findByLyingPlaceAndGame(playerId, game);
         if (requestDto.getSelectedCards().size() == 1 && player.getCharactorClass() != CharactorClass.FARSEER) {
             Card card = cardRepository.findByCardId(requestDto.getSelectedCards().get(0).getCardId());
             player.addOnHand(card);
-            game.removeFromDeck(card);
-        }
-        List<CardRequestDto> selectedCards = requestDto.getSelectedCards();
-        for (CardRequestDto selectedCard : selectedCards) {
-            Card card = cardRepository.findByCardId(selectedCard.getCardId());
-            player.addOnHand(card);
-            game.removeFromDeck(card);
             Card notSelected = game.getDeck().get(0);
-            game.removeFromDeck(notSelected);
             game.addTograveyard(notSelected);
+        } else if(requestDto.getSelectedCards().size() == 2){
+            List<CardRequestDto> selectedCards = requestDto.getSelectedCards();
+            for (CardRequestDto selectedCard : selectedCards) {
+                Card card = cardRepository.findByCardId(selectedCard.getCardId());
+                player.addOnHand(card);
+            }
         }
         boolean drawSuccess;
         Card additionalCard = game.getDeck().get(0);
-        if(player.getCardsOnHand().size() >= 6) {
-            return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(player, additionalCard, false);}
+        if(cardsOnHand.size() >= 6) {
+            return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(additionalCard, false);}
         else{
             if (
                     player.getCharactorClass().equals(CharactorClass.INVOKER)||
@@ -97,22 +97,19 @@ public class PreTurn {
                 if (player.getCharactorClass().equals(CharactorClass.INVOKER)
                         && additionalCard.getCardType().equals(CardType.ATTACK)){
                     player.addOnHand(additionalCard);
-                    game.removeFromDeck(additionalCard);
                     drawSuccess = true;}
                 else if (player.getCharactorClass().equals(CharactorClass.ENCHANTER)
                         && additionalCard.getCardType().equals(CardType.ENCHANTMENT)){
                     player.addOnHand(additionalCard);
-                    game.removeFromDeck(additionalCard);
                     drawSuccess = true;}
                 else if (player.getCharactorClass().equals(CharactorClass.WAROCK)
                         && additionalCard.getCardType().equals(CardType.CURSE)){
                     player.addOnHand(additionalCard);
-                    game.removeFromDeck(additionalCard);
                     drawSuccess = true;}
-                else {drawSuccess = false; game.removeFromDeck(additionalCard);
-                game.addTograveyard(additionalCard);}
-
-                return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(player, additionalCard, drawSuccess);
+                else {drawSuccess = false;
+                game.addTograveyard(additionalCard);
+                }
+                return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(additionalCard, drawSuccess);
             } else {
                 return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder();
             }}
@@ -125,10 +122,13 @@ public class PreTurn {
     }
 
     private void shuffleGraveyardToDeck(Game game) {
-        game.graveyardToDeck();
+        List<Card> graveyard = cardRepository.findByLyingPlaceAndGame(-1L, game);
+        game.graveyardToDeck(graveyard);
+        List<Card> deck = cardRepository.findByGame(game);
+        Collections.shuffle(deck);
+        for (int i = 0; i < deck.size(); i++) {
+            deck.get(i).setCardOrder(i);
+        }
     }
-
-
-
 }
 

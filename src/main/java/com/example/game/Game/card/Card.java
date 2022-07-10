@@ -66,6 +66,12 @@ public class Card {
     @Column
     public Integer sleepDuration;
 
+    @Column
+    public long lyingPlace;
+
+    @Column
+    public Integer cardOrder;
+
     @OneToOne
     @JoinColumn
     public SpecialEffect specialEffect;

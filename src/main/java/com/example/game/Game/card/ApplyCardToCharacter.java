@@ -72,7 +72,6 @@ public class ApplyCardToCharacter {
         bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
-        player.removeFromHand(card);
     }
 
     @Transactional
@@ -87,7 +86,6 @@ public class ApplyCardToCharacter {
         bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
-        player.removeFromHand(card);
     }
 
     @Transactional
@@ -105,7 +103,6 @@ public class ApplyCardToCharacter {
         bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
-        player.removeFromHand(card);
     }
 
     @Transactional
@@ -124,7 +121,6 @@ public class ApplyCardToCharacter {
         bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
-        player.removeFromHand(card);
     }
 
     @Transactional
@@ -133,7 +129,6 @@ public class ApplyCardToCharacter {
             targetPlayer.setShield(false);} else{targetPlayer.statusUpdate(card);}
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
-        player.removeFromHand(card);
     }
 
     @Transactional
@@ -144,7 +139,6 @@ public class ApplyCardToCharacter {
         bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
-        player.removeFromHand(card);
     }
 
     @Transactional

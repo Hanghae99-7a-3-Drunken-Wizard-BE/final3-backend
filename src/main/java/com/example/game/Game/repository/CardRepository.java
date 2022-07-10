@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
     Card findByCardId(Long id);
-    Card getByCardId(Long id);
     List<Card> findByGame(Game game);
+    List<Card> findByLyingPlaceAndGame(long id, Game game);
+    List<Card> findByLyingPlace(long id);
+    List<Card> findByLyingPlaceAndGameOrderByCardOrderAsc(long id, Game game);
 }

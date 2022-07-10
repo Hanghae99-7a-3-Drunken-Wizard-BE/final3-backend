@@ -77,7 +77,6 @@ public class ActionTurn {
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         Card card = cardRepository.findByCardId(discardDto.getCardId());
         game.addTograveyard(card);
-        player.removeFromHand(card);
         return jsonStringBuilder.discard(discardDto);
     }
 

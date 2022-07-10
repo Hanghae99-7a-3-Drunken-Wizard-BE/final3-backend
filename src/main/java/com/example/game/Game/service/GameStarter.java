@@ -11,6 +11,7 @@ import com.example.game.Game.card.magic.curse.*;
 import com.example.game.Game.card.magic.enchantment.*;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
+import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.model.user.User;
 import com.example.game.websocket.GameRoomRepository;
@@ -25,6 +26,7 @@ import java.util.*;
 public class GameStarter {
 private final GameRoomRepository gameRoomRepository;
     private final GameRepository gameRepository;
+    private final CardRepository cardRepository;
 
     @Transactional
     public void createGameRoom (String roomId){
@@ -32,7 +34,7 @@ private final GameRoomRepository gameRoomRepository;
         if(userInLobby.size() != 4) {return;}
         Game game = new Game(roomId);
         List<Card> gameDeck = new ArrayList<>();
-
+        int j = 0;
         for (int i = 0; i < 4; i++) {
             gameDeck.add(new BoulderStrike(game));
         }
@@ -109,7 +111,6 @@ private final GameRoomRepository gameRoomRepository;
             gameDeck.add(new Panacea(game));
         }
 
-        Collections.shuffle(gameDeck);
         game.setDeck(gameDeck);
         List<Boolean> preEmptive1 = Arrays.asList(true, false);
         List<Boolean> preEmptive2 = Arrays.asList(true, false);
@@ -148,5 +149,10 @@ private final GameRoomRepository gameRoomRepository;
         }
         game.setPlayerList(playerList);
         gameRepository.save(game);
+        List<Card> deck = cardRepository.findByGame(game);
+        Collections.shuffle(deck);
+        for (int i = 0; i < deck.size(); i++) {
+            deck.get(i).setCardOrder(i);
+        }
     }
 }

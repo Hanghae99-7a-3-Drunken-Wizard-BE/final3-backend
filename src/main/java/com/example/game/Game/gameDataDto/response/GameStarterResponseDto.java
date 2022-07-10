@@ -4,7 +4,9 @@ import com.example.game.Game.Game;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -12,14 +14,13 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class GameStarterResponseDto {
     private List<PlayerDto> players;
+    private List<CardDetailResponseDto> cards;
 
-    public GameStarterResponseDto(Game game, List<Player> playerList) throws JsonProcessingException {
-        List<PlayerDto> responseDtos = new ArrayList<>();
-        for(Player player : playerList) {
-            responseDtos.add(new PlayerDto(player));
-        }
-        this.players = responseDtos;
+    public GameStarterResponseDto(List<PlayerDto> players, List<CardDetailResponseDto> cards) {
+        this.players = players;
+        this.cards = cards;
     }
 }

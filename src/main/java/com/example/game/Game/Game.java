@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,15 +19,15 @@ import java.util.List;
 public class Game {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long gameId;
+
+    @Column
     private String roomId;
 
     @Column
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Card> deck;
-
-    @Column
-    @OneToMany
-    private List<Card> graveyard;
 
     @Column
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -36,29 +37,15 @@ public class Game {
         this.roomId = roomId;
     }
 
-    public void addToDeck(List<Card> cards){
-        this.deck.addAll(cards);
-    }
-
-    public void removeFromDeck(Card card){
-        this.deck.remove(card);
-    }
-
     public void addTograveyard(Card card){
-        this.graveyard.add(card);
+        card.setLyingPlace(-1L);
     }
 
-    public void removeFromDeck(List<Card> cards) {
-        this.deck.removeAll(cards);
+    public void graveyardToDeck (List<Card> graveyard) {
+        Collections.shuffle(graveyard);
+        for(Card card : graveyard) {card.setLyingPlace(this.gameId * -1);}
     }
-
-    public void graveyardToDeck () {
-        Collections.shuffle(this.graveyard);
-        this.deck.addAll(this.graveyard);
-        this.graveyard.clear();
-    }
-
-    public void shuffleDeck() {
+    public void shuffleDeck () {
         Collections.shuffle(this.deck);
     }
 }

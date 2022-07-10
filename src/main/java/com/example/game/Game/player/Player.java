@@ -72,10 +72,6 @@ public class Player {
     @Column
     private int sleepDuration;
 
-    @Column
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Card> cardsOnHand = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "room_Id")
     private Game game;
@@ -211,11 +207,7 @@ public class Player {
     }
 
     public void addOnHand(Card card){
-        this.cardsOnHand.add(card);
-    }
-
-    public void removeFromHand(Card card){
-        this.cardsOnHand.remove(card);
+        card.setLyingPlace(this.playerId);
     }
 
     public void applyPoison() {

@@ -19,8 +19,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
-
 @RequiredArgsConstructor
 @Controller
 public class GameController {
@@ -100,7 +98,7 @@ public class GameController {
     }
 
     private void draw(GameMessage message)  throws JsonProcessingException {
-        String messageContent = preTurn.cardDrawIntiator(message.getSender());
+        String messageContent = preTurn.cardDrawInitiator(message.getSender());
         GameMessage gameMessage = new GameMessage();
         if (messageContent.contains("endDraw")) {
             gameMessage.setType(GameMessage.MessageType.ENDDRAW);
