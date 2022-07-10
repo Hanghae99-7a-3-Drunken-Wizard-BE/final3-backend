@@ -51,15 +51,10 @@ public class DtoGenerator {
     public GameStarterResponseDto gameStarterResponseDtoMaker (Game game) throws JsonProcessingException {
         List<Player> players = playerRepository.findByGame(game);
         List<PlayerDto> playerDtos = new ArrayList<>();
-        List<Card> allCards = cardRepository.findByGame(game);
-        List<CardDetailResponseDto> allCardsDtos = new ArrayList<>();
         for (Player player : players) {
             playerDtos.add(playerDtoMaker(player));
         }
-        for (Card card : allCards) {
-            allCardsDtos.add(new CardDetailResponseDto(card));
-        }
-        return new GameStarterResponseDto(playerDtos, allCardsDtos);
+        return new GameStarterResponseDto(playerDtos);
     }
     public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
         PoisonDamageCheckResponseDto responseDto = new PoisonDamageCheckResponseDto(gameOver);

@@ -21,9 +21,15 @@ public class EndTurn {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음")
         );
-        int nextOrder = (player.getTurnOrder() == 4) ? 1 : player.getTurnOrder()+1;
+        int order = player.getTurnOrder();
+        for (int i = 0; i < 4; i++) {
+            order = (order == 4) ? 1 : order+1;
+            if (!playerRepository.findByGameAndTurnOrder(player.getGame(),order).isDead()) {
+                break;
+            }
+        }
         player.durationDecrease();
-        Player nextPlayer = playerRepository.findByGameAndTurnOrder(player.getGame(), nextOrder);
+        Player nextPlayer = playerRepository.findByGameAndTurnOrder(player.getGame(), order);
         return jsonStringBuilder.endTurnResponseDtoJsonBuilder(player, nextPlayer);
 
     }

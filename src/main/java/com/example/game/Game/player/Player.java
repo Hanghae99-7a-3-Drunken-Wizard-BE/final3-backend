@@ -223,6 +223,9 @@ public class Player {
         if (this.weakDuration > 0) {this.weakDuration -= 1;}
         if (this.manaCostModifierDuration > 0) {this.manaCostModifierDuration -= 1;}
         if (this.sleepDuration > 0) {this.sleepDuration -= 1;}
+        if (this.damageModifierDuration < 0) {this.damageModifierDuration += 1;}
+        if (this.manaCostModifierDuration < 0) {this.manaCostModifierDuration += 1;}
+        if (this.weakDuration < 0) {this.weakDuration += 1;}
     }
 
     public void newStatusUpdate (Player player, Player targetPlayer, Card card) {
@@ -250,5 +253,35 @@ public class Player {
         if (card.getHealthModifier() < 0) {return amplificationAttenuationCheck + armorWeakCheck;}
         else if (card.getHealthModifier() > 0) {return amplificationAttenuationCheck * -1;}
         else {return 0;}
+    }
+
+    public void applyHealerHealWithDamageModifierPositive() {
+        if(this.petrifiedDuration <= 0) {
+            this.health += 4;
+            this.poisonedDuration = 0;}
+    }
+
+    public void applyHealerHealWithDamageModifierNegative() {
+        if(this.petrifiedDuration <= 0) {
+            this.health += 2;
+            this.poisonedDuration = 0;}
+    }
+
+    public void applyHealerHeal() {
+        if(this.petrifiedDuration <= 0) {
+            this.health += 3;
+            this.poisonedDuration = 0;}
+    }
+
+    public void applyhealerHealManaCost() {
+        this.mana -= 4;
+    }
+
+    public void applyhealerHealManaCostWithModifierPositive() {
+        this.mana -= 3;
+    }
+
+    public void applyhealerHealManaCostWithModifierNegative() {
+        this.mana -= 5;
     }
 }

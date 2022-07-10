@@ -1,12 +1,8 @@
 package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
-import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.ObjectBuilder;
-import com.example.game.Game.gameDataDto.request.CardRequestDto;
-import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
-import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
@@ -18,7 +14,6 @@ import com.example.game.Game.turn.PreTurn;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameController;
-import com.example.game.websocket.GameMessage;
 import com.example.game.websocket.GameRoom;
 import com.example.game.websocket.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,9 +48,6 @@ public class testRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-//
-//
-//
         User user1 = new User("user1", "111", "nickname1", "email@emal1.com");
         User user2 = new User("user2", "111", "nickname2", "email@emal2.com");
         User user3 = new User("user3", "111", "nickname3", "email@emal3.com");
@@ -89,15 +81,15 @@ public class testRunner implements ApplicationRunner {
         GameRoom gameRoom = new GameRoom("1", "testRoom" ,userList);
         gameRoomRepository.save(gameRoom);
 
-        gameStarter.createGameRoom("1");
-
-        Game game = gameRepository.findByRoomId("1");
-        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
-
-        System.out.println(deck.get(0).getCardName());
-        System.out.println(deck.get(1).getCardName());
-        System.out.println(deck.get(2).getCardName());
-        System.out.println(deck.get(3).getCardName());
+//        gameStarter.createGameRoom("1");
+//
+//        Game game = gameRepository.findByRoomId("1");
+//        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
+//
+//        System.out.println(deck.get(0).getCardName());
+//        System.out.println(deck.get(1).getCardName());
+//        System.out.println(deck.get(2).getCardName());
+//        System.out.println(deck.get(3).getCardName());
 
 
 

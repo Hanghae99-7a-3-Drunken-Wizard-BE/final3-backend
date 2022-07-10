@@ -60,6 +60,10 @@ public class GameController {
             System.out.println("여기에 들어오나" + message.getType());
             useCard(message);
         }
+        if (GameMessage.MessageType.USESPECIAL.equals(message.getType())) {
+            System.out.println("여기에 들어오나" + message.getType());
+            useSpecial(message);
+        }
         if (GameMessage.MessageType.DISCARD.equals(message.getType())) {
             System.out.println("여기에 들어오나" + message.getType());
             discard(message);
@@ -141,6 +145,9 @@ public class GameController {
         gameMessage.setType(GameMessage.MessageType.USECARD);
         gameMessage.setContent(messageContent);
         messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
+    }
+
+    private void useSpecial(GameMessage message) {
     }
 
     private void discard(GameMessage message) throws JsonProcessingException {

@@ -33,7 +33,9 @@ public class ApplyCardToCharacter {
                 applyHealtoMultipleTarget(player, players, card);
             } else if (card.getCardName().equals("Dispel")) {
                 applyDispel(player, targetPlayer, card);
-            } else {
+            } else if (card.getCardId() == 0L) {
+                applyHealerHealtoTarget(player, targetPlayer);
+            }else {
                 if (card.getTarget() == Target.ME) {
                     applyCardtoTarget(player, player, card);
                 }
@@ -72,6 +74,18 @@ public class ApplyCardToCharacter {
         bloodmageManaFeedback(player);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         game.addTograveyard(card);
+    }
+
+
+    @Transactional
+    public void applyHealerHealtoTarget(Player player, Player targetPlayer) {
+        if (player.damageModifierDuration > 0){if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.applyHealerHealWithDamageModifierPositive();}}
+        else if(player.damageModifierDuration < 0){if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.applyHealerHealWithDamageModifierNegative();}}
+        else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
+            targetPlayer.setShield(false);} else{targetPlayer.applyHealerHeal();}}
+        healerHealmanaCostApply(player);
     }
 
     @Transactional
@@ -153,6 +167,12 @@ public class ApplyCardToCharacter {
         if(player.manaCostModifierDuration > 0){player.applyHealManaCostWithModifierPositiveForHealer(card);}
         else if (player.manaCostModifierDuration < 0) {player.applyHealManaCostWithModifierNegativeForHealer(card);}
         else{player.applyHealManaCostForHealer(card);}
+    }
+    @Transactional
+    public void healerHealmanaCostApply(Player player) {
+        if(player.manaCostModifierDuration > 0){player.applyhealerHealManaCostWithModifierPositive();}
+        else if (player.manaCostModifierDuration < 0) {player.applyhealerHealManaCostWithModifierNegative();}
+        else{player.applyhealerHealManaCost();}
     }
 
     @Transactional

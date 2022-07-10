@@ -19,6 +19,6 @@ public class GameMessage {
     public enum MessageType {
         JOIN, LEAVE, TALK, START, PRECHECK,
         DRAW, ENDDRAW, SELECT, TURNCHECK,
-        USECARD, DISCARD, ENDGAME, ENDTURN
+        USECARD, USESPECIAL, DISCARD, ENDGAME, ENDTURN
     }
 }

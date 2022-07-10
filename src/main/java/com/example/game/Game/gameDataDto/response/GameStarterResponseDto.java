@@ -17,10 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 public class GameStarterResponseDto {
     private List<PlayerDto> players;
-    private List<CardDetailResponseDto> cards;
 
-    public GameStarterResponseDto(List<PlayerDto> players, List<CardDetailResponseDto> cards) {
+    public GameStarterResponseDto(List<PlayerDto> players) {
         this.players = players;
-        this.cards = cards;
     }
 }
