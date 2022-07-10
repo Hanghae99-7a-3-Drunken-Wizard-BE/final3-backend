@@ -11,6 +11,8 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 @Component
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
@@ -18,7 +20,8 @@ public class StompHandler implements ChannelInterceptor {
     private final UserRepository userRepository;
 
     @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+
+    public synchronized Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
         if(StompCommand.CONNECT == accessor.getCommand() &&
@@ -41,4 +44,6 @@ public class StompHandler implements ChannelInterceptor {
 
         return message;
     }
+
+
 }

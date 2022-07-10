@@ -37,10 +37,11 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
-        if (user.getRoomId() != null) {
+        if (user != null) {
             GameRoom room = gameRoomRepository.findByRoomId(user.getRoomId());
             room.removeUser(user);
             user.setRoomId(null);
         }
+        System.out.println("웹소켓 연결해제가 감지됨");
     }
 }
