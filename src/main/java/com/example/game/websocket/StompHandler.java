@@ -1,88 +1,104 @@
 //package com.example.game.websocket;
 //
+//import com.example.game.repository.user.UserRepository;
 //import com.example.game.security.jwt.JwtDecoder;
+//import com.example.game.websocket.ChatMessage;
 //import lombok.RequiredArgsConstructor;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.cglib.core.internal.Function;
-//import org.springframework.context.event.EventListener;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-//import org.springframework.messaging.simp.SimpMessageSendingOperations;
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.messaging.Message;
+//import org.springframework.messaging.MessageChannel;
+//import org.springframework.messaging.simp.stomp.StompCommand;
 //import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 //import org.springframework.messaging.support.ChannelInterceptor;
 //import org.springframework.stereotype.Component;
-//import org.springframework.web.socket.messaging.SessionConnectedEvent;
-//import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 //
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.concurrent.ConcurrentHashMap;
-//import java.util.function.Predicate;
-//import java.util.stream.Collectors;
+//import java.util.Optional;
 //
+//@Slf4j
 //@RequiredArgsConstructor
 //@Component
 //public class StompHandler implements ChannelInterceptor {
 //
 //    private final JwtDecoder jwtDecoder;
+//    private final ChatService chatService;
+//    private final RedisRepository redisRepository;
+//    private final RoomRepository roomRepository;
+//    private final UserRepository userRepository;
+//    private final EnterUserRepository enterUserRepository;
+//    private final Long min = 0L;
 //
-//    @Autowired
-//    private SimpMessageSendingOperations messagingTemplate;
 //
-//    private static List<String> userList = new ArrayList<>();
+//    @Override
+//    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+//        // websocket 연결시 헤더의 jwt token 검증
+//        if (StompCommand.CONNECT == accessor.getCommand()) {
 //
-//    //중복 검색 방지용 출처: https://howtodoinjava.com/java8/java-stream-distinct-examples/
-//    public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-//        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-//        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-//    }
+//            jwtDecoder.decodeUsername(accessor.getFirstNativeHeader("Authorization"));
 //
-//    // SessionConnect시 nickname을 전달하여 사용자 목록에 추가
-//    @EventListener
-//    public ResponseEntity handleWebSocketConnectListener(SessionConnectedEvent event) {
-//        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-//        String nickName = jwtDecoder.decodeNickname(headers.getNativeHeader("Authorization").get(0));
-//        System.out.println(nickName + " 님이 WebSocket에 연결되었습니다.");
+//        } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) {
 //
-//        if (nickName != null) {
-//            userList.add(nickName);
-//            System.out.println(userList);
+//            String roomId = chatService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
+//            String sessionId = (String) message.getHeaders().get("simpSessionId");
+//
+//            redisRepository.setUserEnterInfo(sessionId, roomId);
+//            //기존 유저카운터 증가
+////            redisRepository.plusUserCount(roomId);
+////            String name = jwtDecoder.decodeUsername(accessor.getFirstNativeHeader("Authorization").substring(7));
+//            String name = jwtDecoder.decodeUsername(accessor.getFirstNativeHeader("Authorization"));
+//
+//
+//            redisRepository.setNickname(sessionId, name);
+//            try {
+//                chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.JOIN).roomId(roomId).sender(name).build());
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//            if (roomId != null) {
+//                Room room = roomRepository.findByroomId(roomId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방입니다."));
+//                room.setUserCount(redisRepository.getUserCount(roomId));
+//                if (redisRepository.getUserCount(roomId) < 0) {
+//                    room.setUserCount(min);
+//                }
+////                roomRepository.save(room);
+//            }
+//
+//        } else if (StompCommand.DISCONNECT == accessor.getCommand()) {
+//            String sessionId = (String) message.getHeaders().get("simpSessionId");
+//
+//            String roomId = redisRepository.getUserEnterRoomId(sessionId);
+//            String name = redisRepository.getNickname(sessionId);
+//
+//            if (roomId != null) {
+//                redisRepository.minusUserCount(roomId);
+//
+//                try {
+//                    chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.QUIT).roomId(roomId).sender(name).build());
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                Room room = roomRepository.findByroomId(roomId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방입니다.(DISCONNECT)"));
+//
+////                if (roomId != null) {
+////                    System.out.println("DISCONNECT 인원수 증가한걸 적용");
+////                    room.setUserCount(redisRepository.getUserCount(roomId));
+////                    roomRepository.save(room);
+////                }
+//
+//                User user = userRepository.findByNickname(name);
+//                if (enterUserRepository.findByRoomAndUser(room, user).getRoom().getRoomId().equals(roomId)) {
+////                    EnterUser enterUser = enterUserRepository.findByRoomAndUser(room, user);
+////                    enterUserRepository.delete(enterUser);
+//                    log.info("USERENTER_DELETE {}, {}", name, roomId);
+//                }
+//
+//                redisRepository.removeUserEnterInfo(sessionId);
+//                log.info("DISCONNECTED {}, {}", sessionId, roomId);
+//            }
 //        }
-//        userList.stream()
-//                .filter(distinctByKey(p -> p.equals(nickName)))
-//                .collect(Collectors.toList());
-//
-//        System.out.println(userList);
-//
-//        return ResponseEntity.ok().body(userList + "유저 리스트에서 " + nickName + " 유저를 추가했습니다.");
-//    }
-//
-//    // SessionDisconnect시 nickname을 전달하여 사용자 목록에서 삭제
-//    @EventListener
-//    public ResponseEntity handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-//        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-//
-//        String nickName = jwtDecoder.decodeNickname(headers.getNativeHeader("Authorization").get(0));
-//        System.out.println(nickName + " 님이 WebSocket에서 연결을 끊었습니다.");
-//
-//        if (nickName != null) {
-//            ResponseEntity.ok("User Disconnected : " + nickName);
-//
-//            ChatMessage chatMessage = new ChatMessage();
-//            chatMessage.setType(ChatMessage.MessageType.LEAVE);
-//            chatMessage.setSender(nickName);
-//
-//            System.out.println("User Disconnected : " + nickName);
-//
-//            userList.remove(nickName);
-//            System.out.println(userList);
-//
-//            messagingTemplate.convertAndSend("/sub/public", chatMessage);
-//        }
-//        userList.stream()
-//                .filter(distinctByKey(p -> p.equals(nickName))) // 중복되는 닉네임 제거.
-//                .collect(Collectors.toList());
-//        return ResponseEntity.ok().body(userList + "유저 리스트에서 " + nickName + " 유저를 삭제하였습니다.");
+//        return message;
 //    }
 //}

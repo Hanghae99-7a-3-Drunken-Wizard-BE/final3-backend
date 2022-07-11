@@ -19,7 +19,7 @@ public class ChatController {
 
     private final SimpMessageSendingOperations sendingOperations;
 
-//    private static List<String> userList = new ArrayList<>();
+    private static List<String> userList = new ArrayList<>();
 
     @MessageMapping("/chat/send")
     public ResponseEntity message(ChatMessage message) {
