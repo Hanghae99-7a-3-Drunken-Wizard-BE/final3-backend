@@ -34,12 +34,10 @@ public class ActionTurn {
     public String cardMoveProcess(Long playerId, UseCardDto useCardDto) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
-        Player targetPlayer = null;
-        if(useCardDto.getTargetPlayerId() != null) {
-        targetPlayer = playerRepository.findById(useCardDto.getTargetPlayerId()).orElseThrow(
-                ()->new NullPointerException("플레이어 없음"));
-        }
         List<Player> appliedPlayerList = new ArrayList<>();
+        Player targetPlayer = playerRepository.findById((useCardDto.getTargetPlayerId() != null) ?
+                useCardDto.getTargetPlayerId() : playerId
+        ).orElseThrow(()->new NullPointerException("플레이어 없음"));
         if (useCardDto.getCardId() == 0L) {
             if (player.getMana() < (-4+manaCostModification(player)) * -1) {
                 return "마나부족";
@@ -54,9 +52,12 @@ public class ActionTurn {
         }
         else {
             Card card = cardRepository.findByCardId(useCardDto.getCardId());
+            System.out.println(player.getUsername());
+
+            if(card.manaCost != null) {
             if (player.getMana() < (card.manaCost+manaCostModification(player)) * -1 && player.getCharactorClass() != CharactorClass.BLOODMAGE) {
                 return "마나부족";
-            }
+            }}
             applyCardToCharacter.cardInitiator(player, targetPlayer, card);
             if (card.getTarget() == Target.ME) {
                 appliedPlayerList.add(player);

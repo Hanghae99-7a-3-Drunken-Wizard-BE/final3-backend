@@ -25,10 +25,10 @@ public class EndGame {
     public String gameEnd(String roomId) throws JsonProcessingException {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         Game game = gameRepository.findByRoomId(roomId);
-        List<Player> team1 = playerRepository.findByGameAndTeam(game, true);
-        List<Player> team2 = playerRepository.findByGameAndTeam(game, false);
-        boolean team1Eliminated = team1.get(0).isDead() && team1.get(1).isDead();
-        boolean team2Eliminated = team2.get(0).isDead() && team2.get(1).isDead();
+//        List<Player> team1 = playerRepository.findByGameAndTeam(game, true);
+//        List<Player> team2 = playerRepository.findByGameAndTeam(game, false);
+//        boolean team1Eliminated = team1.get(0).isDead() && team1.get(1).isDead();
+//        boolean team2Eliminated = team2.get(0).isDead() && team2.get(1).isDead();
         gameRepository.delete(game);
         return "게임 강제 종료";
 //        gameRoomRepository.delete(gameRoom);

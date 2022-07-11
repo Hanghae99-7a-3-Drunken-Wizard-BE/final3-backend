@@ -7,7 +7,6 @@ import com.example.game.Game.card.Target;
 import static com.example.game.Game.card.CardType.ATTACK;
 
 public class BoulderStrike extends Card {
-
     public BoulderStrike(Game game) {
         this.game = game;
         this.cardName = "Boulder Strike";

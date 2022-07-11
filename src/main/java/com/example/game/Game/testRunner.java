@@ -1,8 +1,10 @@
 package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
+import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.ObjectBuilder;
+import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
@@ -19,6 +21,7 @@ import com.example.game.websocket.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
@@ -43,15 +46,16 @@ public class testRunner implements ApplicationRunner {
     private final PreTurn preTurn;
     private final ActionTurn actionTurn;
     private final EndTurn endTurn;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        User user1 = new User("user1", "111", "nickname1", "email@emal1.com");
-        User user2 = new User("user2", "111", "nickname2", "email@emal2.com");
-        User user3 = new User("user3", "111", "nickname3", "email@emal3.com");
-        User user4 = new User("user4", "111", "nickname4", "email@emal4.com");
+        User user1 = new User("user1", passwordEncoder.encode("qlalfqjsgh1!"), "nickname1", "email@emal1.com");
+        User user2 = new User("user2", passwordEncoder.encode("qlalfqjsgh1!"), "nickname2", "email@emal2.com");
+        User user3 = new User("user3", passwordEncoder.encode("qlalfqjsgh1!"), "nickname3", "email@emal3.com");
+        User user4 = new User("user4", passwordEncoder.encode("qlalfqjsgh1!"), "nickname4", "email@emal4.com");
 //        User user5 = new User("user5", "111", "nickname5", "email@emal5.com");
 //        User user6 = new User("user6", "111", "nickname6", "email@emal6.com");
 //        User user7 = new User("user7", "111", "nickname7", "email@emal7.com");
@@ -82,6 +86,11 @@ public class testRunner implements ApplicationRunner {
         gameRoomRepository.save(gameRoom);
 
 //        gameStarter.createGameRoom("1");
+//        Card cm = cardRepository.findByCardName("Channeling Mana").get(0);
+//
+//        UseCardDto useCardDto = new UseCardDto();
+//        useCardDto.setCardId(cm.getCardId());
+//        actionTurn.cardMoveProcess(1L,useCardDto);
 //
 //        Game game = gameRepository.findByRoomId("1");
 //        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
