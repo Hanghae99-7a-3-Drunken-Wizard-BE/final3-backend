@@ -32,27 +32,18 @@ public class SessionConnectEventListener {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    //중복 검색 방지용 출처: https://howtodoinjava.com/java8/java-stream-distinct-examples/
-    public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-    }
-
     // SessionConnect시 username을 전달하여 사용자 목록에 추가
     @EventListener
     public List<String> handleWebSocketConnectListener(SessionConnectedEvent event) {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String username = jwtDecoder.decodeUsername(headers.getFirstNativeHeader("Authorization"));
 
-        if (StompCommand.CONNECT == headers.getCommand()) {
+        if (StompCommand.CONNECTED == headers.getCommand()) {
             System.out.println(username + " 님이 WebSocket에 연결되었습니다.");
             if (username != null) {
                 userList.add(username);
                 System.out.println(userList + "접속유저 리스트에서 " + username + " 유저를 추가하였습니다." + userList.size() + " 명 접속 중");
             }
-            userList.stream()
-                .filter(distinctByKey(p -> p.equals(username))) // 중복되는 username 제거.
-                .collect(Collectors.toList());
             return userList;
         }
         return userList;
@@ -81,10 +72,6 @@ public class SessionConnectEventListener {
                 messagingTemplate.convertAndSend("/sub/public", chatMessage);
             }
         }
-
-        userList.stream()
-                .filter(distinctByKey(p -> p.equals(username))) // 중복되는 username 제거.
-                .collect(Collectors.toList());
         return userList;
     }
 }

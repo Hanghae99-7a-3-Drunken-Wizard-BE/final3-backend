@@ -3,6 +3,7 @@ package com.example.game.websocket;
 import com.example.game.security.jwt.JwtDecoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.internal.Function;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
-public class SessionSubscribeEventListener {
+public class SessionSubscribeEventListener{
 
     private final JwtDecoder jwtDecoder;
 
@@ -92,9 +93,6 @@ public class SessionSubscribeEventListener {
             subUserList.remove(nickName);
             System.out.println(subUserList);
         }
-        subUserList.stream()
-                .filter(distinctByKey(p -> p.equals(nickName)))
-                .collect(Collectors.toList());
 
         System.out.println(subUserList);
 
