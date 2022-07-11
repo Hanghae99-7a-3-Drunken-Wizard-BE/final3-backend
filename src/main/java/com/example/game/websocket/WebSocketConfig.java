@@ -1,22 +1,43 @@
 package com.example.game.websocket;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+
+import com.example.game.security.jwt.JwtDecoder;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
+//@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
     private final StompHandler stompHandler;
-
     public WebSocketConfig(StompHandler stompHandler) {
         this.stompHandler = stompHandler;
     }
+
+//    private final JwtDecoder jwtDecoder;
+//
+//    private static List<String> userList = new ArrayList<>();
 
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry registry) {
@@ -32,9 +53,36 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setAllowedOriginPatterns("*") // 클라이언트에서 접속할 수 있는 웹소켓 주소
                 .withSockJS();
     }
-
+    
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompHandler);
     }
+
+//    // 웹소켓을 통해 메세지를 보낼때 사용되는 인터셉터
+//    @Override
+//    public void configureClientInboundChannel(final ChannelRegistration registration) {
+//        registration.interceptors(new ChannelInterceptor() {
+//            @Override
+//            public Message<?> preSend(final Message<?> message, final MessageChannel channel) {
+//                StompHeaderAccessor headers = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+//                String username = jwtDecoder.decodeUsername(headers.getFirstNativeHeader("Authorization"));
+//
+//                if (StompCommand.CONNECT == headers.getCommand()) {
+//                    System.out.println(username + " 님이 WebSocket에 연결되었습니다.");
+//                    if (username != null) {
+//                        userList.add(username);
+//                        System.out.println(userList + "접속유저 리스트에서 " + username + " 유저를 추가하였습니다." + userList.size() + " 명 접속 중");
+//                    }
+//                } else if (StompCommand.DISCONNECT == headers.getCommand()) {
+//                    System.out.println(username + " 님이 WebSocket에서 연결을 끊었습니다.");
+//                    if (username != null) {
+//                        userList.remove(username);
+//                        System.out.println(userList + "접속유저 리스트에서 " + username + " 유저를 삭제하였습니다." + userList.size() + " 명 접속 중");
+//                    }
+//                }
+//                return message;
+//            }
+//        });
+//    }
 }
