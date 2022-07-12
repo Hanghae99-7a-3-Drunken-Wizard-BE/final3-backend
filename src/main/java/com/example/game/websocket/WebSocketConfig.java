@@ -19,10 +19,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         this.stompHandler = stompHandler;
     }
 
-//    private final JwtDecoder jwtDecoder;
-//
-//    private static List<String> userList = new ArrayList<>();
-
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry registry) {
         // 보통 ("/queue", "/topic")으로 하고, 다수에게 메세지를 보낼때는 '/topic/주소', 특정대상에게 메세지를 보낼 때는 '/queue/주소'의 방식을 택하게 된다.
@@ -42,31 +38,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompHandler);
     }
-
-//    // 웹소켓을 통해 메세지를 보낼때 사용되는 인터셉터
-//    @Override
-//    public void configureClientInboundChannel(final ChannelRegistration registration) {
-//        registration.interceptors(new ChannelInterceptor() {
-//            @Override
-//            public Message<?> preSend(final Message<?> message, final MessageChannel channel) {
-//                StompHeaderAccessor headers = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-//                String username = jwtDecoder.decodeUsername(headers.getFirstNativeHeader("Authorization"));
-//
-//                if (StompCommand.CONNECT == headers.getCommand()) {
-//                    System.out.println(username + " 님이 WebSocket에 연결되었습니다.");
-//                    if (username != null) {
-//                        userList.add(username);
-//                        System.out.println(userList + "접속유저 리스트에서 " + username + " 유저를 추가하였습니다." + userList.size() + " 명 접속 중");
-//                    }
-//                } else if (StompCommand.DISCONNECT == headers.getCommand()) {
-//                    System.out.println(username + " 님이 WebSocket에서 연결을 끊었습니다.");
-//                    if (username != null) {
-//                        userList.remove(username);
-//                        System.out.println(userList + "접속유저 리스트에서 " + username + " 유저를 삭제하였습니다." + userList.size() + " 명 접속 중");
-//                    }
-//                }
-//                return message;
-//            }
-//        });
-//    }
 }
