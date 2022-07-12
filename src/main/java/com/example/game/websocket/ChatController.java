@@ -5,16 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
+
 
     private final SimpMessageSendingOperations sendingOperations;
 
