@@ -1,6 +1,7 @@
 package com.example.game.service;
 
 import com.example.game.dto.KakaoUserInfoDto;
+import com.example.game.dto.response.LoginResponseDto;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -34,8 +36,10 @@ public class KakaoUserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Transactional
-    public void kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public void kakaoLogin(String code, HttpServletResponse response) throws IOException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code);
         System.out.println("param 코드 " + code);
@@ -141,24 +145,26 @@ public class KakaoUserService {
         return kakaoUser;
     }
 
-    private void forceLogin(User kakaoUser, HttpServletResponse response) {
-
-        System.out.println("jwtTokenCreate 클래스 들어옴");
+    private void forceLogin(User kakaoUser, HttpServletResponse response) throws IOException {
 
         UserDetails userDetails = new UserDetailsImpl(kakaoUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        System.out.println("강제로그인 시도까지 함");
-
         UserDetailsImpl userDetails1 = ((UserDetailsImpl) authentication.getPrincipal());
-
-        System.out.println("userDetails1 : " + userDetails1.toString());
 
         final String token = JwtTokenUtils.generateJwtToken(userDetails1);
 
-        System.out.println("token값:" + token);
-
         response.addHeader("Authorization", "BEARER" + " " + token);
+
+        // 헤더에 유저정보 같이 넣었지만 한글이 안나옴 다른곳에 넣어야함
+
+        response.setContentType("application/json; charset=utf-8");
+        User user = userDetails1.getUser();
+        LoginResponseDto loginResponseDto = new LoginResponseDto(user.getUsername(), user.getNickname(), user.getId());
+        String result = mapper.writeValueAsString(loginResponseDto);
+        response.getWriter().write(result);
+
+        System.out.println("로그인 내려주는 값" + result);
     }
 }

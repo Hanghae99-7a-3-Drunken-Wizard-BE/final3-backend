@@ -11,8 +11,7 @@ public class PoisonDamageCheckResponseDto {
     private PlayerDto player;
     private boolean gameOver;
 
-    public PoisonDamageCheckResponseDto (Player player, boolean gameOver) throws JsonProcessingException {
-        this.player = new PlayerDto(player);
+    public PoisonDamageCheckResponseDto (boolean gameOver) throws JsonProcessingException {
         this.gameOver = gameOver;
     }
 

@@ -40,8 +40,10 @@ public final class JwtTokenUtils {
 
         try {
             token = JWT.create()
-                    .withIssuer("Han")
+                    .withIssuer("Jang")
                     .withClaim(CLAIM_USER_NAME, userDetails.getUsername())
+//                    .withClaim(CLAIM_USER_NAME, userDetails.getUser().getNickname())
+                    // 프론트에 내려줄 정보 토큰에 넣어서 간다.
                     .withClaim(CLAIM_EXPIRED_DATE, new Date(System.currentTimeMillis() + JWT_TOKEN_VALID_MILLI_SEC))
                     .sign(generateAlgorithm());
         } catch (Exception e) {
@@ -51,21 +53,6 @@ public final class JwtTokenUtils {
         return token;
     }
 
-    public static String generateLogoutToken() {
-        String token = null;
-
-        try {
-            token = JWT.create()
-                    .withIssuer("Han")
-                    .withClaim(CLAIM_USER_NAME, "dummyName")
-                    .withClaim(CLAIM_EXPIRED_DATE, new Date(System.currentTimeMillis() + 100))
-                    .sign(generateAlgorithm());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return token;
-    }
 
     private static Algorithm generateAlgorithm() {
         return Algorithm.HMAC256(JWT_SECRET);

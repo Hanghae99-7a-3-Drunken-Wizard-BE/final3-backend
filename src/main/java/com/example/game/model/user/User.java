@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Random;
 
 @Entity
 @Getter
@@ -36,6 +35,12 @@ public class User {
 
     @Column(unique = true)
     private Long kakaoId;
+
+    @Column
+    private String roomId;
+
+    @Column
+    private String sessionId;
 
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();

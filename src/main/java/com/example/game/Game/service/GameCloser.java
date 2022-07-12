@@ -1,6 +1,6 @@
 package com.example.game.Game.service;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.example.game.Game.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ public class GameCloser {
 
     @Transactional
     public void closeGameRoom(String id) {
-        GameRoom gameRoom = gameRepository.findByGameRoomId(id);
-        gameRepository.delete(gameRoom);
+        Game game = gameRepository.findByRoomId(id);
+        gameRepository.delete(game);
     }
 }
