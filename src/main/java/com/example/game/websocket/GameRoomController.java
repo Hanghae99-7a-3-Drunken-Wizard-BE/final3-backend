@@ -1,8 +1,10 @@
 package com.example.game.websocket;
 
+import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -18,6 +20,7 @@ public class GameRoomController {
     private final SimpMessageSendingOperations messagingTemplate;
     private final GameRoomRepository gameRoomRepository;
     private final UserRepository userRepository;
+    private final JsonStringBuilder jsonStringBuilder;
 
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
@@ -42,8 +45,9 @@ public class GameRoomController {
     }
 
     @PostMapping("/game/{roomId}/join")
-    public ResponseEntity<String> joinGameRoom(@PathVariable String roomId,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<String> joinGameRoom(
+            @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails)
+            throws JsonProcessingException {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         System.out.println(gameRoom.getRoomName());
 //        if (gameRoom.getUserList().size() >= 4) {
@@ -94,7 +98,7 @@ public class GameRoomController {
         gameRoomRepository.save(gameRoom);
         GameMessage message = new GameMessage();
         message.setRoomId(roomId);
-        message.setContent(userDetails.getUser().getNickname() + "님이 입장하셨습니다.");
+        message.setContent(jsonStringBuilder.lobbyUserListDtoJsonBuilder(gameRoom.getUserList()));
         message.setType(GameMessage.MessageType.JOIN);
         messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
 
@@ -102,8 +106,9 @@ public class GameRoomController {
     }
 
     @PostMapping("/game/{roomId}/leave")
-    public ResponseEntity<List<GameRoom>> leaveGameRoom(@PathVariable String roomId,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<List<GameRoom>> leaveGameRoom(
+            @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails)
+            throws JsonProcessingException {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));;
@@ -112,7 +117,7 @@ public class GameRoomController {
         if (gameRoom.getUserList().size() == 0) {gameRoomRepository.delete(gameRoom);}
         GameMessage message = new GameMessage();
         message.setRoomId(roomId);
-        message.setContent(userDetails.getUser().getNickname() + "님이 나갔습니다.");
+        message.setContent(jsonStringBuilder.lobbyUserListDtoJsonBuilder(gameRoom.getUserList()));
         message.setType(GameMessage.MessageType.LEAVE);
         messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
 

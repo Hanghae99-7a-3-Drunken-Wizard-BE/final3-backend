@@ -6,6 +6,7 @@ import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.PlayerRepository;
+import com.example.game.model.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -89,5 +90,11 @@ public class JsonStringBuilder  {
         }
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDtos);
+    }
+
+    public String lobbyUserListDtoJsonBuilder(List<User> userList) throws JsonProcessingException {
+        LobbyUserListDto responseDto = new LobbyUserListDto(userList);
+        ObjectWriter ow = new ObjectMapper().writer();
+        return ow.writeValueAsString(responseDto);
     }
 }
