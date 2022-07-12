@@ -73,7 +73,14 @@ public class PreTurn {
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         List<Card> cardsOnHand = cardRepository.findByLyingPlaceAndGame(playerId, game);
-        if (requestDto.getSelectedCards().size() == 1 && player.getCharactorClass() != CharactorClass.FARSEER) {
+
+        if (requestDto.getSelectedCards() == null) {
+            int shownCardNum = (player.getCharactorClass() == CharactorClass.FARSEER) ? 3 : 2;
+            List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
+            for (int i = 0; i < shownCardNum; i++) {
+                game.addTograveyard(deck.get(i));
+            }
+        } else if (requestDto.getSelectedCards().size() == 1 && player.getCharactorClass() != CharactorClass.FARSEER) {
             Card card = cardRepository.findByCardId(requestDto.getSelectedCards().get(0).getCardId());
             player.addOnHand(card);
             Card notSelected = game.getDeck().get(0);
