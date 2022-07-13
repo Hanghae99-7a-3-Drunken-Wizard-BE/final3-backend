@@ -37,22 +37,22 @@ public class SessionConnectEventListener {
     private SimpMessageSendingOperations messagingTemplate;
 
     // SessionConnect시 username을 전달하여 사용자 목록에 추가
-    @EventListener
-    public List<String> handleWebSocketConnectListener(SessionConnectedEvent event) {
-        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-        String username = jwtDecoder.decodeUsername(headers.getFirstNativeHeader("token"));
-
-        if (StompCommand.CONNECTED == headers.getCommand()) {
-            System.out.println(username + " 님이 WebSocket에 연결되었습니다.");
-
-            if (username != null) {
-                userList.add(username);
-                System.out.println(userList + "접속유저 리스트에서 " + username + " 유저를 추가하였습니다." + userList.size() + " 명 접속 중");
-            }
-            return userList;
-        }
-        return userList;
-    }
+//    @EventListener
+//    public List<String> handleWebSocketConnectListener(SessionConnectedEvent event) {
+//        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
+//        String username = jwtDecoder.decodeUsername(headers.getFirstNativeHeader("token"));
+//
+//        if (StompCommand.CONNECTED == headers.getCommand()) {
+//            System.out.println(username + " 님이 WebSocket에 연결되었습니다.");
+//
+//            if (username != null) {
+//                userList.add(username);
+//                System.out.println(userList + "접속유저 리스트에서 " + username + " 유저를 추가하였습니다." + userList.size() + " 명 접속 중");
+//            }
+//            return userList;
+//        }
+//        return userList;
+//    }
 
     // SessionDisconnect시 username을 전달하여 사용자 목록에서 삭제
 //    @EventListener

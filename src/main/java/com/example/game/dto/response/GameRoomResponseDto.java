@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,6 +18,7 @@ public class GameRoomResponseDto {
     public GameRoomResponseDto(String roomId, String roomName, List<User> userList) {
         this.roomId = roomId;
         this.roomName = roomName;
+        this.userList =new ArrayList<>();
         for(User user : userList) {
             this.userList.add(new GameRoomUserResponseDto(user));
         }

@@ -80,7 +80,7 @@ public class Player {
         this.playerId = user.getId();
         this.username = user.getNickname();
         this.health = 20;
-        this.mana = 20;
+        this.mana = 10;
         this.shield = false;
         this.dead = false;
         this.poisonedDuration = 0;
@@ -226,6 +226,7 @@ public class Player {
         if (this.damageModifierDuration < 0) {this.damageModifierDuration += 1;}
         if (this.manaCostModifierDuration < 0) {this.manaCostModifierDuration += 1;}
         if (this.weakDuration < 0) {this.weakDuration += 1;}
+        if (this.mana < 10) {this.mana += Math.min(10-this.mana,3);}
     }
 
     public void newStatusUpdate (Player player, Player targetPlayer, Card card) {
@@ -302,5 +303,9 @@ public class Player {
 
     public void applyhealerHealManaCostWithModifierNegative() {
         this.mana -= 5;
+    }
+
+    public void addMana() {
+        this.mana += 1;
     }
 }

@@ -2,6 +2,8 @@ package com.example.game.websocket;
 
 import com.example.game.Game.gameDataDto.DtoGenerator;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
+import com.example.game.dto.response.GameRoomCreateResponseDto;
+import com.example.game.dto.response.GameRoomJoinResponseDto;
 import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.model.user.User;
@@ -34,10 +36,10 @@ public class GameRoomController {
 
     // GameRoom 생성
     @PostMapping(value = "/game/room")
-    public ResponseEntity<GameRoomResponseDto> createGameRoom(
+    public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(
             @RequestBody GameRoomRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws JsonProcessingException {
-        return ResponseEntity.ok().body(gameRoomService.createGameRoom(requestDto, userDetails));
+        return gameRoomService.createGameRoom(requestDto, userDetails);
     }
 
     // ChatRoom roomName으로 검색 조회
@@ -51,7 +53,7 @@ public class GameRoomController {
     }
 
     @PostMapping("/game/{roomId}/join")
-    public ResponseEntity<GameRoomResponseDto> joinGameRoom(
+    public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(
             @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws JsonProcessingException {
         return gameRoomService.joinGameRoom(roomId,userDetails);

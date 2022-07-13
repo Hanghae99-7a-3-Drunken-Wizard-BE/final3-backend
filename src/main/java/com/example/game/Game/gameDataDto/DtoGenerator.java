@@ -42,9 +42,9 @@ public class DtoGenerator {
         return new PlayerDto(player, cards);
     }
 
-    public CardDrawResponseDto cardDrawResponseDtoMaker(Player player, List<Card> cardList) throws JsonProcessingException {
+    public CardDrawResponseDto cardDrawResponseDtoMaker(Player player) throws JsonProcessingException {
         List<Card> cardsOnHand = cardRepository.findByLyingPlace(player.getPlayerId());
-        return new CardDrawResponseDto(cardsOnHand, cardList);
+        return new CardDrawResponseDto(cardsOnHand);
     }
 
     public EndTurnResponseDto EndTurnResponseDtoMaker(Player player, Player nextPlayer) throws JsonProcessingException {
@@ -62,7 +62,8 @@ public class DtoGenerator {
     }
 
     public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
-        PoisonDamageCheckResponseDto responseDto = new PoisonDamageCheckResponseDto(gameOver);
+        List<Card> cards = cardRepository.findByLyingPlace(player.getPlayerId());
+        PoisonDamageCheckResponseDto responseDto = new PoisonDamageCheckResponseDto(gameOver, cards);
         responseDto.setPlayer(playerDtoMaker(player));
         return responseDto;
     }

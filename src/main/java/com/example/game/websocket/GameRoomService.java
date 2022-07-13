@@ -2,6 +2,8 @@ package com.example.game.websocket;
 
 import com.example.game.Game.gameDataDto.DtoGenerator;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
+import com.example.game.dto.response.GameRoomCreateResponseDto;
+import com.example.game.dto.response.GameRoomJoinResponseDto;
 import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.model.user.User;
@@ -32,7 +34,7 @@ public class GameRoomService {
         return gameRoomRepository.findAllByOrderByCreatedAtDesc();
     }
 
-    public GameRoomResponseDto createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) throws JsonProcessingException {
+    public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) throws JsonProcessingException {
         GameRoom room = GameRoom.builder()
                 .roomId(UUID.randomUUID().toString())
                 .roomName(requestDto.getRoomName())
@@ -42,32 +44,23 @@ public class GameRoomService {
         gameRoomRepository.save(room);
         user.setRoomId(room.getRoomId());
         userRepository.save(user);
-        List<User> userList = userRepository.findByRoomId(room.getRoomId());
+        GameRoomCreateResponseDto responseDto = new GameRoomCreateResponseDto(room.getRoomId(), requestDto.getRoomName());
         System.out.println("gameRoom roomId = " + room.getRoomId()); // roomId 콘솔창에 찍기
-        return new GameRoomResponseDto(room.getRoomId(), requestDto.getRoomName(), userList);
+        return ResponseEntity.ok().body(responseDto);
     }
 
-    public ResponseEntity<GameRoomResponseDto> joinGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException{
-        GameRoom room = gameRoomRepository.findByRoomId(roomId);
+    public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException{
         List<User> userList = userRepository.findByRoomId(roomId);
         if (userList.size() >= 4) {
-            throw new IllegalArgumentException("제한인원 초과");
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            return ResponseEntity.ok().body(responseDto);
         }
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         user.setRoomId(roomId);
         userRepository.save(user);
-        userList.add(user);
-        GameRoomResponseDto gameRoomResponseDto = new GameRoomResponseDto(roomId, room.getRoomName(), userList);
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-                roomId, room.getRoomName(), userList);
-        GameMessage message = new GameMessage();
-        message.setRoomId(roomId);
-        message.setContent(userListMessage);
-        message.setType(GameMessage.MessageType.JOIN);
-        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
-
-        return ResponseEntity.ok().body(gameRoomResponseDto);
+        GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(true);
+        return ResponseEntity.ok().body(responseDto);
     }
 
     public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
