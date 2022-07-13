@@ -7,6 +7,11 @@ import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
+import com.example.game.dto.response.GameRoomListResponseDto;
+import com.example.game.dto.response.GameRoomResponseDto;
+import com.example.game.model.user.User;
+import com.example.game.repository.user.UserRepository;
+import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,10 +22,9 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class DtoGenerator {
-
-    private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     public CardUseResponseDto cardUseResponseDtoMaker(List<Player> players, boolean gameOver) throws JsonProcessingException {
         CardUseResponseDto cardUseResponseDto = new CardUseResponseDto();
@@ -56,10 +60,24 @@ public class DtoGenerator {
         }
         return new GameStarterResponseDto(playerDtos);
     }
+
     public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
         PoisonDamageCheckResponseDto responseDto = new PoisonDamageCheckResponseDto(gameOver);
         responseDto.setPlayer(playerDtoMaker(player));
-        return responseDto
-;
+        return responseDto;
     }
+
+    public GameRoomListResponseDto gameRoomListResponseDtoMaker (List<GameRoom> gameRoomList) throws JsonProcessingException {
+        GameRoomListResponseDto listResponseDto = new GameRoomListResponseDto();
+        List<GameRoomResponseDto> roomResponseDtos = new ArrayList<>();
+        for (GameRoom gameRoom : gameRoomList) {
+            List<User> userList = userRepository.findByRoomId(gameRoom.getRoomId());
+            roomResponseDtos.add(
+                    new GameRoomResponseDto(gameRoom.getRoomId(), gameRoom.getRoomName(), userList)
+            );
+        }
+        listResponseDto.setGameRoomList(roomResponseDtos);
+        return listResponseDto;
+    }
+
 }

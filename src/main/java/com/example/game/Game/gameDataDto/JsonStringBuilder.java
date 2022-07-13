@@ -6,7 +6,10 @@ import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.PlayerRepository;
+import com.example.game.dto.response.GameRoomListResponseDto;
+import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.model.user.User;
+import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -76,24 +79,8 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(discardDto);
     }
 
-    public String endGameResponseDtoJsonBuilder(Boolean winningTeam) throws JsonProcessingException {
-        EndGameResponseDto responseDto = new EndGameResponseDto(winningTeam);
-        ObjectWriter ow = new ObjectMapper().writer();
-        return ow.writeValueAsString(responseDto);
-    }
-
-    public String cardDataToJson(List<Card> cards) throws JsonProcessingException {
-        List<CardDetailResponseDto> responseDtos = new ArrayList<>();
-        for(Card card : cards) {
-            CardDetailResponseDto responseDto = new CardDetailResponseDto(card);
-            responseDtos.add(responseDto);
-        }
-        ObjectWriter ow = new ObjectMapper().writer();
-        return ow.writeValueAsString(responseDtos);
-    }
-
-    public String lobbyUserListDtoJsonBuilder(List<User> userList) throws JsonProcessingException {
-        LobbyUserListDto responseDto = new LobbyUserListDto(userList);
+    public String gameRoomResponseDtoJsonBuilder(String roomId, String roomName, List<User> userList) throws JsonProcessingException {
+        GameRoomResponseDto responseDto = new GameRoomResponseDto(roomId, roomName, userList);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
