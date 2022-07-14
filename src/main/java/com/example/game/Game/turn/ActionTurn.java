@@ -98,8 +98,10 @@ public class ActionTurn {
         Player player = playerRepository.getById(playerId);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         Card card = cardRepository.findByCardId(discardDto.getCardId());
+        List<Card> cards = cardRepository.findByLyingPlace(playerId);
         game.addTograveyard(card);
-        return jsonStringBuilder.discard(discardDto);
+        player.addMana();
+        return jsonStringBuilder.discard(player, cards);
     }
 
     public int manaCostModification (Player player) {

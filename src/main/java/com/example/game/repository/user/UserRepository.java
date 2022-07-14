@@ -11,4 +11,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByKakaoId(Long kakaoId);
     User findBySessionId(String sessionId);
     List<User> findAllBySessionId(String sessionId);
+    List<User> findByRoomId(String roomId);
 }

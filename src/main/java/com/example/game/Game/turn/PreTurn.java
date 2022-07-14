@@ -61,9 +61,9 @@ public class PreTurn {
                     cards.add(deck.get(i));
                 }
             }
-            return jsonStringBuilder.cardDrawResponseDtoJsonBuilder(player, cards);
+            return jsonStringBuilder.cardDrawResponseDtoJsonBuilder(player);
         } else {
-            return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder();
+            return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder(cardOnHand);
         }
     }
 
@@ -75,16 +75,9 @@ public class PreTurn {
         List<Card> cardsOnHand = cardRepository.findByLyingPlaceAndGame(playerId, game);
 
         if (requestDto.getSelectedCards() == null) {
-            int shownCardNum = (player.getCharactorClass() == CharactorClass.FARSEER) ? 3 : 2;
-            List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
-            for (int i = 0; i < shownCardNum; i++) {
-                game.addTograveyard(deck.get(i));
-            }
         } else if (requestDto.getSelectedCards().size() == 1 && player.getCharactorClass() != CharactorClass.FARSEER) {
             Card card = cardRepository.findByCardId(requestDto.getSelectedCards().get(0).getCardId());
             player.addOnHand(card);
-            Card notSelected = game.getDeck().get(0);
-            game.addTograveyard(notSelected);
         } else if(requestDto.getSelectedCards().size() == 2){
             List<CardRequestDto> selectedCards = requestDto.getSelectedCards();
             for (CardRequestDto selectedCard : selectedCards) {
@@ -95,7 +88,8 @@ public class PreTurn {
         boolean drawSuccess;
         Card additionalCard = game.getDeck().get(0);
         if(cardsOnHand.size() >= 6) {
-            return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(additionalCard, false);}
+            List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
+            return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(cardList, false);}
         else{
             if (
                     player.getCharactorClass().equals(CharactorClass.INVOKER)||
@@ -116,9 +110,11 @@ public class PreTurn {
                 else {drawSuccess = false;
                 game.addTograveyard(additionalCard);
                 }
-                return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(additionalCard, drawSuccess);
+                List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
+                return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(cardList, drawSuccess);
             } else {
-                return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder();
+                List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
+                return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder(cardList);
             }}
     }
 
@@ -136,6 +132,7 @@ public class PreTurn {
         for (int i = 0; i < deck.size(); i++) {
             deck.get(i).setCardOrder(i);
         }
+        cardRepository.saveAll(deck);
     }
 }
 

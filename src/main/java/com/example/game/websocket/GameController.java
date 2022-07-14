@@ -162,7 +162,7 @@ public class GameController {
     }
 
     private void endCheck(GameMessage message) throws JsonProcessingException {
-        String messageContent = endTurn.EndTrunCheck(message.getSender());
+        String messageContent = endTurn.EndTurnCheck(message.getSender());
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setSender(message.getSender());

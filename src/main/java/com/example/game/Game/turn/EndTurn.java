@@ -1,7 +1,6 @@
 package com.example.game.Game.turn;
 
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
-import com.example.game.Game.gameDataDto.request.PlayerRequestDto;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.PlayerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +16,7 @@ public class EndTurn {
     private final JsonStringBuilder jsonStringBuilder;
 
     @Transactional
-    public String EndTrunCheck(Long playerId) throws JsonProcessingException {
+    public String EndTurnCheck(Long playerId) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음")
         );

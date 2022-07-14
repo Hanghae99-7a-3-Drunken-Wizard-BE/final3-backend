@@ -80,7 +80,7 @@ public class Player {
         this.playerId = user.getId();
         this.username = user.getNickname();
         this.health = 20;
-        this.mana = 20;
+        this.mana = 10;
         this.shield = false;
         this.dead = false;
         this.poisonedDuration = 0;
@@ -226,18 +226,24 @@ public class Player {
         if (this.damageModifierDuration < 0) {this.damageModifierDuration += 1;}
         if (this.manaCostModifierDuration < 0) {this.manaCostModifierDuration += 1;}
         if (this.weakDuration < 0) {this.weakDuration += 1;}
+        if (this.mana < 10) {this.mana += Math.min(10-this.mana,3);}
     }
 
     public void newStatusUpdate (Player player, Player targetPlayer, Card card) {
-        if (this.petrifiedDuration <= 0) {
-            this.health += card.getHealthModifier() + damageModification(player, targetPlayer, card);
-            this.mana += card.getManaModifier();
-            this.dead = this.health <= 0;
-            applyAdditionalEffect(card);
+        if (this.shield == true && player != targetPlayer) {
+            this.shield = false;
+        } else {
+            if (this.petrifiedDuration <= 0) {
+                this.health += card.getHealthModifier() + damageModification(player, targetPlayer, card);
+                this.mana += card.getManaModifier();
+                this.dead = this.health <= 0;
+                applyAdditionalEffect(card);
+            }
         }
     }
 
     public int damageModification (Player player, Player targetPlayer, Card card) {
+        if (card.getHealthModifier() == null) {return 0;}
         int armorWeakCheck;
         if (targetPlayer.getWeakDuration()>0){
             armorWeakCheck = -1;
@@ -253,6 +259,20 @@ public class Player {
         if (card.getHealthModifier() < 0) {return amplificationAttenuationCheck + armorWeakCheck;}
         else if (card.getHealthModifier() > 0) {return amplificationAttenuationCheck * -1;}
         else {return 0;}
+    }
+
+    public int manaModification (Player player, Card card) {
+        if (card.getManaCost() == null) {return 0;}
+        int healerAdventage;
+        int manaCostModCheck;
+        if (player.getDamageModifierDuration() > 0) {manaCostModCheck = 1;}
+        else if (player.getDamageModifierDuration() < 0) {manaCostModCheck = -1;}
+        else {manaCostModCheck = 0;}
+        if (player.getCharactorClass() == CharactorClass.HEALER
+                && (card.getCardName() == "Heal" || card.getCardName() == "Party Heal")) {
+            healerAdventage = 1;
+        } else {healerAdventage = 0;}
+        return healerAdventage + manaCostModCheck;
     }
 
     public void applyHealerHealWithDamageModifierPositive() {
@@ -283,5 +303,9 @@ public class Player {
 
     public void applyhealerHealManaCostWithModifierNegative() {
         this.mana -= 5;
+    }
+
+    public void addMana() {
+        this.mana += 1;
     }
 }
