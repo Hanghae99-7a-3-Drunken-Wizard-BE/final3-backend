@@ -3,7 +3,11 @@ package com.example.game.websocket;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
+import com.example.game.websocket.redis.RedisPublisher;
+import com.example.game.websocket.redis.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,10 @@ public class GameRoomService {
 
     private final GameRoomRepository gameRoomRepository;
     private final UserRepository userRepository;
+
+    private final RedisMessageListenerContainer redisMessageListener;
+
+    private final RedisSubscriber redisSubscriber;
 
     //ChatRoom 전체 조회
     public List<GameRoom> getAllGameRooms() {
@@ -41,6 +49,22 @@ public class GameRoomService {
     // roomName 검색으로 ChatRoom 조회
     public List<GameRoom> searchGameRooms(String keyword) {
         return gameRoomRepository.findByRoomNameContaining(keyword);
+    }
+
+    /**
+     * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
+     */
+    public void enter() {
+        ChannelTopic topic = new ChannelTopic("public");
+        if (topic == null) {
+            topic = new ChannelTopic("public");
+            redisMessageListener.addMessageListener(redisSubscriber, topic);
+            topics.put(topic);
+        }
+    }
+
+    public ChannelTopic getTopic() {
+        return topics;
     }
 }
 //package com.example.game.websocket;

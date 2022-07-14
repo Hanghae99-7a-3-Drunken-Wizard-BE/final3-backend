@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +17,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Entity
-public class GameRoom extends Timestamped {
+public class GameRoom extends Timestamped implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     private String roomId;
