@@ -1,12 +1,13 @@
 package com.example.game.Game.turn;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.example.game.Game.card.ApplyCardToCharacter;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.card.Target;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
+import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
@@ -30,51 +31,81 @@ public class ActionTurn {
 
 
     @Transactional
-    public String cardMoveProcess(UseCardDto useCardDto) throws JsonProcessingException {
-        Player player = playerRepository.findById(useCardDto.getPlayerId()).orElseThrow(
+    public String cardMoveProcess(Long playerId, UseCardDto useCardDto) throws JsonProcessingException {
+        Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
-        Player targetPlayer = playerRepository.findById(useCardDto.getTargetPlayerID()).orElseThrow(
-                ()->new NullPointerException("플레이어 없음"));
-        Card card = cardRepository.findByCardId(useCardDto.getCardId());
-        applyCardToCharacter.cardInitiator(player,targetPlayer,card);
         List<Player> appliedPlayerList = new ArrayList<>();
-        if (card.getTarget() == Target.ME) {
-            appliedPlayerList.add(player);
+        Player targetPlayer = playerRepository.findById((useCardDto.getTargetPlayerId() != null) ?
+                useCardDto.getTargetPlayerId() : playerId
+        ).orElseThrow(()->new NullPointerException("플레이어 없음"));
+        if (useCardDto.getCardId() == 0L) {
+            if (player.getMana() < (-4+manaCostModification(player)) * -1) {
+                return "마나부족";
+            }
+            applyCardToCharacter.applyHealerHealtoTarget(player,targetPlayer);
+            if (player == targetPlayer) {
+                appliedPlayerList.add(player);
+            } else {
+                appliedPlayerList.add(player);
+                appliedPlayerList.add(targetPlayer);
+            }
         }
-        if (card.getTarget() == Target.SELECT) {
-            if (player == targetPlayer) {appliedPlayerList.add(player);}
-            else{appliedPlayerList.add(player); appliedPlayerList.add(targetPlayer);}
-        }
-        if (card.getTarget() == Target.ALL) {
-            GameRoom gameRoom = player.getGameRoom();
-            appliedPlayerList.addAll(playerRepository.findByGameRoom(gameRoom));
+        else {
+            Card card = cardRepository.findByCardId(useCardDto.getCardId());
+            System.out.println(player.getUsername());
 
-        }
-        if (card.getTarget() == Target.ALLY) {
-            GameRoom gameRoom = player.getGameRoom();
-            appliedPlayerList.addAll(playerRepository.findByGameRoomAndTeam(gameRoom, player.isTeam()));
+            if(card.manaCost != null) {
+            if (player.getMana() < (card.manaCost+manaCostModification(player)) * -1 && player.getCharactorClass() != CharactorClass.BLOODMAGE) {
+                return "마나부족";
+            }}
+            applyCardToCharacter.cardInitiator(player, targetPlayer, card);
+            if (card.getTarget() == Target.ME) {
+                appliedPlayerList.add(player);
+            }
+            if (card.getTarget() == Target.SELECT) {
+                if (player == targetPlayer) {
+                    appliedPlayerList.add(player);
+                } else {
+                    appliedPlayerList.add(player);
+                    appliedPlayerList.add(targetPlayer);
+                }
+            }
+            if (card.getTarget() == Target.ALL) {
+                Game game = player.getGame();
+                appliedPlayerList.addAll(playerRepository.findByGame(game));
 
+            }
+            if (card.getTarget() == Target.ALLY) {
+                Game game = player.getGame();
+                appliedPlayerList.addAll(playerRepository.findByGameAndTeam(game, player.isTeam()));
+
+            }
+            if (card.getTarget() == Target.ENEMY) {
+                Game game = player.getGame();
+                appliedPlayerList.addAll(playerRepository.findByGameAndTeam(game, !player.isTeam()));
+                appliedPlayerList.add(player);
+            }
         }
-        if (card.getTarget() == Target.ENEMY) {
-            GameRoom gameRoom = player.getGameRoom();
-            appliedPlayerList.addAll(playerRepository.findByGameRoomAndTeam(gameRoom, !player.isTeam()));
-            appliedPlayerList.add(player);
-        }
-        List<Player> playerTeam = playerRepository.findByGameRoomAndTeam(player.getGameRoom(), player.isTeam());
-        List<Player> enemyTeam = playerRepository.findByGameRoomAndTeam(player.getGameRoom(), !player.isTeam());
+        List<Player> playerTeam = playerRepository.findByGameAndTeam(player.getGame(), player.isTeam());
+        List<Player> enemyTeam = playerRepository.findByGameAndTeam(player.getGame(), !player.isTeam());
         boolean ourGameOver = (playerTeam.get(0).isDead() && playerTeam.get(1).isDead());
         boolean theirGameOver = (enemyTeam.get(0).isDead() && enemyTeam.get(1).isDead());
         return jsonStringBuilder.cardUseResponseDtoJsonBuilder(appliedPlayerList, ourGameOver||theirGameOver);
     }
 
     @Transactional
-    public String discard (DiscardDto discardDto) throws JsonProcessingException {
-        Player player = playerRepository.getById(discardDto.getPlayerId());
-        GameRoom gameRoom = gameRepository.findByGameRoomId(player.getGameRoom().getGameRoomId());
+    public String discard (Long playerId, DiscardDto discardDto) throws JsonProcessingException {
+        Player player = playerRepository.getById(playerId);
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         Card card = cardRepository.findByCardId(discardDto.getCardId());
-        gameRoom.addTograveyard(card);
-        player.removeFromHand(card);
+        game.addTograveyard(card);
         return jsonStringBuilder.discard(discardDto);
+    }
+
+    public int manaCostModification (Player player) {
+        if (player.getManaCostModifierDuration() > 0) {return 1;}
+        else if (player.getManaCostModifierDuration() < 0) {return -1;}
+        else {return 0;}
     }
 
 }

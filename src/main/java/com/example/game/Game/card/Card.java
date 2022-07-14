@@ -1,6 +1,6 @@
 package com.example.game.Game.card;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
@@ -40,7 +40,7 @@ public class Card {
     public Integer manaModifier;
 
     @Column
-    public Boolean Shield;
+    public Boolean shield;
 
     @Column
     public Integer poisonDuration;
@@ -66,11 +66,17 @@ public class Card {
     @Column
     public Integer sleepDuration;
 
+    @Column
+    public long lyingPlace;
+
+    @Column
+    public Integer cardOrder;
+
     @OneToOne
     @JoinColumn
     public SpecialEffect specialEffect;
 
     @ManyToOne
-    @JoinColumn(name = "gameRoom_Id")
-    public GameRoom gameRoom;
+    @JoinColumn(name = "room_Id")
+    public Game game;
 }

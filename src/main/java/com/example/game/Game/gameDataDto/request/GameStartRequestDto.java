@@ -1,6 +1,5 @@
 package com.example.game.Game.gameDataDto.request;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UseCardDto {
-    private Long targetPlayerId;
-    private Long cardId;
+public class GameStartRequestDto {
+    private String roomId;
 }

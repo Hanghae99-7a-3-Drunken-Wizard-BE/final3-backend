@@ -8,6 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DiscardDto {
-    private Long playerId;
     private Long cardId;
 }

@@ -1,6 +1,6 @@
 package com.example.game.Game.player;
 
-import com.example.game.Game.GameRoom;
+import com.example.game.Game.Game;
 import com.example.game.Game.card.Card;
 import com.example.game.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.*;
 
 @Entity
@@ -21,10 +20,8 @@ import java.util.*;
 public class Player {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long playerId;
-    @Column
-    private Long userId;
+
     @Column
     private String username;
 
@@ -75,17 +72,13 @@ public class Player {
     @Column
     private int sleepDuration;
 
-    @Column
-    @OneToMany
-    private List<Card> cardsOnHand = new ArrayList<>();
-
     @ManyToOne
-    @JoinColumn(name = "gameRoom_Id")
-    private GameRoom gameRoom;
+    @JoinColumn(name = "room_Id")
+    private Game game;
 
-    public Player(User user, GameRoom gameRoom){
+    public Player(User user, Game game){
+        this.playerId = user.getId();
         this.username = user.getNickname();
-        this.userId = user.getId();
         this.health = 20;
         this.mana = 20;
         this.shield = false;
@@ -98,7 +91,7 @@ public class Player {
         this.manaCostModifierDuration = 0;
         this.sleepDuration = 0;
         this.weakDuration = 0;
-        this.gameRoom = gameRoom;
+        this.game = game;
     }
 
     public void statusUpdate(Card card){
@@ -214,11 +207,7 @@ public class Player {
     }
 
     public void addOnHand(Card card){
-        this.cardsOnHand.add(card);
-    }
-
-    public void removeFromHand(Card card){
-        this.cardsOnHand.remove(card);
+        card.setLyingPlace(this.playerId);
     }
 
     public void applyPoison() {
@@ -234,5 +223,65 @@ public class Player {
         if (this.weakDuration > 0) {this.weakDuration -= 1;}
         if (this.manaCostModifierDuration > 0) {this.manaCostModifierDuration -= 1;}
         if (this.sleepDuration > 0) {this.sleepDuration -= 1;}
+        if (this.damageModifierDuration < 0) {this.damageModifierDuration += 1;}
+        if (this.manaCostModifierDuration < 0) {this.manaCostModifierDuration += 1;}
+        if (this.weakDuration < 0) {this.weakDuration += 1;}
+    }
+
+    public void newStatusUpdate (Player player, Player targetPlayer, Card card) {
+        if (this.petrifiedDuration <= 0) {
+            this.health += card.getHealthModifier() + damageModification(player, targetPlayer, card);
+            this.mana += card.getManaModifier();
+            this.dead = this.health <= 0;
+            applyAdditionalEffect(card);
+        }
+    }
+
+    public int damageModification (Player player, Player targetPlayer, Card card) {
+        int armorWeakCheck;
+        if (targetPlayer.getWeakDuration()>0){
+            armorWeakCheck = -1;
+        } else if (targetPlayer.getWeakDuration()<0) {
+            armorWeakCheck = 1;
+        } else {armorWeakCheck = 0;}
+        int amplificationAttenuationCheck;
+        if (player.getDamageModifierDuration() > 0) {
+            amplificationAttenuationCheck = -1;
+        } else if (player.getDamageModifierDuration() < 0) {
+            amplificationAttenuationCheck = 1;
+        } else {amplificationAttenuationCheck = 0;}
+        if (card.getHealthModifier() < 0) {return amplificationAttenuationCheck + armorWeakCheck;}
+        else if (card.getHealthModifier() > 0) {return amplificationAttenuationCheck * -1;}
+        else {return 0;}
+    }
+
+    public void applyHealerHealWithDamageModifierPositive() {
+        if(this.petrifiedDuration <= 0) {
+            this.health += 4;
+            this.poisonedDuration = 0;}
+    }
+
+    public void applyHealerHealWithDamageModifierNegative() {
+        if(this.petrifiedDuration <= 0) {
+            this.health += 2;
+            this.poisonedDuration = 0;}
+    }
+
+    public void applyHealerHeal() {
+        if(this.petrifiedDuration <= 0) {
+            this.health += 3;
+            this.poisonedDuration = 0;}
+    }
+
+    public void applyhealerHealManaCost() {
+        this.mana -= 4;
+    }
+
+    public void applyhealerHealManaCostWithModifierPositive() {
+        this.mana -= 3;
+    }
+
+    public void applyhealerHealManaCostWithModifierNegative() {
+        this.mana -= 5;
     }
 }
