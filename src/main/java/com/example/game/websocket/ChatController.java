@@ -18,21 +18,22 @@ public class ChatController {
     private final UserService userService;
 
     @MessageMapping("/chat/send")
-    public void message(ChatMessage message, String sessionId) {
+    public void message(ChatMessage message) {
         if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
-            message.setMessage(message.getSender() + "님이 채팅방에 참여하였습니다.");
+            message.setMessage(message.getMessage());
+            message.setConnectedUsers(userService.getConnectedUsers());
             sendingOperations.convertAndSend("/sub/public", message);
-            System.out.println(message.getSender() + "님이 채팅방에 참여하였습니다.");
-            userService.findConnectedUser();
+            System.out.println(message.getMessage());
         }
         if (ChatMessage.MessageType.LEAVE.equals(message.getType())) {
-            message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
+            message.setMessage(message.getMessage());
+            message.setConnectedUsers(userService.getConnectedUsers());
             sendingOperations.convertAndSend("/sub/public", message);
-            System.out.println(message.getSender() + "님이 퇴장하였습니다.");
-            userService.findConnectedUser();
+            System.out.println(message.getMessage());
         }
+        message.setMessage(message.getMessage());
+        message.setConnectedUsers(userService.getConnectedUsers());
         sendingOperations.convertAndSend("/sub/public", message);
-        System.out.println("chatMessage : " + message.getMessage());
-        userService.findConnectedUser();
+        System.out.println(message.getMessage());
     }
 }

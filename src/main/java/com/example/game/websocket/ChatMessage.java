@@ -1,5 +1,6 @@
 package com.example.game.websocket;
 
+import com.example.game.dto.response.UserResponseDto;
 import com.example.game.security.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,8 @@ public class ChatMessage {
     private String sender;
 
     private MessageType type;
+
+    private List<UserResponseDto> connectedUsers;
 
     public enum MessageType {
         CHAT, LEAVE, JOIN
