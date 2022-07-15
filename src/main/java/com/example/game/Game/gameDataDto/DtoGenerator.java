@@ -64,6 +64,7 @@ public class DtoGenerator {
         return new GameStarterResponseDto(playerDtos);
     }
 
+    @Transactional
     public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         List<Card> deck;
