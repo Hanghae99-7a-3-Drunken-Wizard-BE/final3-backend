@@ -76,22 +76,6 @@ public class GameRoomService {
     }
 
     public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                ()-> new NullPointerException("유저 없음"));
-        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
-        user.setRoomId(null);
-        userRepository.save(user);
-        List<User> userList = userRepository.findByRoomId(roomId);
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-                roomId, gameRoom.getRoomName(), userList);
-        GameMessage message = new GameMessage();
-        message.setRoomId(roomId);
-        message.setContent(userListMessage);
-        message.setType(GameMessage.MessageType.LEAVE);
-        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
-        if (userList.size() == 0) {
-            gameRoomRepository.delete(gameRoom);
-        }
         return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(getAllGameRooms()));
     }
 
