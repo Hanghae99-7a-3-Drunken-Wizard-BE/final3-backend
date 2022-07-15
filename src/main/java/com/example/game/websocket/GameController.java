@@ -12,12 +12,16 @@ import com.example.game.Game.turn.ActionTurn;
 import com.example.game.Game.turn.EndGame;
 import com.example.game.Game.turn.EndTurn;
 import com.example.game.Game.turn.PreTurn;
+import com.example.game.model.user.User;
+import com.example.game.repository.user.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -26,6 +30,8 @@ public class GameController {
     private final SimpMessageSendingOperations messagingTemplate;
     private final GameStarter gameStarter;
     private final GameRepository gameRepository;
+    private final GameRoomRepository gameRoomRepository;
+    private final UserRepository userRepository;
     private final JsonStringBuilder jsonStringBuilder;
     private final ObjectBuilder objectBuilder;
     private final PreTurn preTurn;
@@ -75,6 +81,10 @@ public class GameController {
         if (GameMessage.MessageType.ENDGAME.equals(message.getType())) {
             System.out.println("여기에 들어오나" + message.getType());
             endGame(message);
+        }
+        if (GameMessage.MessageType.UPDATE.equals(message.getType())) {
+            System.out.println("여기에 들어오나" + message.getType());
+            update(message);
         }
     }
 
@@ -142,9 +152,16 @@ public class GameController {
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setSender(message.getSender());
-        gameMessage.setType(GameMessage.MessageType.USECARD);
-        gameMessage.setContent(messageContent);
-        messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
+        if (messageContent.equals("마나부족")) {
+            String newMessageContent = jsonStringBuilder.cardUseFailDtoJsonBuilder(false);
+            gameMessage.setContent(newMessageContent);
+            gameMessage.setType(GameMessage.MessageType.USEFAIL);
+            messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
+        } else {
+            gameMessage.setContent(messageContent);
+            gameMessage.setType(GameMessage.MessageType.USECARD);
+            messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
+        }
     }
 
     private void useSpecial(GameMessage message) {
@@ -181,5 +198,19 @@ public class GameController {
         messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
+    private void update(GameMessage message) throws JsonProcessingException {
+        String roomId = message.getRoomId();
+        GameRoom room = gameRoomRepository.findByRoomId(roomId);
+        List<User> userList = userRepository.findByRoomId(roomId);
+        System.out.println(userList.size());
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
+                roomId, room.getRoomName(), userList);
+        GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(roomId);
+        gameMessage.setSender(message.getSender());
+        gameMessage.setContent(userListMessage);
+        gameMessage.setType(GameMessage.MessageType.UPDATE);
+        messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
+    }
 
 }

@@ -3,6 +3,7 @@ package com.example.game.Game.gameDataDto;
 import com.example.game.Game.Game;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.response.*;
+import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DtoGenerator {
     private final PlayerRepository playerRepository;
+    private final GameRepository gameRepository;
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
@@ -62,7 +64,18 @@ public class DtoGenerator {
     }
 
     public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
-        List<Card> cards = cardRepository.findByLyingPlace(player.getPlayerId());
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
+        List<Card> cards = new ArrayList<>();
+        if (player.getCharactorClass().equals(CharactorClass.FARSEER)) {
+            for (int i = 0; i < 3; i++) {
+                cards.add(deck.get(i));
+            }
+        } else {
+            for (int i = 0; i < 2; i++) {
+                cards.add(deck.get(i));
+            }
+        }
         PoisonDamageCheckResponseDto responseDto = new PoisonDamageCheckResponseDto(gameOver, cards);
         responseDto.setPlayer(playerDtoMaker(player));
         return responseDto;

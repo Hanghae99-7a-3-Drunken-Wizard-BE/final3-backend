@@ -60,15 +60,24 @@ public class GameRoomService {
         user.setRoomId(roomId);
         userRepository.save(user);
         GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(true);
+        GameRoom room = gameRoomRepository.findByRoomId(roomId);
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
+                roomId, room.getRoomName(), userList);
+        GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(roomId);
+        gameMessage.setContent(userListMessage);
+        gameMessage.setType(GameMessage.MessageType.UPDATE);
+        messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
         return ResponseEntity.ok().body(responseDto);
     }
 
     public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
-        List<User> userList = userRepository.findByRoomId(roomId);
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         user.setRoomId(null);
+        userRepository.save(user);
+        List<User> userList = userRepository.findByRoomId(roomId);
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
                 roomId, gameRoom.getRoomName(), userList);
         GameMessage message = new GameMessage();

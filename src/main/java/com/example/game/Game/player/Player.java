@@ -226,7 +226,9 @@ public class Player {
         if (this.damageModifierDuration < 0) {this.damageModifierDuration += 1;}
         if (this.manaCostModifierDuration < 0) {this.manaCostModifierDuration += 1;}
         if (this.weakDuration < 0) {this.weakDuration += 1;}
+        System.out.println(this.mana);
         if (this.mana < 10) {this.mana += Math.min(10-this.mana,3);}
+        System.out.println(this.mana);
     }
 
     public void newStatusUpdate (Player player, Player targetPlayer, Card card) {

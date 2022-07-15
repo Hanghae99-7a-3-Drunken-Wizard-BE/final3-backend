@@ -45,5 +45,10 @@ public class StompHandler implements ChannelInterceptor {
         return message;
     }
 
-
+//    @Override
+//    public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
+//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+//        if(StompCommand.SUBSCRIBE == accessor.getCommand() &&
+//                accessor.getFirstNativeHeader("id") != null)
+//    }
 }

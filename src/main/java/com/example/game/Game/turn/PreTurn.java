@@ -49,18 +49,7 @@ public class PreTurn {
         List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
         List<Card> cardOnHand = cardRepository.findByLyingPlace(playerId);
         if (deck.size() < 3) {shuffleGraveyardToDeck(game);}
-        List<Card> cards = new ArrayList<>();
         if (cardOnHand.size() < 6) {
-            if (player.getCharactorClass().equals(CharactorClass.FARSEER)) {
-
-                for (int i = 0; i < 3; i++) {
-                    cards.add(deck.get(i));
-                }
-            } else {
-                for (int i = 0; i < 2; i++) {
-                    cards.add(deck.get(i));
-                }
-            }
             return jsonStringBuilder.cardDrawResponseDtoJsonBuilder(player);
         } else {
             return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder(cardOnHand);

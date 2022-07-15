@@ -76,22 +76,17 @@ public class SessionSubscribeEventListener{
 
     // SessionSubscribe로 유저 목록에 추가
     @EventListener
-    public void handleSubscribeEvent(SessionSubscribeEvent event) throws JsonProcessingException {
+    public void handleSubscribeEvent(SessionSubscribeEvent event) {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String targetDestination = headers.getDestination();
+        String sessionId = headers.getSessionId();
         System.out.println(targetDestination+" 구독이벤트 구독주소 추적");
-        if (targetDestination.equals("/game/**")) {
-            String roomId = targetDestination.substring(6,42);
+        if (targetDestination.length() == 46) {
+            String roomId = targetDestination.substring(10,46);
             System.out.println(roomId+" 구독이벤트 내 룸아이디 조회");
-            GameRoom room = gameRoomRepository.findByRoomId(roomId);
-            List<User> userList = userRepository.findByRoomId(roomId);
-            String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-                    roomId, room.getRoomName(), userList);
-            GameMessage message = new GameMessage();
-            message.setRoomId(roomId);
-            message.setContent(userListMessage);
-            message.setType(GameMessage.MessageType.JOIN);
-            messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+            User user = userRepository.findBySessionId(sessionId);
+            user.setRoomId(roomId);
+            userRepository.save(user);
         }
     }
 

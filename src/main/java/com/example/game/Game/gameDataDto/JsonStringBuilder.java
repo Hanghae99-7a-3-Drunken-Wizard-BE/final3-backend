@@ -85,4 +85,10 @@ public class JsonStringBuilder  {
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
+
+    public String cardUseFailDtoJsonBuilder(boolean isSuccess) throws JsonProcessingException {
+        CardUseFailDto responseDto = new CardUseFailDto(isSuccess);
+        ObjectWriter ow = new ObjectMapper().writer();
+        return ow.writeValueAsString(responseDto);
+    }
 }
