@@ -29,6 +29,7 @@ public class GameRoomController {
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
     public ResponseEntity<GameRoomListResponseDto> readGameRooms() throws JsonProcessingException {
+        System.out.println("게임방 겟매핑 접수");
         List<GameRoom> gameRoomList = gameRoomRepository.findAllByOrderByCreatedAtDesc();
         return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomList));
     }
@@ -62,6 +63,7 @@ public class GameRoomController {
     public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(
             @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws JsonProcessingException {
+        System.out.println("게임방 나가기 포스트매핑 접수");
         return gameRoomService.leaveGameRoom(roomId, userDetails);
     }
 }

@@ -78,12 +78,19 @@ public class GameRoomService {
 
     @Transactional
     public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
+        System.out.println("게임방 나가기 시퀀스 시작점");
+        System.out.println(userRepository.findByRoomId(roomId).size());
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
+        System.out.println("나가는 유저 조회중 : "+user.getUsername());
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         user.setRoomId(null);
         userRepository.save(user);
+        System.out.println(userRepository.findByRoomId(roomId).size() + " 줄었나 확인해볼까");
         List<User> userList = userRepository.findByRoomId(roomId);
+        for(User u : userList) {
+            System.out.println(u.getUsername() + " 지금은 누가 남았지");
+        }
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
                 roomId, gameRoom.getRoomName(), userList);
         GameMessage message = new GameMessage();
