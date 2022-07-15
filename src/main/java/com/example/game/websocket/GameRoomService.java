@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +39,7 @@ public class GameRoomService {
         return gameRoomRepository.findAllByOrderByCreatedAtDesc();
     }
 
-    public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) throws JsonProcessingException {
+    public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) {
         GameRoom room = GameRoom.builder()
                 .roomId(UUID.randomUUID().toString())
                 .roomName(requestDto.getRoomName())
@@ -75,8 +76,27 @@ public class GameRoomService {
         return ResponseEntity.ok().body(responseDto);
     }
 
+    @Transactional
     public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
-        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(getAllGameRooms()));
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
+                ()-> new NullPointerException("유저 없음"));
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        user.setRoomId(null);
+        userRepository.save(user);
+        List<User> userList = userRepository.findByRoomId(roomId);
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
+                roomId, gameRoom.getRoomName(), userList);
+        GameMessage message = new GameMessage();
+        message.setRoomId(roomId);
+        message.setContent(userListMessage);
+        message.setType(GameMessage.MessageType.UPDATE);
+        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+        if (userList.size() == 0) {
+            gameRoomRepository.delete(gameRoom);
+        }
+        List<GameRoom> gameRoomList = gameRoomRepository.findAllByOrderByCreatedAtDesc();
+        GameRoomListResponseDto responseDto = dtoGenerator.gameRoomListResponseDtoMaker(gameRoomList);
+        return ResponseEntity.ok().body(responseDto);
     }
 
     public List<GameRoom> searchGameRooms(String keyword) {

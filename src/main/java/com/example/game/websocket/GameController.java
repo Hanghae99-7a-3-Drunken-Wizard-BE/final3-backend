@@ -86,11 +86,11 @@ public class GameController {
             System.out.println("여기에 들어오나" + message.getType());
             update(message);
         }
-
-        if (GameMessage.MessageType.LEAVE.equals(message.getType())) {
-            System.out.println("여기에 들어오나" + message.getType());
-            leave(message);
-        }
+//
+//        if (GameMessage.MessageType.LEAVE.equals(message.getType())) {
+//            System.out.println("여기에 들어오나" + message.getType());
+//            leave(message);
+//        }
     }
 
     public void gameStarter(GameMessage message) throws JsonProcessingException {
@@ -218,25 +218,25 @@ public class GameController {
         messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
     }
 
-
-    private void leave(GameMessage message) throws JsonProcessingException {
-        String roomId = message.getRoomId();
-        User user = userRepository.findById(message.getSender()).orElseThrow(
-                ()-> new NullPointerException("유저 없음"));
-        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
-        user.setRoomId(null);
-        userRepository.save(user);
-        List<User> userList = userRepository.findByRoomId(message.getRoomId());
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-                roomId, gameRoom.getRoomName(), userList);
-        GameMessage gameMessage = new GameMessage();
-        gameMessage.setRoomId(roomId);
-        gameMessage.setContent(userListMessage);
-        gameMessage.setType(GameMessage.MessageType.UPDATE);
-        messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
-        if (userList.size() == 0) {
-            gameRoomRepository.delete(gameRoom);
-        }
-    }
+//
+//    private void leave(GameMessage message) throws JsonProcessingException {
+//        String roomId = message.getRoomId();
+//        User user = userRepository.findById(message.getSender()).orElseThrow(
+//                ()-> new NullPointerException("유저 없음"));
+//        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+//        user.setRoomId(null);
+//        userRepository.save(user);
+//        List<User> userList = userRepository.findByRoomId(message.getRoomId());
+//        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
+//                roomId, gameRoom.getRoomName(), userList);
+//        GameMessage gameMessage = new GameMessage();
+//        gameMessage.setRoomId(roomId);
+//        gameMessage.setContent(userListMessage);
+//        gameMessage.setType(GameMessage.MessageType.UPDATE);
+//        messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
+//        if (userList.size() == 0) {
+//            gameRoomRepository.delete(gameRoom);
+//        }
+//    }
 
 }
