@@ -6,7 +6,6 @@ import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
-import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;

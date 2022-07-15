@@ -1,29 +1,19 @@
 package com.example.game.websocket;
 
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
-import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.jwt.JwtDecoder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.internal.Function;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -37,11 +27,6 @@ public class SessionSubscribeEventListener{
 
     private static List<String> subUserList = new ArrayList<>();
 
-    //중복 검색 방지용 출처: https://howtodoinjava.com/java8/java-stream-distinct-examples/
-//    public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-//        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-//        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-//    }
 
 //    // SessionSubscribe, Unsubscribe로 유저 목록 생성 or 삭제
 //    @EventListener
