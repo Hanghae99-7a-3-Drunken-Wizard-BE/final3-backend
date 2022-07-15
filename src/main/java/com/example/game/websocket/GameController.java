@@ -152,7 +152,7 @@ public class GameController {
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setSender(message.getSender());
-        if (messageContent.equals("마나부족")) {
+        if (messageContent.equals("마나부족") || messageContent.equals("침묵됨")) {
             String newMessageContent = jsonStringBuilder.cardUseFailDtoJsonBuilder(false);
             gameMessage.setContent(newMessageContent);
             gameMessage.setType(GameMessage.MessageType.USEFAIL);

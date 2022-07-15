@@ -48,7 +48,6 @@ public class PreTurn {
         Game game = player.getGame();
         List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
         List<Card> cardOnHand = cardRepository.findByLyingPlace(playerId);
-        if (deck.size() < 3) {shuffleGraveyardToDeck(game);}
         if (cardOnHand.size() < 6) {
             int selectable = Math.min(6 - cardOnHand.size(), 2);
             return jsonStringBuilder.cardDrawResponseDtoJsonBuilder(selectable);
@@ -62,7 +61,6 @@ public class PreTurn {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
-        List<Card> cardsOnHand = cardRepository.findByLyingPlaceAndGame(playerId, game);
 
         if (requestDto.getSelectedCards() == null) {
         } else if (requestDto.getSelectedCards().size() == 1 && player.getCharactorClass() != CharactorClass.FARSEER) {
@@ -77,7 +75,7 @@ public class PreTurn {
         }
         boolean drawSuccess;
         Card additionalCard = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game).get(0);
-        if(cardsOnHand.size() >= 6) {
+        if(cardRepository.findByLyingPlace(playerId).size() >= 6) {
             List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
             return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(cardList, false);}
         else{
@@ -112,17 +110,6 @@ public class PreTurn {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("해당 유저가 존재하지 않습니다"));
         return jsonStringBuilder.preTurnCheckResponseDtoJsonBuilder(player);
-    }
-
-    private void shuffleGraveyardToDeck(Game game) {
-        List<Card> graveyard = cardRepository.findByLyingPlaceAndGame(-1L, game);
-        game.graveyardToDeck(graveyard);
-        List<Card> deck = cardRepository.findByGame(game);
-        Collections.shuffle(deck);
-        for (int i = 0; i < deck.size(); i++) {
-            deck.get(i).setCardOrder(i);
-        }
-        cardRepository.saveAll(deck);
     }
 }
 

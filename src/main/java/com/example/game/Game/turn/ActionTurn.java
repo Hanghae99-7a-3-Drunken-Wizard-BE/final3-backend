@@ -35,13 +35,14 @@ public class ActionTurn {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
         List<Player> appliedPlayerList = new ArrayList<>();
-        Player targetPlayer = playerRepository.findById((useCardDto.getTargetPlayerId() != null) ?
-                useCardDto.getTargetPlayerId() : playerId
-        ).orElseThrow(()->new NullPointerException("플레이어 없음"));
+        if (player.getMutedDuration() > 0) {return "침묵됨";}
         if (useCardDto.getCardId() == 0L) {
             if (player.getMana() < (-4+manaCostModification(player)) * -1) {
                 return "마나부족";
             }
+            Player targetPlayer = playerRepository.findById((useCardDto.getTargetPlayerId() != null) ?
+                    useCardDto.getTargetPlayerId() : playerId
+            ).orElseThrow(()->new NullPointerException("플레이어 없음"));
             applyCardToCharacter.applyHealerHealtoTarget(player,targetPlayer);
             if (player == targetPlayer) {
                 appliedPlayerList.add(player);
@@ -58,6 +59,15 @@ public class ActionTurn {
             if (player.getMana() < (card.manaCost+manaCostModification(player)) * -1 && player.getCharactorClass() != CharactorClass.BLOODMAGE) {
                 return "마나부족";
             }}
+            Player targetPlayer;
+            if (card.getTarget() == Target.ME ||
+                    card.getTarget() == Target.ALL ||
+                    card.getTarget() == Target.ENEMY ||
+                    card.getTarget() == Target.ALLY) {
+                targetPlayer = player;
+            } else {targetPlayer = playerRepository.findById(useCardDto.getTargetPlayerId()).orElseThrow(
+                    ()->new NullPointerException("플레이어 없음"));
+            }
             applyCardToCharacter.cardInitiator(player, targetPlayer, card);
             if (card.getTarget() == Target.ME) {
                 appliedPlayerList.add(player);
