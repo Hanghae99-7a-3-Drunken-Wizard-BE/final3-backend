@@ -6,23 +6,14 @@ import com.example.game.repository.user.UserRepository;
 import com.example.game.security.jwt.JwtDecoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.internal.Function;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -36,7 +27,7 @@ public class SessionConnectEventListener {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    // SessionConnect시 username을 전달하여 사용자 목록에 추가
+////     SessionConnect시 username을 전달하여 사용자 목록에 추가
 //    @EventListener
 //    public List<String> handleWebSocketConnectListener(SessionConnectedEvent event) {
 //        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
@@ -79,12 +70,14 @@ public class SessionConnectEventListener {
 //        }
 //        return userList;
 //    }
+
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
         if (user != null) {
             user.setRoomId(null);
+            user.setSessionId(null);
             userRepository.save(user);
         }
         System.out.println("웹소켓 연결해제가 감지됨");

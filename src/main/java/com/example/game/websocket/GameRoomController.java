@@ -5,8 +5,6 @@ import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.dto.response.GameRoomCreateResponseDto;
 import com.example.game.dto.response.GameRoomJoinResponseDto;
 import com.example.game.dto.response.GameRoomListResponseDto;
-import com.example.game.dto.response.GameRoomResponseDto;
-import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,8 +1,9 @@
 package com.example.game.websocket;
 
+import com.example.game.service.UserService;
 import com.example.game.websocket.redis.RedisPublisher;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
@@ -14,20 +15,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
     private final RedisPublisher redisPublisher;
     private final SimpMessageSendingOperations sendingOperations;
+    private final UserService userService;
 
     @MessageMapping("/chat/send")
-    public void message(ChatMessage message) {
+    public void message(ChatMessage message, String sessionId) {
         if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 채팅방에 참여하였습니다.");
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println(message.getSender() + "님이 채팅방에 참여하였습니다.");
+            userService.findConnectedUser();
         }
         if (ChatMessage.MessageType.LEAVE.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println(message.getSender() + "님이 퇴장하였습니다.");
+            userService.findConnectedUser();
         }
         sendingOperations.convertAndSend("/sub/public", message);
         System.out.println("chatMessage : " + message.getMessage());
+        userService.findConnectedUser();
     }
 }

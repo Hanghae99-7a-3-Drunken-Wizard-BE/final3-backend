@@ -2,8 +2,7 @@ package com.example.game.websocket;
 
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
-import com.example.game.security.UserDetailsImpl;
-import com.example.game.security.jwt.JwtDecoder;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -13,8 +12,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -35,14 +32,14 @@ public class StompHandler implements ChannelInterceptor {
             System.out.println(accessor.getSessionId());
             Long id = Long.parseLong(stringId);
             System.out.println(id+" Long 변환 완료");
-            System.out.println(sessionId+"이건 세션아이디");
+            System.out.println(sessionId+" : 이건 세션아이디");
             User user = userRepository.findById(id).orElseThrow(
                     ()-> new NullPointerException("왜 안되는지 모르겠다")
             );
             System.out.println(user.getUsername());
             user.setSessionId(sessionId);
             userRepository.save(user);
-            System.out.println(user.getSessionId() + "세션 아이디 저장 완료?");
+            System.out.println(user.getSessionId() + " : 세션 아이디 저장 완료?");;
         }
 
         return message;
