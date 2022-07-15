@@ -6,6 +6,7 @@ import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -43,9 +45,8 @@ public class DtoGenerator {
         return new PlayerDto(player, cards);
     }
 
-    public CardDrawResponseDto cardDrawResponseDtoMaker(Player player) throws JsonProcessingException {
-        List<Card> cardsOnHand = cardRepository.findByLyingPlace(player.getPlayerId());
-        return new CardDrawResponseDto(cardsOnHand);
+    public CardDrawResponseDto cardDrawResponseDtoMaker(int selectable) throws JsonProcessingException {
+        return new CardDrawResponseDto(selectable);
     }
 
     public EndTurnResponseDto EndTurnResponseDtoMaker(Player player, Player nextPlayer) throws JsonProcessingException {
@@ -65,6 +66,7 @@ public class DtoGenerator {
     public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
+        if (deck.size() < 3) {shuffleGraveyardToDeck(game);}
         List<Card> cards = new ArrayList<>();
         if (player.getCharactorClass().equals(CharactorClass.FARSEER)) {
             for (int i = 0; i < 3; i++) {
@@ -91,6 +93,17 @@ public class DtoGenerator {
         }
         listResponseDto.setGameRoomList(roomResponseDtos);
         return listResponseDto;
+    }
+
+    private void shuffleGraveyardToDeck(Game game) {
+        List<Card> graveyard = cardRepository.findByLyingPlaceAndGame(-1L, game);
+        game.graveyardToDeck(graveyard);
+        List<Card> deck = cardRepository.findByGame(game);
+        Collections.shuffle(deck);
+        for (int i = 0; i < deck.size(); i++) {
+            deck.get(i).setCardOrder(i);
+        }
+        cardRepository.saveAll(deck);
     }
 
 }
