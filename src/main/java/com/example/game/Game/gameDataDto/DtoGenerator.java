@@ -67,6 +67,7 @@ public class DtoGenerator {
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
         if (deck.size() < 3) {shuffleGraveyardToDeck(game);}
+        cardRepository.saveAll(deck);
         List<Card> cards = new ArrayList<>();
         if (player.getCharactorClass().equals(CharactorClass.FARSEER)) {
             for (int i = 0; i < 3; i++) {
