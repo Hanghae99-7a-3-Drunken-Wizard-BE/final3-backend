@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class GameRoomController {
@@ -27,7 +29,8 @@ public class GameRoomController {
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
     public ResponseEntity<GameRoomListResponseDto> readGameRooms() throws JsonProcessingException {
-        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomService.getAllGameRooms()));
+        List<GameRoom> gameRoomList = gameRoomRepository.findAllByOrderByCreatedAtDesc();
+        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomList));
     }
 
     // GameRoom 생성
