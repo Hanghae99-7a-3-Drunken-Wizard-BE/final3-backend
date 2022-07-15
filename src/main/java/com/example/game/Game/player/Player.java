@@ -213,6 +213,9 @@ public class Player {
     public void applyPoison() {
         this.health += (this.poisonedDuration > 0) ? -1 : 0;
     }
+    public void applySleepRegeneration() {
+        this.health += (this.sleepDuration > 0) ? +1 : 0;
+    }
 
     public void durationDecrease() {
         if (this.poisonedDuration > 0) {this.poisonedDuration -= 1;}

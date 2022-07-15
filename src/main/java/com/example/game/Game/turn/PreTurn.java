@@ -35,6 +35,7 @@ public class PreTurn {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         player.applyPoison();
+        player.applySleepRegeneration();
         List<Player> playerTeam = playerRepository.findByGameAndTeam(player.getGame(), player.isTeam());
         boolean gameOver = (playerTeam.get(0).isDead() && playerTeam.get(1).isDead());
         return jsonStringBuilder.poisonDamageCheckResponseDtoJsonBuilder(player, gameOver);
