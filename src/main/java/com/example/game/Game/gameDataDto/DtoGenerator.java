@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,8 +66,11 @@ public class DtoGenerator {
 
     public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
-        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
-        if (deck.size() < 3) {shuffleGraveyardToDeck(game);}
+        List<Card> deck;
+        if (cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game).size() < 3) {
+            GraveyardToDeck(game);
+            deck = shuffleDeck(game);
+        } else {deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);}
         cardRepository.saveAll(cardRepository.findByGame(game));
         List<Card> cards = new ArrayList<>();
         if (player.getCharactorClass().equals(CharactorClass.FARSEER)) {
@@ -96,15 +100,22 @@ public class DtoGenerator {
         return listResponseDto;
     }
 
-    private void shuffleGraveyardToDeck(Game game) {
+    @Transactional
+    public void GraveyardToDeck(Game game) {
         List<Card> graveyard = cardRepository.findByLyingPlaceAndGame(-1L, game);
-        game.graveyardToDeck(graveyard);
+        for(Card card : graveyard) {
+            card.setLyingPlace(0L);
+        }
+
+    }
+
+    @Transactional
+    public List<Card> shuffleDeck(Game game) {
         List<Card> deck = cardRepository.findByGame(game);
         Collections.shuffle(deck);
         for (int i = 0; i < deck.size(); i++) {
             deck.get(i).setCardOrder(i);
-        }
-        cardRepository.saveAll(deck);
+        } return deck;
     }
 
 }

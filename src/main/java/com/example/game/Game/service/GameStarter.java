@@ -37,81 +37,81 @@ private final GameRoomRepository gameRoomRepository;
         Game game = new Game(roomId);
         List<Card> gameDeck = new ArrayList<>();
         int j = 0;
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new BoulderStrike(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new DeathRay(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new FireBall(game));
-        }
-        for (int i = 0; i < 10; i++) {
-            gameDeck.add(new MagicMissile(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new ManaSiphon(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new PoisonArrow(game));
-        }
-        for (int i = 0; i < 2; i++) {
-            gameDeck.add(new ChannelingMana(game));
-        }
-        for (int i = 0; i < 6; i++) {
-            gameDeck.add(new Heal(game));
-        }
-        for (int i = 0; i < 2; i++) {
-            gameDeck.add(new PartyHeal(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Resistance(game));
-        }
-        for (int i = 0; i < 6; i++) {
-            gameDeck.add(new Shield(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Dispel(game));
-        }
-        for (int i = 0; i < 2; i++) {
-            gameDeck.add(new MagicAmplification(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new MagicArmor(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Mute(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Petrification(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new WeaknessExposure(game));
-        }
-        for (int i = 0; i < 6; i++) {
-            gameDeck.add(new Venom(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Yfeputs(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new Sleep(game));
-        }
-        for (int i = 0; i < 4; i++) {
-            gameDeck.add(new MagicAttenuation(game));
-        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new BoulderStrike(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new DeathRay(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new FireBall(game));
+//        }
+//        for (int i = 0; i < 10; i++) {
+//            gameDeck.add(new MagicMissile(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new ManaSiphon(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new PoisonArrow(game));
+//        }
+//        for (int i = 0; i < 2; i++) {
+//            gameDeck.add(new ChannelingMana(game));
+//        }
+//        for (int i = 0; i < 6; i++) {
+//            gameDeck.add(new Heal(game));
+//        }
+//        for (int i = 0; i < 2; i++) {
+//            gameDeck.add(new PartyHeal(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new Resistance(game));
+//        }
+//        for (int i = 0; i < 6; i++) {
+//            gameDeck.add(new Shield(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new Dispel(game));
+//        }
+//        for (int i = 0; i < 2; i++) {
+//            gameDeck.add(new MagicAmplification(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new MagicArmor(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new Mute(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new Petrification(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new WeaknessExposure(game));
+//        }
+//        for (int i = 0; i < 6; i++) {
+//            gameDeck.add(new Venom(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new Yfeputs(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new Sleep(game));
+//        }
+//        for (int i = 0; i < 4; i++) {
+//            gameDeck.add(new MagicAttenuation(game));
+//        }
         for (int i = 0; i < 9; i++) {
             gameDeck.add(new BeerMug(game));
         }
         for (int i = 0; i < 7; i++) {
             gameDeck.add(new LeftoverOctopus(game));
         }
-        for (int i = 0; i < 7; i++) {
-            gameDeck.add(new ManaPotion(game));
-        }
-        for (int i = 0; i < 7; i++) {
-            gameDeck.add(new Panacea(game));
-        }
+//        for (int i = 0; i < 7; i++) {
+//            gameDeck.add(new ManaPotion(game));
+//        }
+//        for (int i = 0; i < 7; i++) {
+//            gameDeck.add(new Panacea(game));
+//        }
 
         game.setDeck(gameDeck);
         List<Boolean> preEmptive1 = Arrays.asList(true, false);
