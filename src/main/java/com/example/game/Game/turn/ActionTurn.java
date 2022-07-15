@@ -98,9 +98,10 @@ public class ActionTurn {
         Player player = playerRepository.getById(playerId);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         Card card = cardRepository.findByCardId(discardDto.getCardId());
-        List<Card> cards = cardRepository.findByLyingPlace(playerId);
         game.addTograveyard(card);
         player.addMana();
+        List<Card> cards = cardRepository.findByLyingPlace(playerId);
+
         return jsonStringBuilder.discard(player, cards);
     }
 

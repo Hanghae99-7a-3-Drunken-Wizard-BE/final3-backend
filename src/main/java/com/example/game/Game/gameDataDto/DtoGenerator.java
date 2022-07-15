@@ -6,6 +6,7 @@ import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
+import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;
@@ -43,9 +44,8 @@ public class DtoGenerator {
         return new PlayerDto(player, cards);
     }
 
-    public CardDrawResponseDto cardDrawResponseDtoMaker(Player player) throws JsonProcessingException {
-        List<Card> cardsOnHand = cardRepository.findByLyingPlace(player.getPlayerId());
-        return new CardDrawResponseDto(cardsOnHand);
+    public CardDrawResponseDto cardDrawResponseDtoMaker(int selectable) throws JsonProcessingException {
+        return new CardDrawResponseDto(selectable);
     }
 
     public EndTurnResponseDto EndTurnResponseDtoMaker(Player player, Player nextPlayer) throws JsonProcessingException {

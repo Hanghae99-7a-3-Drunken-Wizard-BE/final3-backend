@@ -50,7 +50,8 @@ public class PreTurn {
         List<Card> cardOnHand = cardRepository.findByLyingPlace(playerId);
         if (deck.size() < 3) {shuffleGraveyardToDeck(game);}
         if (cardOnHand.size() < 6) {
-            return jsonStringBuilder.cardDrawResponseDtoJsonBuilder(player);
+            int selectable = Math.min(6 - cardOnHand.size(), 2);
+            return jsonStringBuilder.cardDrawResponseDtoJsonBuilder(selectable);
         } else {
             return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder(cardOnHand);
         }
@@ -75,7 +76,7 @@ public class PreTurn {
             }
         }
         boolean drawSuccess;
-        Card additionalCard = game.getDeck().get(0);
+        Card additionalCard = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game).get(0);
         if(cardsOnHand.size() >= 6) {
             List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
             return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(cardList, false);}

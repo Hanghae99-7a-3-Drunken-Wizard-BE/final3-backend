@@ -14,8 +14,7 @@ import java.util.List;
 public class CardDrawResponseDto {
     private int selectable;
 
-    public CardDrawResponseDto(List<Card> cardsOnHand) throws JsonProcessingException {
-        if (cardsOnHand.size() <= 6) {this.selectable = Math.min(6 - cardsOnHand.size(), 2);}
-        else {throw new RuntimeException("카드소유한계 에러");}
+    public CardDrawResponseDto(int selectable) throws JsonProcessingException {
+        this.selectable = selectable;
     }
 }

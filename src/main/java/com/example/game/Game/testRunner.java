@@ -6,14 +6,12 @@ import com.example.game.Game.gameDataDto.ObjectBuilder;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
-import com.example.game.Game.service.GameCloser;
 import com.example.game.Game.service.GameStarter;
 import com.example.game.Game.turn.ActionTurn;
 import com.example.game.Game.turn.EndTurn;
 import com.example.game.Game.turn.PreTurn;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameController;
-import com.example.game.websocket.GameRoom;
 import com.example.game.websocket.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -21,14 +19,11 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-
 @Component
 @RequiredArgsConstructor
 public class testRunner implements ApplicationRunner {
 
     private final GameStarter gameStarter;
-    private final GameCloser gameCloser;
     private final ObjectBuilder objectBuilder;
     private final JsonStringBuilder jsonStringBuilder;
     private final UserRepository userRepository;
