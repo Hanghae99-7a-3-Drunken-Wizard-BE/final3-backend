@@ -93,6 +93,7 @@ public class DtoGenerator {
         List<GameRoomResponseDto> roomResponseDtos = new ArrayList<>();
         for (GameRoom gameRoom : gameRoomList) {
             List<User> userList = userRepository.findByRoomId(gameRoom.getRoomId());
+            System.out.println(userList.size() + " 겟 매핑에서 조회되는 유저 리스트 사람수");
             roomResponseDtos.add(
                     new GameRoomResponseDto(gameRoom.getRoomId(), gameRoom.getRoomName(), userList)
             );
