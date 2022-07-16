@@ -91,16 +91,16 @@ public class GameRoomService {
         for(User u : userList) {
             System.out.println(u.getUsername() + " 지금은 누가 남았지");
         }
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-                roomId, gameRoom.getRoomName(), userList);
-        GameMessage message = new GameMessage();
-        message.setRoomId(roomId);
-        message.setContent(userListMessage);
-        message.setType(GameMessage.MessageType.UPDATE);
-        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
-        if (userList.size() == 0) {
-            gameRoomRepository.delete(gameRoom);
-        }
+//        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
+//                roomId, gameRoom.getRoomName(), userList);
+//        GameMessage message = new GameMessage();
+//        message.setRoomId(roomId);
+//        message.setContent(userListMessage);
+//        message.setType(GameMessage.MessageType.UPDATE);
+//        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+//        if (userList.size() == 0) {
+//            gameRoomRepository.delete(gameRoom);
+//        }
         List<GameRoom> gameRoomList = gameRoomRepository.findAllByOrderByCreatedAtDesc();
         GameRoomListResponseDto responseDto = dtoGenerator.gameRoomListResponseDtoMaker(gameRoomList);
         return ResponseEntity.ok().body(responseDto);
