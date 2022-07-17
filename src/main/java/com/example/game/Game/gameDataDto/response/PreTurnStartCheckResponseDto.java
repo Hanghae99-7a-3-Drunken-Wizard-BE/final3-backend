@@ -1,7 +1,6 @@
 package com.example.game.Game.gameDataDto.response;
 
 import com.example.game.Game.card.Card;
-import com.example.game.Game.player.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,12 +10,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PoisonDamageCheckResponseDto {
+public class PreTurnStartCheckResponseDto {
     private PlayerDto player;
     private boolean gameOver;
     private List<CardDetailResponseDto> cardsDrawed;
 
-    public PoisonDamageCheckResponseDto (boolean gameOver, List<Card> cards) throws JsonProcessingException {
+    public PreTurnStartCheckResponseDto(boolean gameOver, List<Card> cards) throws JsonProcessingException {
         this.gameOver = gameOver;
         List<CardDetailResponseDto> cardDetailResponseDtos = new ArrayList<>();
         for (Card card : cards) {

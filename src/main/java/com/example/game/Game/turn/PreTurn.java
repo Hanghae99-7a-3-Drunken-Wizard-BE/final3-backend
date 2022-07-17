@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -38,16 +36,12 @@ public class PreTurn {
         player.applySleepRegeneration();
         List<Player> playerTeam = playerRepository.findByGameAndTeam(player.getGame(), player.isTeam());
         boolean gameOver = (playerTeam.get(0).isDead() && playerTeam.get(1).isDead());
-        return jsonStringBuilder.poisonDamageCheckResponseDtoJsonBuilder(player, gameOver);
+        return jsonStringBuilder.preTurnStartCheckResponseDtoJsonBuilder(player, gameOver);
     }
 
 
     @Transactional
     public String cardDrawInitiator(Long playerId) throws JsonProcessingException {
-        Player player = playerRepository.findById(playerId).orElseThrow(
-                () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
-        Game game = player.getGame();
-        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
         List<Card> cardOnHand = cardRepository.findByLyingPlace(playerId);
         if (cardOnHand.size() < 6) {
             int selectable = Math.min(6 - cardOnHand.size(), 2);
@@ -97,7 +91,7 @@ public class PreTurn {
                     player.addOnHand(additionalCard);
                     drawSuccess = true;}
                 else {drawSuccess = false;
-                game.addTograveyard(additionalCard);
+                additionalCard.addGraveyard();
                 }
                 List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
                 return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(cardList, drawSuccess);
@@ -107,6 +101,7 @@ public class PreTurn {
             }}
     }
 
+    @Transactional
     public String actionTurnCheck(Long playerId) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("해당 유저가 존재하지 않습니다"));

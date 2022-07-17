@@ -79,4 +79,8 @@ public class Card {
     @ManyToOne
     @JoinColumn(name = "room_Id")
     public Game game;
+
+    public void addGraveyard() {
+        this.lyingPlace = -1L;
+    }
 }

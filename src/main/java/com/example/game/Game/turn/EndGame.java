@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Component
@@ -22,6 +23,7 @@ public class EndGame {
     private final PlayerRepository playerRepository;
     private final JsonStringBuilder jsonStringBuilder;
 
+    @Transactional
     public String gameEnd(String roomId) throws JsonProcessingException {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         Game game = gameRepository.findByRoomId(roomId);

@@ -3,20 +3,16 @@ package com.example.game.Game.gameDataDto;
 import com.example.game.Game.Game;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.response.*;
-import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.PlayerRepository;
-import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.model.user.User;
-import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,8 +28,8 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String poisonDamageCheckResponseDtoJsonBuilder(Player player, boolean gameOver) throws JsonProcessingException {
-        PoisonDamageCheckResponseDto responseDto = dtoGenerator.poisonDamageCheckResponseDtoMaker(player, gameOver);
+    public String preTurnStartCheckResponseDtoJsonBuilder(Player player, boolean gameOver) throws JsonProcessingException {
+        PreTurnStartCheckResponseDto responseDto = dtoGenerator.preTurnStartCheckResponseDtoMaker(player, gameOver);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }

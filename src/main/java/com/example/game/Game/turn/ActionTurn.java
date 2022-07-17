@@ -108,7 +108,7 @@ public class ActionTurn {
         Player player = playerRepository.getById(playerId);
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         Card card = cardRepository.findByCardId(discardDto.getCardId());
-        game.addTograveyard(card);
+        card.addGraveyard();
         player.addMana();
         List<Card> cards = cardRepository.findByLyingPlace(playerId);
 

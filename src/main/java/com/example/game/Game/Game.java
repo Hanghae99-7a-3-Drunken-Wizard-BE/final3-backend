@@ -36,16 +36,4 @@ public class Game {
     public Game(String roomId) {
         this.roomId = roomId;
     }
-
-    public void addTograveyard(Card card){
-        card.setLyingPlace(-1L);
-    }
-
-    public void graveyardToDeck (List<Card> graveyard) {
-        Collections.shuffle(graveyard);
-        for(Card card : graveyard) {card.setLyingPlace(this.gameId * -1);}
-    }
-    public void shuffleDeck () {
-        Collections.shuffle(this.deck);
-    }
 }

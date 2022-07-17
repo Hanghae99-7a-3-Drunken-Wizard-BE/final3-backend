@@ -64,8 +64,7 @@ public class DtoGenerator {
         return new GameStarterResponseDto(playerDtos);
     }
 
-    @Transactional
-    public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
+    public PreTurnStartCheckResponseDto preTurnStartCheckResponseDtoMaker(Player player, boolean gameOver) throws JsonProcessingException {
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         List<Card> deck;
         if (cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game).size() < 3) {
@@ -83,7 +82,7 @@ public class DtoGenerator {
                 cards.add(deck.get(i));
             }
         }
-        PoisonDamageCheckResponseDto responseDto = new PoisonDamageCheckResponseDto(gameOver, cards);
+        PreTurnStartCheckResponseDto responseDto = new PreTurnStartCheckResponseDto(gameOver, cards);
         responseDto.setPlayer(playerDtoMaker(player));
         return responseDto;
     }
@@ -102,7 +101,6 @@ public class DtoGenerator {
         return listResponseDto;
     }
 
-    @Transactional
     public void GraveyardToDeck(Game game) {
         List<Card> graveyard = cardRepository.findByLyingPlaceAndGame(-1L, game);
         for(Card card : graveyard) {
@@ -111,7 +109,6 @@ public class DtoGenerator {
 
     }
 
-    @Transactional
     public List<Card> shuffleDeck(Game game) {
         List<Card> deck = cardRepository.findByGame(game);
         Collections.shuffle(deck);
