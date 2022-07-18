@@ -42,6 +42,9 @@ public class User {
     @Column
     private String sessionId;
 
+    @Column
+    private boolean isPlaying;
+
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
