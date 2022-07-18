@@ -53,6 +53,14 @@ public class ApplyCardToCharacter {
         card.addGraveyard();
     }
 
+    public void applyCardtoMultipleTarget (Player player, List<Player> players, Card card) {
+        for (Player playerInList : players) {
+            newStatusUpdate(player, playerInList, card);}
+        newApplyManaCost(player,card);
+        bloodmageManaFeedback(player);
+        card.addGraveyard();
+    }
+
     public void applyHealerHealtoTarget(Player player, Player targetPlayer) {
         if (player.damageModifierDuration > 0){if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.applyHealerHealWithDamageModifierPositive();}}
@@ -61,14 +69,6 @@ public class ApplyCardToCharacter {
         else{if (targetPlayer.isShield()&&!(player==targetPlayer)){
             targetPlayer.setShield(false);} else{targetPlayer.applyHealerHeal();}}
         healerHealmanaCostApply(player);
-    }
-
-    public void applyCardtoMultipleTarget (Player player, List<Player> players, Card card) {
-        for (Player playerInList : players) {
-            newStatusUpdate(player, playerInList, card);}
-        newApplyManaCost(player,card);
-        bloodmageManaFeedback(player);
-        card.addGraveyard();
     }
 
     public void healerHealmanaCostApply(Player player) {
