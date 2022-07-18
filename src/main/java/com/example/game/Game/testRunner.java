@@ -82,7 +82,7 @@ public class testRunner implements ApplicationRunner {
         GameRoom gameRoom = new GameRoom("1", "testRoom");
         gameRoomRepository.save(gameRoom);
 //
-        gameStarter.createGameRoom("1");
+//        gameStarter.createGameRoom("1");
 //        Card cm = cardRepository.findByCardName("Channeling Mana").get(0);
 //
 //        UseCardDto useCardDto = new UseCardDto();
@@ -131,12 +131,12 @@ public class testRunner implements ApplicationRunner {
 //
 //        System.out.println(preTurn.cardDrawResponse(cardSelectRequestDto));
 //
-        UseCardDto useCardDto = new UseCardDto();
-                useCardDto.setTargetPlayerId(3L);
-                useCardDto.setCardId(1L);
-        Card card = cardRepository.findByCardId(1L);
-        System.out.println(card.getCardName());
-        System.out.println(actionTurn.cardMoveProcess(1L, useCardDto));
+//        UseCardDto useCardDto = new UseCardDto();
+//                useCardDto.setTargetPlayerId(3L);
+//                useCardDto.setCardId(1L);
+//        Card card = cardRepository.findByCardId(1L);
+//        System.out.println(card.getCardName());
+//        System.out.println(actionTurn.cardMoveProcess(1L, useCardDto));
 //
 //        gameCloser.closeGameRoom("1");
 //        Game game3 = gameStarter.createGameRoom("3", userList);
