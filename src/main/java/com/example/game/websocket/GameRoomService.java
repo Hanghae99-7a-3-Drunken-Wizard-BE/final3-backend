@@ -11,6 +11,9 @@ import com.example.game.security.UserDetailsImpl;
 import com.example.game.websocket.redis.RedisSubscriber;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -34,8 +37,9 @@ public class GameRoomService {
     private final RedisSubscriber redisSubscriber;
 
     //ChatRoom 전체 조회
-    public List<GameRoom> getAllGameRooms() {
-        return gameRoomRepository.findAllByOrderByCreatedAtDesc();
+    public Page<GameRoom> getAllGameRooms(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
     public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) throws JsonProcessingException {
@@ -67,7 +71,7 @@ public class GameRoomService {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
+    public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, int page, int size, UserDetailsImpl userDetails) throws JsonProcessingException {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         List<User> userList = userRepository.findByRoomId(roomId);
@@ -83,11 +87,12 @@ public class GameRoomService {
         if (userList.size() == 0) {
             gameRoomRepository.delete(gameRoom);
         }
-        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(getAllGameRooms()));
+        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(getAllGameRooms(page, size)));
     }
 
-    public List<GameRoom> searchGameRooms(String keyword) {
-        return gameRoomRepository.findByRoomNameContaining(keyword);
+    public Page<GameRoom> searchGameRooms(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return gameRoomRepository.findByRoomNameContaining(keyword, pageable);
     }
 
 

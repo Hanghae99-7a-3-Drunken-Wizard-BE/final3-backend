@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class GameRoomController {
@@ -26,8 +28,14 @@ public class GameRoomController {
 
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
-    public ResponseEntity<GameRoomListResponseDto> readGameRooms() throws JsonProcessingException {
-        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomService.getAllGameRooms()));
+    public ResponseEntity<GameRoomListResponseDto> readGameRooms(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size
+    ) throws JsonProcessingException {
+
+        page = page - 1;
+
+        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomService.getAllGameRooms(page, size)));
     }
 
     // GameRoom 생성
@@ -40,12 +48,17 @@ public class GameRoomController {
 
     // ChatRoom roomName으로 검색 조회
     @GetMapping(value = "/game/rooms/search")
-    public ResponseEntity<GameRoomListResponseDto> searchGameRooms(@RequestParam(required = false) String keyword)
+    public ResponseEntity<GameRoomListResponseDto> searchGameRooms(
+            @RequestParam(required = false) String keyword,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size)
     throws JsonProcessingException{
         if (keyword != null) {
-            return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomService.searchGameRooms(keyword)));
+            page = page - 1;
+            return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomService.searchGameRooms(keyword, page, size)));
         }
-        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomService.getAllGameRooms()));
+        page = page - 1;
+        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomService.getAllGameRooms(page, size)));
     }
 
     @PostMapping("/game/{roomId}/join")
@@ -57,8 +70,12 @@ public class GameRoomController {
 
     @PostMapping("/game/{roomId}/leave")
     public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(
-            @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails)
+            @PathVariable String roomId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size)
             throws JsonProcessingException {
-        return gameRoomService.leaveGameRoom(roomId, userDetails);
+        page = page - 1;
+        return gameRoomService.leaveGameRoom(roomId, page, size, userDetails);
     }
 }
