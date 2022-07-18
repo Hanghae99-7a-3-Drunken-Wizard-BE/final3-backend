@@ -1,5 +1,6 @@
 package com.example.game.service;
 
+import com.example.game.dto.response.UserResponseDto;
 import com.example.game.dto.user.DubCheckRequestDto;
 import com.example.game.dto.user.SignupRequestDto;
 import com.example.game.model.user.User;
@@ -9,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +36,17 @@ public class UserService {
         return (!userRepository.findByUsername(requestDto.getUsername()).isPresent());
     }
 
-    public void findConnectedUser() {
-        userRepository.findBySessionIdNotNull();
+    public List<UserResponseDto> getConnectedUsers() {
+        List<User> users = userRepository.findBySessionIdIsNotNull();
+        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+
+        for (User user : users) {
+            UserResponseDto userResponseDto = new UserResponseDto(
+                    user.getId(),
+                    user.getNickname()
+            );
+            userResponseDtos.add(userResponseDto);
+        }
+        return userResponseDtos;
     }
 }

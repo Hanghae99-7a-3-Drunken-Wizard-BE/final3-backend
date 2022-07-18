@@ -15,6 +15,7 @@ import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -87,7 +88,7 @@ public class DtoGenerator {
         return responseDto;
     }
 
-    public GameRoomListResponseDto gameRoomListResponseDtoMaker (List<GameRoom> gameRoomList) throws JsonProcessingException {
+    public GameRoomListResponseDto gameRoomListResponseDtoMaker (Page<GameRoom> gameRoomList) throws JsonProcessingException {
         GameRoomListResponseDto listResponseDto = new GameRoomListResponseDto();
         List<GameRoomResponseDto> roomResponseDtos = new ArrayList<>();
         for (GameRoom gameRoom : gameRoomList) {

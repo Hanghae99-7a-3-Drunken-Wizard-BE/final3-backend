@@ -11,13 +11,14 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Component
-public class SessionSubscribeEventListener{
+public class SessionSubscribeEventListener {
 
     private final JwtDecoder jwtDecoder;
     private final GameRoomRepository gameRoomRepository;
@@ -75,7 +76,23 @@ public class SessionSubscribeEventListener{
         }
     }
 
-    // SessionUnsubscribe로 유저 목록에서 삭제
+//    @EventListener
+//    public void handleUnsubscribeEvent(SessionUnsubscribeEvent event) {
+//        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
+//        String targetDestination = headers.getDestination();
+//        System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
+//        if (targetDestination.equals("/lobby/")) {
+//            User user = userRepository.findBySessionId(headers.getSessionId());
+//            ChatMessage chatMessage = new ChatMessage();
+//            if (user != null) {
+//                user.setSessionId(null);
+//                userRepository.save(user);
+//                chatMessage.setType(ChatMessage.MessageType.LEAVE);
+//            }
+//            System.out.println("로비에서 구독 취소");
+//        }
+
+        // SessionUnsubscribe로 유저 목록에서 삭제
 //    @EventListener
 //    public ResponseEntity handleUnsubscribeEvent(SessionUnsubscribeEvent event) {
 //        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
@@ -91,3 +108,4 @@ public class SessionSubscribeEventListener{
 //        return ResponseEntity.ok().body(subUserList + "구독 리스트에서 " + nickName + " 유저를 삭제했습니다." + subUserList.size() + " 명 접속 중");
 //    }
 }
+

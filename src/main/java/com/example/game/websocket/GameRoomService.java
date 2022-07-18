@@ -11,6 +11,9 @@ import com.example.game.security.UserDetailsImpl;
 import com.example.game.websocket.redis.RedisSubscriber;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -35,8 +38,9 @@ public class GameRoomService {
     private final RedisSubscriber redisSubscriber;
 
     //ChatRoom 전체 조회
-    public List<GameRoom> getAllGameRooms() {
-        return gameRoomRepository.findAllByOrderByCreatedAtDesc();
+    public Page<GameRoom> getAllGameRooms(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
     public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) {
@@ -77,9 +81,7 @@ public class GameRoomService {
     }
 
     @Transactional
-    public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
-        System.out.println("게임방 나가기 시퀀스 시작점");
-        System.out.println(userRepository.findByRoomId(roomId).size());
+    public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, int page, int size, UserDetailsImpl userDetails) throws JsonProcessingException {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         System.out.println("나가는 유저 조회중 : "+user.getUsername());
@@ -91,23 +93,22 @@ public class GameRoomService {
         for(User u : userList) {
             System.out.println(u.getUsername() + " 지금은 누가 남았지");
         }
-//        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-//                roomId, gameRoom.getRoomName(), userList);
-//        GameMessage message = new GameMessage();
-//        message.setRoomId(roomId);
-//        message.setContent(userListMessage);
-//        message.setType(GameMessage.MessageType.UPDATE);
-//        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
-//        if (userList.size() == 0) {
-//            gameRoomRepository.delete(gameRoom);
-//        }
-        List<GameRoom> gameRoomList = gameRoomRepository.findAllByOrderByCreatedAtDesc();
-        GameRoomListResponseDto responseDto = dtoGenerator.gameRoomListResponseDtoMaker(gameRoomList);
-        return ResponseEntity.ok().body(responseDto);
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
+                roomId, gameRoom.getRoomName(), userList);
+        GameMessage message = new GameMessage();
+        message.setRoomId(roomId);
+        message.setContent(userListMessage);
+        message.setType(GameMessage.MessageType.UPDATE);
+        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+        if (userList.size() == 0) {
+            gameRoomRepository.delete(gameRoom);
+        }
+        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(getAllGameRooms(page, size)));
     }
 
-    public List<GameRoom> searchGameRooms(String keyword) {
-        return gameRoomRepository.findByRoomNameContaining(keyword);
+    public Page<GameRoom> searchGameRooms(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return gameRoomRepository.findByRoomNameContaining(keyword, pageable);
     }
 
 
