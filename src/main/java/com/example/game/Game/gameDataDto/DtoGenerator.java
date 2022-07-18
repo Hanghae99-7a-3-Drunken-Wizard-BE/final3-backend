@@ -3,24 +3,32 @@ package com.example.game.Game.gameDataDto;
 import com.example.game.Game.Game;
 import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.response.*;
+import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
+import com.example.game.dto.response.GameRoomListResponseDto;
+import com.example.game.dto.response.GameRoomResponseDto;
+import com.example.game.model.user.User;
+import com.example.game.repository.user.UserRepository;
+import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class DtoGenerator {
-
-    private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
+    private final GameRepository gameRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     public CardUseResponseDto cardUseResponseDtoMaker(List<Player> players, boolean gameOver) throws JsonProcessingException {
         CardUseResponseDto cardUseResponseDto = new CardUseResponseDto();
@@ -38,9 +46,8 @@ public class DtoGenerator {
         return new PlayerDto(player, cards);
     }
 
-    public CardDrawResponseDto cardDrawResponseDtoMaker(Player player, List<Card> cardList) throws JsonProcessingException {
-        List<Card> cardsOnHand = cardRepository.findByLyingPlace(player.getPlayerId());
-        return new CardDrawResponseDto(cardsOnHand, cardList);
+    public CardDrawResponseDto cardDrawResponseDtoMaker(int selectable) throws JsonProcessingException {
+        return new CardDrawResponseDto(selectable);
     }
 
     public EndTurnResponseDto EndTurnResponseDtoMaker(Player player, Player nextPlayer) throws JsonProcessingException {
@@ -56,10 +63,58 @@ public class DtoGenerator {
         }
         return new GameStarterResponseDto(playerDtos);
     }
-    public PoisonDamageCheckResponseDto poisonDamageCheckResponseDtoMaker (Player player, boolean gameOver) throws JsonProcessingException {
-        PoisonDamageCheckResponseDto responseDto = new PoisonDamageCheckResponseDto(gameOver);
+
+    public PreTurnStartCheckResponseDto preTurnStartCheckResponseDtoMaker(Player player, boolean gameOver) throws JsonProcessingException {
+        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
+        List<Card> deck;
+        if (cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game).size() < 3) {
+            GraveyardToDeck(game);
+            deck = shuffleDeck(game);
+        } else {deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);}
+        cardRepository.saveAll(cardRepository.findByGame(game));
+        List<Card> cards = new ArrayList<>();
+        if (player.getCharactorClass().equals(CharactorClass.FARSEER)) {
+            for (int i = 0; i < 3; i++) {
+                cards.add(deck.get(i));
+            }
+        } else {
+            for (int i = 0; i < 2; i++) {
+                cards.add(deck.get(i));
+            }
+        }
+        PreTurnStartCheckResponseDto responseDto = new PreTurnStartCheckResponseDto(gameOver, cards);
         responseDto.setPlayer(playerDtoMaker(player));
-        return responseDto
-;
+        return responseDto;
     }
+
+    public GameRoomListResponseDto gameRoomListResponseDtoMaker (List<GameRoom> gameRoomList) throws JsonProcessingException {
+        GameRoomListResponseDto listResponseDto = new GameRoomListResponseDto();
+        List<GameRoomResponseDto> roomResponseDtos = new ArrayList<>();
+        for (GameRoom gameRoom : gameRoomList) {
+            List<User> userList = userRepository.findByRoomId(gameRoom.getRoomId());
+            System.out.println(userList.size() + " 겟 매핑에서 조회되는 유저 리스트 사람수");
+            roomResponseDtos.add(
+                    new GameRoomResponseDto(gameRoom.getRoomId(), gameRoom.getRoomName(), userList)
+            );
+        }
+        listResponseDto.setGameRoomList(roomResponseDtos);
+        return listResponseDto;
+    }
+
+    public void GraveyardToDeck(Game game) {
+        List<Card> graveyard = cardRepository.findByLyingPlaceAndGame(-1L, game);
+        for(Card card : graveyard) {
+            card.setLyingPlace(0L);
+        }
+
+    }
+
+    public List<Card> shuffleDeck(Game game) {
+        List<Card> deck = cardRepository.findByGame(game);
+        Collections.shuffle(deck);
+        for (int i = 0; i < deck.size(); i++) {
+            deck.get(i).setCardOrder(i);
+        } return deck;
+    }
+
 }

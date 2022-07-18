@@ -5,10 +5,10 @@ import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.ObjectBuilder;
 import com.example.game.Game.gameDataDto.request.UseCardDto;
+import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
-import com.example.game.Game.service.GameCloser;
 import com.example.game.Game.service.GameStarter;
 import com.example.game.Game.turn.ActionTurn;
 import com.example.game.Game.turn.EndTurn;
@@ -24,7 +24,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import java.util.List;
 public class testRunner implements ApplicationRunner {
 
     private final GameStarter gameStarter;
-    private final GameCloser gameCloser;
     private final ObjectBuilder objectBuilder;
     private final JsonStringBuilder jsonStringBuilder;
     private final UserRepository userRepository;
@@ -62,7 +60,7 @@ public class testRunner implements ApplicationRunner {
 //        User user8 = new User("user8", "111", "nickname8", "email@emal8.com");
 //
 
-
+//
         user1.setRoomId("1");
         user2.setRoomId("1");
         user3.setRoomId("1");
@@ -82,11 +80,11 @@ public class testRunner implements ApplicationRunner {
         userRepository.saveAll(userList);
 //        userRepository.saveAll(userList1);
 //
-        GameRoom gameRoom = new GameRoom("1", "testRoom" ,userList);
+        GameRoom gameRoom = new GameRoom("1", "testRoom");
         gameRoomRepository.save(gameRoom);
-
+////
 //        gameStarter.createGameRoom("1");
-//        Card cm = cardRepository.findByCardName("Channeling Mana").get(0);
+//        Card cm = cardRepository.findByCardName("Panacea").get(0);
 //
 //        UseCardDto useCardDto = new UseCardDto();
 //        useCardDto.setCardId(cm.getCardId());
@@ -110,14 +108,14 @@ public class testRunner implements ApplicationRunner {
 //        Game game2 = gameStarter.createGameRoom("2", userList1);
 //
 //        System.out.println(jsonStringBuilder.gameStarter(game1));
-////
-////        PlayerRequestDto playerRequestDto = PlayerRequestDto.builder()
-////                .playerId(1L)
-////                .build();
-////
-////        String cardDrawResponse = preTurn.preturnStartCheck(playerRequestDto);
-////        System.out.println(cardDrawResponse);
-////
+//
+//        PlayerRequestDto playerRequestDto = PlayerRequestDto.builder()
+//                .playerId(1L)
+//                .build();
+//
+//        String cardDrawResponse = preTurn.preturnStartCheck(playerRequestDto);
+//        System.out.println(cardDrawResponse);
+//
 //        CardRequestDto cardRequestDto1 = new CardRequestDto();
 //
 //        CardRequestDto cardRequestDto2 = new CardRequestDto();
@@ -133,15 +131,17 @@ public class testRunner implements ApplicationRunner {
 //        cardSelectRequestDto.setSelectedCards(cards);
 //
 //        System.out.println(preTurn.cardDrawResponse(cardSelectRequestDto));
-//
-//        UseCardDto useCardDto = new UseCardDto();
-//                useCardDto.setPlayerId(1L);
-//                useCardDto.setTargetPlayerID(3L);
-//                useCardDto.setCardId(1L);
-//        Card card = cardRepository.getByCardId(1L);
-//        System.out.println(card.getCardName());
-//        System.out.println(actionTurn.cardMoveProcess(useCardDto));
-//
+//        Player player = playerRepository.findById(1L).orElseThrow(()->new RuntimeException("You Are Fucked Up"));
+//        player.setMana(9999);
+//        playerRepository.save(player);
+//        List<Card> deck = cardRepository.findAll();
+//        for (Card card : deck) {
+//            UseCardDto useCardDto = new UseCardDto();
+//            useCardDto.setTargetPlayerId(3L);
+//            useCardDto.setCardId(card.getCardId());
+//            System.out.println(card.getCardName());
+//            System.out.println(actionTurn.cardMoveProcess(1L, useCardDto));
+//        }
 //        gameCloser.closeGameRoom("1");
 //        Game game3 = gameStarter.createGameRoom("3", userList);
 //

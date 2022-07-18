@@ -13,16 +13,8 @@ import java.util.List;
 @Setter
 public class CardDrawResponseDto {
     private int selectable;
-    private List<CardDetailResponseDto> cardDrawed;
 
-    public CardDrawResponseDto(List<Card> cardsOnHand, List<Card> cards) throws JsonProcessingException {
-        if (cardsOnHand.size() <= 6) {this.selectable = Math.min(6 - cardsOnHand.size(), 2);}
-        else {throw new RuntimeException("카드소유한계 에러");}
-        List<CardDetailResponseDto> cardIds = new ArrayList<>();
-        for (Card card : cards) {
-            cardIds.add(new CardDetailResponseDto(card));
-        }
-        this.cardDrawed = cardIds;
-
+    public CardDrawResponseDto(int selectable) throws JsonProcessingException {
+        this.selectable = selectable;
     }
 }

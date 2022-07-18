@@ -14,6 +14,7 @@ import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.model.user.User;
+import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,10 +28,11 @@ public class GameStarter {
 private final GameRoomRepository gameRoomRepository;
     private final GameRepository gameRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void createGameRoom (String roomId){
-        List<User> userInLobby = gameRoomRepository.findByRoomId(roomId).getUserList();
+        List<User> userInLobby = userRepository.findByRoomId(roomId);
         if(userInLobby.size() != 4) {return;}
         Game game = new Game(roomId);
         List<Card> gameDeck = new ArrayList<>();

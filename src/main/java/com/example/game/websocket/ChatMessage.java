@@ -26,7 +26,6 @@ public class ChatMessage {
 
     public ChatMessage(String message, UserDetailsImpl userDetails) {
         this.message = message;
-//        this.roomId = chatRoom.getRoomId();
         this.sender = userDetails.getUser().getNickname();
     }
 }

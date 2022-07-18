@@ -1,44 +1,38 @@
 package com.example.game.websocket;
 
+import com.example.game.service.UserService;
+import com.example.game.websocket.redis.RedisPublisher;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
-
+    private final RedisPublisher redisPublisher;
     private final SimpMessageSendingOperations sendingOperations;
-
-    private static List<String> userList = new ArrayList<>();
-
+    private final UserService userService;
 
     @MessageMapping("/chat/send")
-    public ResponseEntity message(ChatMessage message) {
+    public void message(ChatMessage message, String sessionId) {
         if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
-            userList.add(message.getSender());
             message.setMessage(message.getSender() + "님이 채팅방에 참여하였습니다.");
             sendingOperations.convertAndSend("/sub/public", message);
-            System.out.println(userList);
-            return ResponseEntity.ok().body(userList);
+            System.out.println(message.getSender() + "님이 채팅방에 참여하였습니다.");
+            userService.findConnectedUser();
         }
         if (ChatMessage.MessageType.LEAVE.equals(message.getType())) {
-            userList.remove(message.getSender());
             message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
             sendingOperations.convertAndSend("/sub/public", message);
-            System.out.println(userList);
-            return ResponseEntity.ok().body(userList);
+            System.out.println(message.getSender() + "님이 퇴장하였습니다.");
+            userService.findConnectedUser();
         }
         sendingOperations.convertAndSend("/sub/public", message);
         System.out.println("chatMessage : " + message.getMessage());
-        System.out.println(userList);
-        return ResponseEntity.ok().body(userList);
+        userService.findConnectedUser();
     }
 }
