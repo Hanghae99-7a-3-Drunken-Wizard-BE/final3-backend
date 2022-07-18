@@ -99,7 +99,9 @@ public class ApplyCardToCharacter {
     }
 
     public void newApplyManaCost (Player player, Card card) {
-        player.setMana(player.getMana() + card.getManaCost() + manaModification(player, card));
+        if (card.getManaCost() != null){
+            player.setMana(player.getMana() + card.getManaCost() + manaModification(player, card));
+        }
     }
 
     public int damageModification (Player player, Player targetPlayer, Card card) {
