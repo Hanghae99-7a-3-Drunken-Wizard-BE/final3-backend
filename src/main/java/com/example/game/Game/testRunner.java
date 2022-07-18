@@ -1,8 +1,10 @@
 package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
+import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.ObjectBuilder;
+import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
@@ -80,7 +82,7 @@ public class testRunner implements ApplicationRunner {
         GameRoom gameRoom = new GameRoom("1", "testRoom");
         gameRoomRepository.save(gameRoom);
 //
-//        gameStarter.createGameRoom("1");
+        gameStarter.createGameRoom("1");
 //        Card cm = cardRepository.findByCardName("Channeling Mana").get(0);
 //
 //        UseCardDto useCardDto = new UseCardDto();
@@ -129,13 +131,12 @@ public class testRunner implements ApplicationRunner {
 //
 //        System.out.println(preTurn.cardDrawResponse(cardSelectRequestDto));
 //
-//        UseCardDto useCardDto = new UseCardDto();
-//                useCardDto.setPlayerId(1L);
-//                useCardDto.setTargetPlayerID(3L);
-//                useCardDto.setCardId(1L);
-//        Card card = cardRepository.getByCardId(1L);
-//        System.out.println(card.getCardName());
-//        System.out.println(actionTurn.cardMoveProcess(useCardDto));
+        UseCardDto useCardDto = new UseCardDto();
+                useCardDto.setTargetPlayerId(3L);
+                useCardDto.setCardId(1L);
+        Card card = cardRepository.findByCardId(1L);
+        System.out.println(card.getCardName());
+        System.out.println(actionTurn.cardMoveProcess(1L, useCardDto));
 //
 //        gameCloser.closeGameRoom("1");
 //        Game game3 = gameStarter.createGameRoom("3", userList);

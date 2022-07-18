@@ -82,14 +82,18 @@ public class ApplyCardToCharacter {
             targetPlayer.setShield(false);
         } else {
             if (targetPlayer.getPetrifiedDuration() <= 0) {
-                targetPlayer.setHealth(
-                        targetPlayer.getHealth() +
-                                card.getHealthModifier() +
-                                damageModification(player, targetPlayer, card)
-                );
+                if (card.getHealthModifier() != null) {
+                    targetPlayer.setHealth(
+                    targetPlayer.getHealth() +
+                    card.getHealthModifier() +
+                    damageModification(player, targetPlayer, card)
+                    );
+                }
+            if (card.getManaModifier() != null) {
                 targetPlayer.setMana(targetPlayer.getMana()+card.getManaModifier()) ;
-                targetPlayer.setDead(targetPlayer.getHealth() <=0);
-                targetPlayer.applyAdditionalEffect(card);
+            }
+            targetPlayer.setDead(targetPlayer.getHealth() <=0);
+            targetPlayer.applyAdditionalEffect(card);
             }
         }
     }
