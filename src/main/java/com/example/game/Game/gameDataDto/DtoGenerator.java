@@ -10,6 +10,7 @@ import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;
+import com.example.game.dto.response.GameRoomUserResponseDto;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameRoom;
@@ -99,22 +100,29 @@ public class DtoGenerator {
     }
 
     public GameRoomResponseDto gameRoomResponseDtoMaker(GameRoom gameRoom) {
-        User player1 = userRepository.findById((gameRoom.getPlayer1() > 0) ? gameRoom.getPlayer1() : gameRoom.getPlayer1() * -1).orElse(null);
-        User player2 = userRepository.findById((gameRoom.getPlayer1() > 0) ? gameRoom.getPlayer2() : gameRoom.getPlayer2() * -1).orElse(null);
-        User player3 = userRepository.findById((gameRoom.getPlayer1() > 0) ? gameRoom.getPlayer3() : gameRoom.getPlayer3() * -1).orElse(null);
-        User player4 = userRepository.findById((gameRoom.getPlayer1() > 0) ? gameRoom.getPlayer4() : gameRoom.getPlayer4() * -1).orElse(null);
         return new GameRoomResponseDto(
                 gameRoom.getRoomId(),
                 gameRoom.getRoomName(),
-                gameRoom.getPlayer1(),
-                (player1 != null) ? player1.getNickname() : null,
-                gameRoom.getPlayer2(),
-                (player2 != null) ? player2.getNickname() : null,
-                gameRoom.getPlayer3(),
-                (player3 != null) ? player3.getNickname() : null,
-                gameRoom.getPlayer4(),
-                (player4 != null) ? player4.getNickname() : null
-        );
+                gameRoomUserResponseDtoMaker(gameRoom.getPlayer1()),
+                gameRoomUserResponseDtoMaker(gameRoom.getPlayer2()),
+                gameRoomUserResponseDtoMaker(gameRoom.getPlayer3()),
+                gameRoomUserResponseDtoMaker(gameRoom.getPlayer4())
+                );
+
+    }
+
+    public GameRoomUserResponseDto gameRoomUserResponseDtoMaker(Long id) {
+        boolean ready;
+        User user;
+        if (id == null) {return null;}
+        else if (id > 0) {
+            ready = true;
+            user = userRepository.findById(id).orElseThrow(()->new NullPointerException("유저 없음"));
+        } else {
+            ready = false;
+            user = userRepository.findById(id*-1).orElseThrow(()->new NullPointerException("유저 없음"));
+        }
+        return new GameRoomUserResponseDto(user.getId(), user.getNickname(), ready, user.getWinCount(), user.getLoseCount());
     }
 
     public void GraveyardToDeck(Game game) {

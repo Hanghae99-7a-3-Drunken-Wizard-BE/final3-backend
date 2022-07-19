@@ -57,8 +57,8 @@ public class GameRoomService {
     }
 
     public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException{
-        List<User> userList = userRepository.findByRoomId(roomId);
-        if (userList.size() >= 4) {
+        GameRoom room = gameRoomRepository.findByRoomId(roomId);
+        if ((room.getPlayer1() == null || room.getPlayer2() == null || room.getPlayer3() == null || room.getPlayer4() == null)) {
             GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
             return ResponseEntity.ok().body(responseDto);
         }
@@ -67,7 +67,7 @@ public class GameRoomService {
         user.setRoomId(roomId);
         userRepository.save(user);
         GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(true);
-        GameRoom room = gameRoomRepository.findByRoomId(roomId);
+
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(roomId);

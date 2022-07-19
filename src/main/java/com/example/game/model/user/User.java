@@ -33,6 +33,12 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column
+    private int winCount;
+
+    @Column
+    private int loseCount;
+
     @Column(unique = true)
     private Long kakaoId;
 
