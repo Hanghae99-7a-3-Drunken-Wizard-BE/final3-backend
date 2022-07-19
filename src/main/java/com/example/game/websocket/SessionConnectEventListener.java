@@ -84,41 +84,41 @@ public class SessionConnectEventListener {
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
         String roomId = user.getRoomId();
 
-        if (roomId != null) {
 
-            Long userId = user.getId();
-            GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
-
-            if (Objects.equals(gameRoom.getPlayer1(), userId)) {
-                gameRoom.setPlayer1(null);
-            }
-            if (Objects.equals(gameRoom.getPlayer2(), userId)) {
-                gameRoom.setPlayer2(null);
-            }
-            if (Objects.equals(gameRoom.getPlayer3(), userId)) {
-                gameRoom.setPlayer3(null);
-            }
-            if (Objects.equals(gameRoom.getPlayer4(), userId)) {
-                gameRoom.setPlayer4(null);
-            }
 
             if (user != null) {
                 user.setRoomId(null);
-            }
+                if (roomId != null) {
 
+                    Long userId = user.getId();
+                    GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
 
-            String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
-            GameMessage message = new GameMessage();
-            message.setRoomId(roomId);
-            message.setContent(userListMessage);
-            message.setType(GameMessage.MessageType.UPDATE);
-            messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+                    if (Objects.equals(gameRoom.getPlayer1(), userId)) {
+                        gameRoom.setPlayer1(null);
+                    }
+                    if (Objects.equals(gameRoom.getPlayer2(), userId)) {
+                        gameRoom.setPlayer2(null);
+                    }
+                    if (Objects.equals(gameRoom.getPlayer3(), userId)) {
+                        gameRoom.setPlayer3(null);
+                    }
+                    if (Objects.equals(gameRoom.getPlayer4(), userId)) {
+                        gameRoom.setPlayer4(null);
+                    }
 
-            if (gameRoom.getPlayer1() == null &&
-                    gameRoom.getPlayer2() == null &&
-                    gameRoom.getPlayer3() == null &&
-                    gameRoom.getPlayer4() == null) {
-                gameRoomRepository.delete(gameRoom);
+                    String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
+                    GameMessage message = new GameMessage();
+                    message.setRoomId(roomId);
+                    message.setContent(userListMessage);
+                    message.setType(GameMessage.MessageType.UPDATE);
+                    messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+
+                    if (gameRoom.getPlayer1() == null &&
+                            gameRoom.getPlayer2() == null &&
+                            gameRoom.getPlayer3() == null &&
+                            gameRoom.getPlayer4() == null) {
+                        gameRoomRepository.delete(gameRoom);
+                    }
             }
         }
         user.setSessionId(null);
