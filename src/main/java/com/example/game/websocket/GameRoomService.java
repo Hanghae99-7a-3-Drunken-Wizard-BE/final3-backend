@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -44,10 +45,7 @@ public class GameRoomService {
     }
 
     public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) {
-        GameRoom room = GameRoom.builder()
-                .roomId(UUID.randomUUID().toString())
-                .roomName(requestDto.getRoomName())
-                .build();
+        GameRoom room = new GameRoom(UUID.randomUUID().toString(), requestDto.getRoomName());
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         gameRoomRepository.save(room);
@@ -87,7 +85,11 @@ public class GameRoomService {
         System.out.println("나가는 유저 조회중 : "+user.getUsername());
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         user.setRoomId(null);
-        userRepository.save(user);
+        Long userId = user.getId();
+        if (Objects.equals(gameRoom.getPlayer1(), userId)) {gameRoom.setPlayer1(null);}
+        if (Objects.equals(gameRoom.getPlayer2(), userId)) {gameRoom.setPlayer2(null);}
+        if (Objects.equals(gameRoom.getPlayer3(), userId)) {gameRoom.setPlayer3(null);}
+        if (Objects.equals(gameRoom.getPlayer4(), userId)) {gameRoom.setPlayer4(null);}
         System.out.println(userRepository.findByRoomId(roomId).size() + " 줄었나 확인해볼까");
         List<User> userList = userRepository.findByRoomId(roomId);
         for(User u : userList) {

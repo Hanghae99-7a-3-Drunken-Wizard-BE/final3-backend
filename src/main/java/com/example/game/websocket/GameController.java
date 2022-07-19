@@ -86,11 +86,13 @@ public class GameController {
             System.out.println("여기에 들어오나" + message.getType());
             update(message);
         }
-//
-//        if (GameMessage.MessageType.LEAVE.equals(message.getType())) {
-//            System.out.println("여기에 들어오나" + message.getType());
-//            leave(message);
-//        }
+        if (GameMessage.MessageType.READY.equals(message.getType())) {
+            System.out.println("여기에 들어오나" + message.getType());
+            ready(message);
+        }
+    }
+
+    private void ready(GameMessage message) {
     }
 
     public void gameStarter(GameMessage message) throws JsonProcessingException {

@@ -70,9 +70,21 @@ public class SessionSubscribeEventListener {
         if (targetDestination.length() == 46) {
             String roomId = targetDestination.substring(10,46);
             System.out.println(roomId+" 구독이벤트 내 룸아이디 조회");
+
             User user = userRepository.findBySessionId(sessionId);
             user.setRoomId(roomId);
             userRepository.save(user);
+
+            GameRoom room = gameRoomRepository.findByRoomId(roomId);
+            if (room.getPlayer1() == null) {room.setPlayer1(user.getId()); return;}
+            if (room.getPlayer2() == null) {room.setPlayer2(user.getId()); return;}
+            if (room.getPlayer3() == null) {room.setPlayer3(user.getId()); return;}
+            if (room.getPlayer4() == null) {room.setPlayer4(user.getId());}
+
+            gameRoomRepository.save(room);
+
+
+
         }
     }
 

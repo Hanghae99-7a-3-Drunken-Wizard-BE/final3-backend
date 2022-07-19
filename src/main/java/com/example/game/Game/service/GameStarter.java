@@ -15,6 +15,7 @@ import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
+import com.example.game.websocket.GameRoom;
 import com.example.game.websocket.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,20 @@ private final GameRoomRepository gameRoomRepository;
 
     @Transactional
     public void createGameRoom (String roomId){
-        List<User> userInLobby = userRepository.findByRoomId(roomId);
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        List<User> userInLobby = new ArrayList<>();
+        if(gameRoom.getPlayer1() != null) {
+            userInLobby.add(userRepository.getById(gameRoom.getPlayer1()));
+        }
+        if(gameRoom.getPlayer2() != null) {
+            userInLobby.add(userRepository.getById(gameRoom.getPlayer2()));
+        }
+        if(gameRoom.getPlayer3() != null) {
+            userInLobby.add(userRepository.getById(gameRoom.getPlayer3()));
+        }
+        if(gameRoom.getPlayer4() != null) {
+            userInLobby.add(userRepository.getById(gameRoom.getPlayer4()));
+        }
         if(userInLobby.size() != 4) {return;}
         Game game = new Game(roomId);
         List<Card> gameDeck = new ArrayList<>();
@@ -114,6 +128,7 @@ private final GameRoomRepository gameRoomRepository;
         }
 
         game.setDeck(gameDeck);
+
         List<Boolean> preEmptive1 = Arrays.asList(true, false);
         List<Boolean> preEmptive2 = Arrays.asList(true, false);
         List<Integer> order = new ArrayList<>();
