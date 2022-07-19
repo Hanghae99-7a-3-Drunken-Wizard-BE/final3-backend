@@ -1,12 +1,14 @@
 package com.example.game.websocket;
 
-import com.example.game.Game.Game;
+import com.example.game.Game.h2Package.Game;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.ObjectBuilder;
 import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
 import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
+import com.example.game.Game.h2Package.GameRoom;
 import com.example.game.Game.repository.GameRepository;
+import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.Game.service.GameStarter;
 import com.example.game.Game.turn.ActionTurn;
 import com.example.game.Game.turn.EndGame;

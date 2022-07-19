@@ -1,8 +1,9 @@
-package com.example.game.websocket;
+package com.example.game.Game.h2Package;
 
 import com.example.game.model.Timestamped;
 import com.example.game.model.user.User;
 import com.example.game.security.UserDetailsImpl;
+import com.example.game.websocket.GameRoomRequestDto;
 import lombok.*;
 
 import javax.persistence.*;

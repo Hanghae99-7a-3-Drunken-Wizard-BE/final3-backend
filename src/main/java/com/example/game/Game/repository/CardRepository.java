@@ -1,7 +1,7 @@
 package com.example.game.Game.repository;
 
-import com.example.game.Game.Game;
-import com.example.game.Game.card.Card;
+import com.example.game.Game.h2Package.Game;
+import com.example.game.Game.h2Package.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

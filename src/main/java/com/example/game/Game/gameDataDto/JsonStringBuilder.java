@@ -1,9 +1,9 @@
 package com.example.game.Game.gameDataDto;
 
-import com.example.game.Game.Game;
-import com.example.game.Game.card.Card;
+import com.example.game.Game.h2Package.Game;
+import com.example.game.Game.h2Package.Card;
 import com.example.game.Game.gameDataDto.response.*;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.model.user.User;

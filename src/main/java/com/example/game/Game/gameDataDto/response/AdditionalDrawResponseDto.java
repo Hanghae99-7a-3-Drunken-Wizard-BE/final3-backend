@@ -1,9 +1,6 @@
 package com.example.game.Game.gameDataDto.response;
 
-import com.example.game.Game.card.Card;
-import com.example.game.Game.card.CardType;
-import com.example.game.Game.player.CharactorClass;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Card;
 import lombok.Getter;
 import lombok.Setter;
 

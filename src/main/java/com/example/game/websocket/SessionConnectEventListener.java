@@ -1,6 +1,7 @@
 package com.example.game.websocket;
 
 
+import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.jwt.JwtDecoder;

@@ -1,11 +1,8 @@
 package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
-import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.ObjectBuilder;
-import com.example.game.Game.gameDataDto.request.UseCardDto;
-import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
@@ -13,19 +10,14 @@ import com.example.game.Game.service.GameStarter;
 import com.example.game.Game.turn.ActionTurn;
 import com.example.game.Game.turn.EndTurn;
 import com.example.game.Game.turn.PreTurn;
-import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameController;
-import com.example.game.websocket.GameRoom;
-import com.example.game.websocket.GameRoomRepository;
+import com.example.game.Game.repository.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
