@@ -92,9 +92,6 @@ public class GameController {
         }
     }
 
-    private void ready(GameMessage message) {
-    }
-
     public void gameStarter(GameMessage message) throws JsonProcessingException {
         System.out.println("여기에 들어오나 게임스타터");
         gameStarter.createGameRoom(message.getRoomId());
@@ -208,10 +205,24 @@ public class GameController {
     private void update(GameMessage message) throws JsonProcessingException {
         String roomId = message.getRoomId();
         GameRoom room = gameRoomRepository.findByRoomId(roomId);
-        List<User> userList = userRepository.findByRoomId(roomId);
-        System.out.println(userList.size());
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-                roomId, room.getRoomName(), userList);
+
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
+        GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(roomId);
+        gameMessage.setSender(message.getSender());
+        gameMessage.setContent(userListMessage);
+        gameMessage.setType(GameMessage.MessageType.UPDATE);
+        messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
+    }
+
+    private void ready(GameMessage message) throws JsonProcessingException {
+        String roomId = message.getRoomId();
+        GameRoom room = gameRoomRepository.findByRoomId(roomId);
+        if (room.getPlayer1().equals(message.getSender())) {room.setPlayer1(room.getPlayer1() * -1);}
+        else if (room.getPlayer2().equals(message.getSender())) {room.setPlayer2(room.getPlayer2() * -1);}
+        else if (room.getPlayer3().equals(message.getSender())) {room.setPlayer3(room.getPlayer3() * -1);}
+        else if (room.getPlayer4().equals(message.getSender())) {room.setPlayer4(room.getPlayer4() * -1);}
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(roomId);
         gameMessage.setSender(message.getSender());

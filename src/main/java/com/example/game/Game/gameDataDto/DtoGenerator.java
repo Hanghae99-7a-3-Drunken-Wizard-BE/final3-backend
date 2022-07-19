@@ -92,14 +92,29 @@ public class DtoGenerator {
         GameRoomListResponseDto listResponseDto = new GameRoomListResponseDto();
         List<GameRoomResponseDto> roomResponseDtos = new ArrayList<>();
         for (GameRoom gameRoom : gameRoomList) {
-            List<User> userList = userRepository.findByRoomId(gameRoom.getRoomId());
-            System.out.println(userList.size() + " 겟 매핑에서 조회되는 유저 리스트 사람수");
-            roomResponseDtos.add(
-                    new GameRoomResponseDto(gameRoom.getRoomId(), gameRoom.getRoomName(), userList)
-            );
+            roomResponseDtos.add(gameRoomResponseDtoMaker(gameRoom));
         }
         listResponseDto.setGameRoomList(roomResponseDtos);
         return listResponseDto;
+    }
+
+    public GameRoomResponseDto gameRoomResponseDtoMaker(GameRoom gameRoom) {
+        User player1 = userRepository.findById((gameRoom.getPlayer1() > 0) ? gameRoom.getPlayer1() : gameRoom.getPlayer1() * -1).orElse(null);
+        User player2 = userRepository.findById((gameRoom.getPlayer1() > 0) ? gameRoom.getPlayer2() : gameRoom.getPlayer2() * -1).orElse(null);
+        User player3 = userRepository.findById((gameRoom.getPlayer1() > 0) ? gameRoom.getPlayer3() : gameRoom.getPlayer3() * -1).orElse(null);
+        User player4 = userRepository.findById((gameRoom.getPlayer1() > 0) ? gameRoom.getPlayer4() : gameRoom.getPlayer4() * -1).orElse(null);
+        return new GameRoomResponseDto(
+                gameRoom.getRoomId(),
+                gameRoom.getRoomName(),
+                gameRoom.getPlayer1(),
+                (player1 != null) ? player1.getNickname() : null,
+                gameRoom.getPlayer2(),
+                (player2 != null) ? player2.getNickname() : null,
+                gameRoom.getPlayer3(),
+                (player3 != null) ? player3.getNickname() : null,
+                gameRoom.getPlayer4(),
+                (player4 != null) ? player4.getNickname() : null
+        );
     }
 
     public void GraveyardToDeck(Game game) {

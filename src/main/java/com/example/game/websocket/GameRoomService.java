@@ -68,8 +68,7 @@ public class GameRoomService {
         userRepository.save(user);
         GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(true);
         GameRoom room = gameRoomRepository.findByRoomId(roomId);
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-                roomId, room.getRoomName(), userList);
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(roomId);
         gameMessage.setContent(userListMessage);
@@ -90,19 +89,16 @@ public class GameRoomService {
         if (Objects.equals(gameRoom.getPlayer2(), userId)) {gameRoom.setPlayer2(null);}
         if (Objects.equals(gameRoom.getPlayer3(), userId)) {gameRoom.setPlayer3(null);}
         if (Objects.equals(gameRoom.getPlayer4(), userId)) {gameRoom.setPlayer4(null);}
-        System.out.println(userRepository.findByRoomId(roomId).size() + " 줄었나 확인해볼까");
-        List<User> userList = userRepository.findByRoomId(roomId);
-        for(User u : userList) {
-            System.out.println(u.getUsername() + " 지금은 누가 남았지");
-        }
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
-                roomId, gameRoom.getRoomName(), userList);
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
         GameMessage message = new GameMessage();
         message.setRoomId(roomId);
         message.setContent(userListMessage);
         message.setType(GameMessage.MessageType.UPDATE);
         messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
-        if (userList.size() == 0) {
+        if (gameRoom.getPlayer1() == null &&
+            gameRoom.getPlayer2() == null &&
+            gameRoom.getPlayer3() == null &&
+            gameRoom.getPlayer4() == null) {
             gameRoomRepository.delete(gameRoom);
         }
         return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(getAllGameRooms(page, size)));

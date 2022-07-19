@@ -7,6 +7,7 @@ import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.model.user.User;
+import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -76,8 +77,8 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(playerDto);
     }
 
-    public String gameRoomResponseDtoJsonBuilder(String roomId, String roomName, List<User> userList) throws JsonProcessingException {
-        GameRoomResponseDto responseDto = new GameRoomResponseDto(roomId, roomName, userList);
+    public String gameRoomResponseDtoJsonBuilder(GameRoom gameRoom) throws JsonProcessingException {
+        GameRoomResponseDto responseDto = dtoGenerator.gameRoomResponseDtoMaker(gameRoom);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
