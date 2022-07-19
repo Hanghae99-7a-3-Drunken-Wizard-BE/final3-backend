@@ -115,11 +115,10 @@ public class SessionConnectEventListener {
                             gameRoom.getPlayer3() == null &&
                             gameRoom.getPlayer4() == null) {
                         gameRoomRepository.delete(gameRoom);
-                    }
-                    user.setRoomId(null);
-            }
+                    } user.setRoomId(null);
+            } user.setSessionId(null);
         }
-        user.setSessionId(null);
+
 
         System.out.println("웹소켓 연결해제가 감지됨");
     }
