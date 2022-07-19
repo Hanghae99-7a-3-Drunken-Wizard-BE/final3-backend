@@ -1,9 +1,11 @@
 package com.example.game.websocket;
 
 
+import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.jwt.JwtDecoder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -12,6 +14,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +26,7 @@ public class SessionConnectEventListener {
     private final JwtDecoder jwtDecoder;
     private final UserRepository userRepository;
     private final GameRoomRepository gameRoomRepository;
+    private final JsonStringBuilder jsonStringBuilder;
 
     private static List<String> userList = new ArrayList<>();
     @Autowired
@@ -72,33 +76,53 @@ public class SessionConnectEventListener {
 //        return userList;
 //    }
 
+    @Transactional
     @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) throws JsonProcessingException {
 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
-        Long userId = user.getId();
-        GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
+        String roomId = user.getRoomId();
 
-        if (Objects.equals(gameRoom.getPlayer1(), userId)) {gameRoom.setPlayer1(null);}
-        if (Objects.equals(gameRoom.getPlayer2(), userId)) {gameRoom.setPlayer2(null);}
-        if (Objects.equals(gameRoom.getPlayer3(), userId)) {gameRoom.setPlayer3(null);}
-        if (Objects.equals(gameRoom.getPlayer4(), userId)) {gameRoom.setPlayer4(null);}
-        gameRoomRepository.save(gameRoom);
+        if (roomId != null) {
 
-        if (user != null) {
-            user.setRoomId(null);
-            user.setSessionId(null);
-            userRepository.save(user);
+            Long userId = user.getId();
+            GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
+
+            if (Objects.equals(gameRoom.getPlayer1(), userId)) {
+                gameRoom.setPlayer1(null);
+            }
+            if (Objects.equals(gameRoom.getPlayer2(), userId)) {
+                gameRoom.setPlayer2(null);
+            }
+            if (Objects.equals(gameRoom.getPlayer3(), userId)) {
+                gameRoom.setPlayer3(null);
+            }
+            if (Objects.equals(gameRoom.getPlayer4(), userId)) {
+                gameRoom.setPlayer4(null);
+            }
+
+            if (user != null) {
+                user.setRoomId(null);
+            }
+
+
+            String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
+            GameMessage message = new GameMessage();
+            message.setRoomId(roomId);
+            message.setContent(userListMessage);
+            message.setType(GameMessage.MessageType.UPDATE);
+            messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+
+            if (gameRoom.getPlayer1() == null &&
+                    gameRoom.getPlayer2() == null &&
+                    gameRoom.getPlayer3() == null &&
+                    gameRoom.getPlayer4() == null) {
+                gameRoomRepository.delete(gameRoom);
+            }
         }
+        user.setSessionId(null);
 
-        if (gameRoom.getPlayer1() == null &&
-                gameRoom.getPlayer2() == null &&
-                gameRoom.getPlayer3() == null &&
-                gameRoom.getPlayer4() == null) {
-            gameRoomRepository.delete(gameRoom);
-        }
-        
         System.out.println("웹소켓 연결해제가 감지됨");
     }
 }
