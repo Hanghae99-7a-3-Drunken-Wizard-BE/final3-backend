@@ -43,7 +43,8 @@ public class UserService {
         for (User user : users) {
             UserResponseDto userResponseDto = new UserResponseDto(
                     user.getId(),
-                    user.getNickname()
+                    user.getNickname(),
+                    user.isPlaying()
             );
             userResponseDtos.add(userResponseDto);
         }

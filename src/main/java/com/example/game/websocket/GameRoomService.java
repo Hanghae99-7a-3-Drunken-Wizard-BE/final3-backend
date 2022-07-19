@@ -152,4 +152,3 @@ public class GameRoomService {
 //        return gameRoomRepository.findByRoomNameContaining(keyword);
 //    }
 //}
-

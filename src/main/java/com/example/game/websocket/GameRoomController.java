@@ -9,12 +9,14 @@ import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +27,18 @@ public class GameRoomController {
     private final UserRepository userRepository;
     private final JsonStringBuilder jsonStringBuilder;
     private final DtoGenerator dtoGenerator;
+
+//    // 채팅방 목록 조회 postman 확인용
+//    @GetMapping(value = "/game/rooms")
+//    public ResponseEntity<Page<GameRoom>> readGameRooms(
+//            @RequestParam("page") int page,
+//            @RequestParam("size") int size){
+//
+//        page = page - 1;
+//
+//        return ResponseEntity.ok().body(gameRoomService.getAllGameRooms(page, size));
+//    }
+
 
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
@@ -52,7 +66,7 @@ public class GameRoomController {
             @RequestParam(required = false) String keyword,
             @RequestParam("page") int page,
             @RequestParam("size") int size)
-    throws JsonProcessingException{
+            throws JsonProcessingException{
         if (keyword != null) {
             page = page - 1;
             return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(gameRoomService.searchGameRooms(keyword, page, size)));

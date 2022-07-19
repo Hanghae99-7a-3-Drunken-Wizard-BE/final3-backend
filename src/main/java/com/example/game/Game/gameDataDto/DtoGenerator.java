@@ -14,6 +14,7 @@ import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class DtoGenerator {
             );
         }
         listResponseDto.setGameRoomList(roomResponseDtos);
+
         return listResponseDto;
     }
 
