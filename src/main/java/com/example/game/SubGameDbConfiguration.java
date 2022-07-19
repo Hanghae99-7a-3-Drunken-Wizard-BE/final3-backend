@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -20,28 +19,26 @@ import java.util.HashMap;
 @Configuration
 @PropertySource({"classpath:application-database.properties"})
 @EnableJpaRepositories(
-        basePackages = "com.example.game.repository.user",
-        entityManagerFactoryRef = "userEntityManager",
-        transactionManagerRef = "userTransactionManager"
+        basePackages = "com.example.game.Game.repository",
+        entityManagerFactoryRef = "gameEntityManager",
+        transactionManagerRef = "gameTransactionManager"
 )
-public class MainUserDbConfiguration {
+public class SubGameDbConfiguration {
 
     @Autowired
     private Environment env;
 
     @Bean
-    @Primary
-    @ConfigurationProperties(prefix = "spring.main.datasource")
-    public DataSource userDataSource() {
+    @ConfigurationProperties(prefix = "spring.sub.datasource")
+    public DataSource gameDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean
-    @Primary
-    public LocalContainerEntityManagerFactoryBean userEntityManager() {
+    public LocalContainerEntityManagerFactoryBean gameEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(userDataSource());
-        em.setPackagesToScan("com.example.game.model.user");
+        em.setDataSource(gameDataSource());
+        em.setPackagesToScan("com.example.game.Game.h2Package");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -54,10 +51,9 @@ public class MainUserDbConfiguration {
     }
 
     @Bean
-    @Primary
-    public PlatformTransactionManager userTransactionManager() {
+    public PlatformTransactionManager gameTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(userEntityManager().getObject());
+        transactionManager.setEntityManagerFactory(gameEntityManager().getObject());
         return transactionManager;
     }
 }
