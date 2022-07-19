@@ -84,10 +84,7 @@ public class SessionConnectEventListener {
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
         String roomId = user.getRoomId();
 
-
-
             if (user != null) {
-                user.setRoomId(null);
                 if (roomId != null) {
 
                     Long userId = user.getId();
@@ -119,6 +116,7 @@ public class SessionConnectEventListener {
                             gameRoom.getPlayer4() == null) {
                         gameRoomRepository.delete(gameRoom);
                     }
+                    user.setRoomId(null);
             }
         }
         user.setSessionId(null);
