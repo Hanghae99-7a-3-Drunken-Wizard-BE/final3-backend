@@ -14,6 +14,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
@@ -73,13 +74,31 @@ public class SessionConnectEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
+        Long userId = user.getId();
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
+
+        if (Objects.equals(gameRoom.getPlayer1(), userId)) {gameRoom.setPlayer1(null);}
+        if (Objects.equals(gameRoom.getPlayer2(), userId)) {gameRoom.setPlayer2(null);}
+        if (Objects.equals(gameRoom.getPlayer3(), userId)) {gameRoom.setPlayer3(null);}
+        if (Objects.equals(gameRoom.getPlayer4(), userId)) {gameRoom.setPlayer4(null);}
+        gameRoomRepository.save(gameRoom);
+
         if (user != null) {
             user.setRoomId(null);
             user.setSessionId(null);
             userRepository.save(user);
         }
+
+        if (gameRoom.getPlayer1() == null &&
+                gameRoom.getPlayer2() == null &&
+                gameRoom.getPlayer3() == null &&
+                gameRoom.getPlayer4() == null) {
+            gameRoomRepository.delete(gameRoom);
+        }
+        
         System.out.println("웹소켓 연결해제가 감지됨");
     }
 }

@@ -218,10 +218,14 @@ public class GameController {
     private void ready(GameMessage message) throws JsonProcessingException {
         String roomId = message.getRoomId();
         GameRoom room = gameRoomRepository.findByRoomId(roomId);
-        if (room.getPlayer1().equals(message.getSender())) {room.setPlayer1(room.getPlayer1() * -1);}
-        else if (room.getPlayer2().equals(message.getSender())) {room.setPlayer2(room.getPlayer2() * -1);}
-        else if (room.getPlayer3().equals(message.getSender())) {room.setPlayer3(room.getPlayer3() * -1);}
-        else if (room.getPlayer4().equals(message.getSender())) {room.setPlayer4(room.getPlayer4() * -1);}
+        if (room.getPlayer1() != null) {
+        if (room.getPlayer1().equals(message.getSender())) {room.setPlayer1(room.getPlayer1() * -1);}}
+        if (room.getPlayer2() != null) {
+        if (room.getPlayer2().equals(message.getSender())) {room.setPlayer2(room.getPlayer2() * -1);}}
+        if (room.getPlayer3() != null) {
+        if (room.getPlayer3().equals(message.getSender())) {room.setPlayer3(room.getPlayer3() * -1);}}
+        if (room.getPlayer4() != null) {
+        if (room.getPlayer4().equals(message.getSender())) {room.setPlayer4(room.getPlayer4() * -1);}}
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(roomId);

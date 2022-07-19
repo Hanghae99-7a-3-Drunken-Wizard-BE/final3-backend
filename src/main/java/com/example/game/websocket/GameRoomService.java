@@ -110,6 +110,7 @@ public class GameRoomService {
     }
 
 
+
 //    /**
 //     * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
 //     */
