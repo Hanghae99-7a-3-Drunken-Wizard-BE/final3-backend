@@ -9,13 +9,13 @@ import com.example.game.security.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,29 +29,29 @@ public class GameRoomController {
     private final JsonStringBuilder jsonStringBuilder;
     private final DtoGenerator dtoGenerator;
 
+//    // 채팅방 목록 조회 postman 확인용
+//    @GetMapping(value = "/game/rooms")
+//    public ResponseEntity<Page<GameRoom>> readGameRooms(
+//            @RequestParam("page") int page,
+//            @RequestParam("size") int size){
+//
+//        page = page - 1;
+//
+//        return ResponseEntity.ok().body(gameRoomService.getAllGameRooms(page, size));
+//    }
+
+
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
 
-    public ResponseEntity<Page<GameRoom>> readGameRooms(
-            @RequestParam int page, @RequestParam int size
-            ) {
-        System.out.println(LocalDateTime.now());
-        System.out.println("겟 메서드 접수");
-        System.out.println(page);
-        System.out.println(size);
-        page -= 1;
-        Pageable pageable = PageRequest.of(page, size);
-        System.out.println(gameRoomRepository.findAll().size());
-        Page<GameRoom> gameRooms = gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable);
-        System.out.println(LocalDateTime.now());
-        return ResponseEntity.ok().body(gameRooms);
+    public ResponseEntity<Page<GameRoom>> readGameRooms(@RequestParam int page, @RequestParam int size) {
+        return ResponseEntity.ok().body(gameRoomService.readGameRooms(page, size));
     }
 
     // GameRoom 생성
     @PostMapping(value = "/game/room")
     public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(
-            @RequestBody GameRoomRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @RequestBody GameRoomRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return gameRoomService.createGameRoom(requestDto, userDetails);
     }
 
@@ -59,8 +59,7 @@ public class GameRoomController {
     @GetMapping(value = "/game/rooms/search")
     public ResponseEntity<Page<GameRoom>> searchGameRooms(
             @RequestParam(required = false) String keyword,
-            @RequestParam int page, @RequestParam int size
-    ) {
+            @RequestParam int page, @RequestParam int size) {
         if (keyword != null) {
             page = page - 1;
             return ResponseEntity.ok().body(gameRoomService.searchGameRooms(keyword, page, size));

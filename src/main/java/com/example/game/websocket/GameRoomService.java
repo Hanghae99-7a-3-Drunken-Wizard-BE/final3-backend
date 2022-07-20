@@ -20,6 +20,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -130,6 +131,11 @@ public class GameRoomService {
         return gameRoomRepository.findByRoomNameContaining(keyword, pageable);
     }
 
+    public Page<GameRoom> readGameRooms(int page, int size) {
+        page -= 1;
+        Pageable pageable = PageRequest.of(page, size);
+        return gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
 
 
 //    /**
@@ -188,4 +194,3 @@ public class GameRoomService {
 //        return gameRoomRepository.findByRoomNameContaining(keyword);
 //    }
 //}
-

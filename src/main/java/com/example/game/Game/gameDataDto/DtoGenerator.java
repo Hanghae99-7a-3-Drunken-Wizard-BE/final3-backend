@@ -17,6 +17,7 @@ import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -96,6 +97,7 @@ public class DtoGenerator {
             roomResponseDtos.add(gameRoomResponseDtoMaker(gameRoom));
         }
         listResponseDto.setGameRoomList(roomResponseDtos);
+
         return listResponseDto;
     }
 
