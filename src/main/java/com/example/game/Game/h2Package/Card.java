@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Table(name = "card")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Card {
 

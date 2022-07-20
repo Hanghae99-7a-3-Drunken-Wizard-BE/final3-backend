@@ -68,12 +68,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        /*
-         * 1.
-         * UsernamePasswordAuthenticationFilter 이전에 FormLoginFilter, JwtFilter 를 등록합니다.
-         * FormLoginFilter : 로그인 인증을 실시합니다.
-         * JwtFilter       : 서버에 접근시 JWT 확인 후 인증을 실시합니다.
-         */
         http
                 .addFilter(corsFilter)
                 .addFilterBefore(formLoginFilter(), UsernamePasswordAuthenticationFilter.class)

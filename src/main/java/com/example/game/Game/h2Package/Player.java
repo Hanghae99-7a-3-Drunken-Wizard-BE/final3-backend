@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "player")
 @Getter
 @Setter
 @NoArgsConstructor

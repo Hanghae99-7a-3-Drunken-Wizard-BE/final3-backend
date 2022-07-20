@@ -16,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@Table(name = "gameroom")
 public class GameRoom extends Timestamped implements Serializable {
 
     private static final long serialVersionUID = 1L;
