@@ -76,10 +76,10 @@ public class SessionSubscribeEventListener {
             userRepository.save(user);
 
             GameRoom room = gameRoomRepository.findByRoomId(roomId);
-            if (room.getPlayer1() == null) {room.setPlayer1(user.getId()); return;}
-            if (room.getPlayer2() == null) {room.setPlayer2(user.getId()); return;}
-            if (room.getPlayer3() == null) {room.setPlayer3(user.getId()); return;}
-            if (room.getPlayer4() == null) {room.setPlayer4(user.getId());}
+            if (room.getPlayer1() == null) {room.setPlayer1(user.getId() * -1); return;}
+            if (room.getPlayer2() == null) {room.setPlayer2(user.getId() * -1); return;}
+            if (room.getPlayer3() == null) {room.setPlayer3(user.getId() * -1); return;}
+            if (room.getPlayer4() == null) {room.setPlayer4(user.getId() * -1);}
 
             gameRoomRepository.save(room);
 

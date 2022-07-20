@@ -78,17 +78,37 @@ public class GameRoomService {
     }
 
     @Transactional
-    public ResponseEntity<GameRoomListResponseDto> leaveGameRoom(String roomId, int page, int size, UserDetailsImpl userDetails) throws JsonProcessingException {
+    public ResponseEntity<Page<GameRoom>> leaveGameRoom(String roomId, int page, int size, UserDetailsImpl userDetails) throws JsonProcessingException {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         System.out.println("나가는 유저 조회중 : "+user.getUsername());
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         user.setRoomId(null);
         Long userId = user.getId();
-        if (Objects.equals(gameRoom.getPlayer1(), userId)) {gameRoom.setPlayer1(null);}
-        if (Objects.equals(gameRoom.getPlayer2(), userId)) {gameRoom.setPlayer2(null);}
-        if (Objects.equals(gameRoom.getPlayer3(), userId)) {gameRoom.setPlayer3(null);}
-        if (Objects.equals(gameRoom.getPlayer4(), userId)) {gameRoom.setPlayer4(null);}
+        if (
+                Objects.equals(gameRoom.getPlayer1(), userId) ||
+                        Objects.equals(gameRoom.getPlayer1() * -1, userId)
+        ) {
+            gameRoom.setPlayer1(null);
+        }
+        if (
+                Objects.equals(gameRoom.getPlayer2(), userId) ||
+                        Objects.equals(gameRoom.getPlayer2() * -1, userId)
+        ) {
+            gameRoom.setPlayer2(null);
+        }
+        if (
+                Objects.equals(gameRoom.getPlayer3(), userId) ||
+                        Objects.equals(gameRoom.getPlayer3() * -1, userId)
+        ) {
+            gameRoom.setPlayer3(null);
+        }
+        if (
+                Objects.equals(gameRoom.getPlayer4(), userId) ||
+                        Objects.equals(gameRoom.getPlayer4() * -1, userId)
+        ) {
+            gameRoom.setPlayer4(null);
+        }
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
         GameMessage message = new GameMessage();
         message.setRoomId(roomId);
@@ -101,7 +121,8 @@ public class GameRoomService {
             gameRoom.getPlayer4() == null) {
             gameRoomRepository.delete(gameRoom);
         }
-        return ResponseEntity.ok().body(dtoGenerator.gameRoomListResponseDtoMaker(getAllGameRooms(page, size)));
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok().body(gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable));
     }
 
     public Page<GameRoom> searchGameRooms(String keyword, int page, int size) {

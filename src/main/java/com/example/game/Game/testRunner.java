@@ -18,9 +18,14 @@ import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameController;
 import com.example.game.websocket.GameRoom;
 import com.example.game.websocket.GameRoomRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -81,7 +86,13 @@ public class testRunner implements ApplicationRunner {
 //        userRepository.saveAll(userList1);
 //
         GameRoom gameRoom = new GameRoom("1", "testRoom");
+
+        gameRoom.setPlayer1(1L);
+        gameRoom.setPlayer2(2L);
+        gameRoom.setPlayer3(3L);
+        gameRoom.setPlayer4(4L);
         gameRoomRepository.save(gameRoom);
+
 ////
 //        gameStarter.createGameRoom("1");
 //        Card cm = cardRepository.findByCardName("Panacea").get(0);

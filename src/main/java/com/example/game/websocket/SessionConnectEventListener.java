@@ -82,26 +82,39 @@ public class SessionConnectEventListener {
 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
-        String roomId = user.getRoomId();
+
 
             if (user != null) {
+                String roomId = user.getRoomId();
                 if (roomId != null) {
-
                     Long userId = user.getId();
                     GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
 
-                    if (Objects.equals(gameRoom.getPlayer1(), userId)) {
+                    if (
+                            Objects.equals(gameRoom.getPlayer1(), userId) ||
+                                    Objects.equals(gameRoom.getPlayer1() * -1, userId)
+                    ) {
                         gameRoom.setPlayer1(null);
                     }
-                    if (Objects.equals(gameRoom.getPlayer2(), userId)) {
+                    if (
+                            Objects.equals(gameRoom.getPlayer2(), userId) ||
+                                    Objects.equals(gameRoom.getPlayer2() * -1, userId)
+                    ) {
                         gameRoom.setPlayer2(null);
                     }
-                    if (Objects.equals(gameRoom.getPlayer3(), userId)) {
+                    if (
+                            Objects.equals(gameRoom.getPlayer3(), userId) ||
+                                    Objects.equals(gameRoom.getPlayer3() * -1, userId)
+                    ) {
                         gameRoom.setPlayer3(null);
                     }
-                    if (Objects.equals(gameRoom.getPlayer4(), userId)) {
+                    if (
+                            Objects.equals(gameRoom.getPlayer4(), userId) ||
+                                    Objects.equals(gameRoom.getPlayer4() * -1, userId)
+                    ) {
                         gameRoom.setPlayer4(null);
                     }
+                    gameRoomRepository.save(gameRoom);
 
                     String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
                     GameMessage message = new GameMessage();
@@ -115,11 +128,12 @@ public class SessionConnectEventListener {
                             gameRoom.getPlayer3() == null &&
                             gameRoom.getPlayer4() == null) {
                         gameRoomRepository.delete(gameRoom);
-                    } user.setRoomId(null);
-            } user.setSessionId(null);
-        }
-
-
+                    }
+                    user.setRoomId(null);
+                }
+                user.setSessionId(null);
+                userRepository.save(user);
+            }
         System.out.println("웹소켓 연결해제가 감지됨");
     }
 }
