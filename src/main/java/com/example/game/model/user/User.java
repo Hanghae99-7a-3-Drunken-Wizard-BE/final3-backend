@@ -65,12 +65,4 @@ public class User {
         this.nickname = nickname;
         this.email = email;
     }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("User [username=").append(username).append(", id=").append(id).append("]");
-        return builder.toString();
-    }
-
 }

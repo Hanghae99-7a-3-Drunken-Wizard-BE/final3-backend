@@ -52,14 +52,9 @@ public class MainUserDbConfiguration {
 
     @Bean
     @Primary
+    @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource userDataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
-        dataSource.setUrl(env.getProperty("user.jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.user"));
-        dataSource.setPassword(env.getProperty("jdbc.pass"));
-
-        return dataSource;
+        return DataSourceBuilder.create().build();
     }
 
     @Bean
@@ -70,3 +65,16 @@ public class MainUserDbConfiguration {
         return transactionManager;
     }
 }
+
+
+//    @Bean
+//    @Primary
+//    public DataSource userDataSource() {
+//        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
+//        dataSource.setUrl(env.getProperty("user.jdbc.url"));
+//        dataSource.setUsername(env.getProperty("jdbc.user"));
+//        dataSource.setPassword(env.getProperty("jdbc.pass"));
+//
+//        return dataSource;
+//    }
