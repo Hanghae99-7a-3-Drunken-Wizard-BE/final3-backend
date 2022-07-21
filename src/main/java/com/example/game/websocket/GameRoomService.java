@@ -59,11 +59,44 @@ public class GameRoomService {
 
     public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException{
         GameRoom room = gameRoomRepository.findByRoomId(roomId);
-        if ((room.getPlayer1() == null || room.getPlayer2() == null || room.getPlayer3() == null || room.getPlayer4() == null)) {
+        Long id = userDetails.getUser().getId();
+        if (
+                room.getPlayer1() != null && room.getPlayer2() != null && room.getPlayer3() != null && room.getPlayer4() != null
+        ) {
+            System.out.println("방이 꽉참");
             GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
             return ResponseEntity.ok().body(responseDto);
         }
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
+
+        if (room.getPlayer1() != null) {if (room.getPlayer1() == id || room.getPlayer1() == -id) {
+            System.out.println("중복 아이디 존재");
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            return ResponseEntity.ok().body(responseDto);
+            }
+        }
+
+        if (room.getPlayer2() != null) {if (room.getPlayer2() == id || room.getPlayer2() == -id) {
+            System.out.println("중복 아이디 존재");
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            return ResponseEntity.ok().body(responseDto);
+            }
+        }
+
+        if (room.getPlayer3() != null) {if (room.getPlayer3() == id || room.getPlayer3() == -id) {
+            System.out.println("중복 아이디 존재");
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            return ResponseEntity.ok().body(responseDto);
+            }
+        }
+
+        if (room.getPlayer4() != null) {if (room.getPlayer4() == id || room.getPlayer4() == -id) {
+            System.out.println("중복 아이디 존재");
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            return ResponseEntity.ok().body(responseDto);
+            }
+        }
+
+        User user = userRepository.findById(id).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         user.setRoomId(roomId);
         userRepository.save(user);
