@@ -1,7 +1,6 @@
 package com.example.game.Game.service;
 
-import com.example.game.Game.h2Package.Game;
-import com.example.game.Game.h2Package.Card;
+
 import com.example.game.Game.card.item.BeerMug;
 import com.example.game.Game.card.item.LeftoverOctopus;
 import com.example.game.Game.card.item.ManaPotion;
@@ -9,18 +8,24 @@ import com.example.game.Game.card.item.Panacea;
 import com.example.game.Game.card.magic.attack.*;
 import com.example.game.Game.card.magic.curse.*;
 import com.example.game.Game.card.magic.enchantment.*;
-import com.example.game.Game.player.CharactorClass;
+import com.example.game.Game.h2Package.Card;
+import com.example.game.Game.h2Package.Game;
+import com.example.game.Game.h2Package.GameRoom;
 import com.example.game.Game.h2Package.Player;
+import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
+import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
-import com.example.game.Game.repository.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -32,11 +37,23 @@ private final GameRoomRepository gameRoomRepository;
 
     @Transactional
     public void createGameRoom (String roomId){
-        List<User> userInLobby = userRepository.findByRoomId(roomId);
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        List<User> userInLobby = new ArrayList<>();
+        if(gameRoom.getPlayer1() != null && gameRoom.getPlayer1() > 0) {
+            userInLobby.add(userRepository.getById(gameRoom.getPlayer1()));
+        }
+        if(gameRoom.getPlayer2() != null && gameRoom.getPlayer2() > 0) {
+            userInLobby.add(userRepository.getById(gameRoom.getPlayer2()));
+        }
+        if(gameRoom.getPlayer3() != null && gameRoom.getPlayer3() > 0) {
+            userInLobby.add(userRepository.getById(gameRoom.getPlayer3()));
+        }
+        if(gameRoom.getPlayer4() != null && gameRoom.getPlayer4() > 0) {
+            userInLobby.add(userRepository.getById(gameRoom.getPlayer4()));
+        }
         if(userInLobby.size() != 4) {return;}
         Game game = new Game(roomId);
         List<Card> gameDeck = new ArrayList<>();
-        int j = 0;
         for (int i = 0; i < 4; i++) {
             gameDeck.add(new BoulderStrike(game));
         }
@@ -114,13 +131,11 @@ private final GameRoomRepository gameRoomRepository;
         }
 
         game.setDeck(gameDeck);
-        List<Boolean> preEmptive1 = Arrays.asList(true, false);
-        List<Boolean> preEmptive2 = Arrays.asList(true, false);
+
+        List<Boolean> oddEven = Arrays.asList(true, false);
+        List<Integer> odd = Arrays.asList(1, 3);
+        List<Integer> even = Arrays.asList(2, 4);
         List<Integer> order = new ArrayList<>();
-        List<Integer> orderFirst1 = Arrays.asList(1,2);
-        List<Integer> orderFirst2 = Arrays.asList(2,1);
-        List<Integer> orderSecond1 = Arrays.asList(3,4);
-        List<Integer> orderSecond2 = Arrays.asList(4,3);
         List<CharactorClass> classes =
                 Arrays.asList(
                         CharactorClass.INVOKER,
@@ -130,16 +145,19 @@ private final GameRoomRepository gameRoomRepository;
                         CharactorClass.FARSEER,
                         CharactorClass.BLOODMAGE);
         Collections.shuffle(classes);
-        Collections.shuffle(preEmptive1);
-        Collections.shuffle(preEmptive2);
-        if (preEmptive1.get(0)) {
-            if(preEmptive2.get(0)) {
-                order.addAll(orderFirst1);order.addAll(orderSecond1);
-            } else {order.addAll(orderFirst2);order.addAll(orderSecond2);}
+        Collections.shuffle(oddEven);
+        Collections.shuffle(odd);
+        Collections.shuffle(even);
+        if (oddEven.get(0)) {
+            order.add(odd.get(0));
+            order.add(even.get(0));
+            order.add(odd.get(1));
+            order.add(even.get(1));
         } else {
-            if(preEmptive2.get(0)) {
-                order.addAll(orderSecond1);order.addAll(orderFirst1);
-            } else {order.addAll(orderSecond2);order.addAll(orderFirst2);}
+            order.add(even.get(0));
+            order.add(odd.get(0));
+            order.add(even.get(1));
+            order.add(odd.get(1));
         }
         List<Player> playerList = new ArrayList<>();
         for (int i = 0; i < userInLobby.size(); i++) {

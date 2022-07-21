@@ -27,7 +27,18 @@ public class GameRoom extends Timestamped implements Serializable {
     @Column
     private String roomName;
 
-    @Builder
+    @Column
+    private Long player1;
+
+    @Column
+    private Long player2;
+
+    @Column
+    private Long player3;
+
+    @Column
+    private Long player4;
+
     public GameRoom(String roomId, String roomName) {
         this.roomId = roomId;
         this.roomName = roomName;

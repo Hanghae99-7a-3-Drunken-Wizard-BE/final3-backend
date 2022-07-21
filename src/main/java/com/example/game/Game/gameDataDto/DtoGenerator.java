@@ -10,12 +10,14 @@ import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;
+import com.example.game.dto.response.GameRoomUserResponseDto;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.Game.h2Package.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,13 +32,14 @@ public class DtoGenerator {
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
-    public CardUseResponseDto cardUseResponseDtoMaker(List<Player> players, boolean gameOver) throws JsonProcessingException {
+    public CardUseResponseDto cardUseResponseDtoMaker(List<Player> players, Card card, boolean gameOver) throws JsonProcessingException {
         CardUseResponseDto cardUseResponseDto = new CardUseResponseDto();
         List<PlayerDto> playerDtos = new ArrayList<>();
         for (Player player : players) {
             playerDtos.add(playerDtoMaker(player));
         }
         cardUseResponseDto.setPlayers(playerDtos);
+        cardUseResponseDto.setUsedCard(new CardDetailResponseDto(card));
         cardUseResponseDto.setGameOver(gameOver);
         return cardUseResponseDto;
     }
@@ -91,14 +94,37 @@ public class DtoGenerator {
         GameRoomListResponseDto listResponseDto = new GameRoomListResponseDto();
         List<GameRoomResponseDto> roomResponseDtos = new ArrayList<>();
         for (GameRoom gameRoom : gameRoomList) {
-            List<User> userList = userRepository.findByRoomId(gameRoom.getRoomId());
-            System.out.println(userList.size() + " 겟 매핑에서 조회되는 유저 리스트 사람수");
-            roomResponseDtos.add(
-                    new GameRoomResponseDto(gameRoom.getRoomId(), gameRoom.getRoomName(), userList)
-            );
+            roomResponseDtos.add(gameRoomResponseDtoMaker(gameRoom));
         }
         listResponseDto.setGameRoomList(roomResponseDtos);
+
         return listResponseDto;
+    }
+
+    public GameRoomResponseDto gameRoomResponseDtoMaker(GameRoom gameRoom) {
+        return new GameRoomResponseDto(
+                gameRoom.getRoomId(),
+                gameRoom.getRoomName(),
+                gameRoomUserResponseDtoMaker(gameRoom.getPlayer1()),
+                gameRoomUserResponseDtoMaker(gameRoom.getPlayer2()),
+                gameRoomUserResponseDtoMaker(gameRoom.getPlayer3()),
+                gameRoomUserResponseDtoMaker(gameRoom.getPlayer4())
+                );
+
+    }
+
+    public GameRoomUserResponseDto gameRoomUserResponseDtoMaker(Long id) {
+        boolean ready;
+        User user;
+        if (id == null) {return null;}
+        else if (id > 0) {
+            ready = true;
+            user = userRepository.findById(id).orElseThrow(()->new NullPointerException("유저 없음"));
+        } else {
+            ready = false;
+            user = userRepository.findById(id*-1).orElseThrow(()->new NullPointerException("유저 없음"));
+        }
+        return new GameRoomUserResponseDto(user.getId(), user.getNickname(), ready, user.getWinCount(), user.getLoseCount());
     }
 
     public void GraveyardToDeck(Game game) {

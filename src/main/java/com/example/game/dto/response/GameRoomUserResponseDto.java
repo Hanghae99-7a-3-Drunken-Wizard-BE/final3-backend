@@ -9,9 +9,15 @@ import lombok.Setter;
 public class GameRoomUserResponseDto {
     private Long id;
     private String nickname;
+    private boolean ready;
+    private int winCount;
+    private  int loseCount;
 
-    public GameRoomUserResponseDto (User user) {
-        this.id = user.getId();
-        this.nickname = user.getNickname();
+    public GameRoomUserResponseDto (Long id, String nickname, boolean ready, int winCount, int loseCount) {
+        this.id = id;
+        this.nickname = nickname;
+        this.ready = ready;
+        this.winCount = winCount;
+        this.loseCount = loseCount;
     }
 }

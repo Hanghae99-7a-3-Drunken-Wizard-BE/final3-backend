@@ -33,6 +33,12 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column
+    private int winCount;
+
+    @Column
+    private int loseCount;
+
     @Column(unique = true)
     private Long kakaoId;
 
@@ -41,6 +47,9 @@ public class User {
 
     @Column
     private String sessionId;
+
+    @Column
+    private boolean isPlaying;
 
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();

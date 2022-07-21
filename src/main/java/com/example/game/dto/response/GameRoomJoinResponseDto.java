@@ -6,9 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GameRoomJoinResponseDto {
-    private boolean isSuccess;
+    private boolean joinSuccess;
 
-    public GameRoomJoinResponseDto(boolean isSuccess) {
-        this.isSuccess = isSuccess;
+    public GameRoomJoinResponseDto(boolean joinSuccess) {
+        this.joinSuccess = joinSuccess;
     }
 }

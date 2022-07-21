@@ -1,10 +1,12 @@
 package com.example.game.websocket;
 
-
+import com.example.game.Game.gameDataDto.JsonStringBuilder;
+import com.example.game.Game.h2Package.GameRoom;
 import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.jwt.JwtDecoder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -13,8 +15,10 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
@@ -23,6 +27,7 @@ public class SessionConnectEventListener {
     private final JwtDecoder jwtDecoder;
     private final UserRepository userRepository;
     private final GameRoomRepository gameRoomRepository;
+    private final JsonStringBuilder jsonStringBuilder;
 
     private static List<String> userList = new ArrayList<>();
     @Autowired
@@ -72,15 +77,72 @@ public class SessionConnectEventListener {
 //        return userList;
 //    }
 
+    @Transactional
     @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) throws JsonProcessingException {
+        System.out.println("디스커넥트 리스너 작동");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
-        if (user != null) {
-            user.setRoomId(null);
-            user.setSessionId(null);
-            userRepository.save(user);
-        }
+            if (user != null) {
+                System.out.println("디스커넥트 리스너에서 조회된 유저 " + user.getUsername());
+                String roomId = user.getRoomId();
+                if (roomId != null) {
+                    Long userId = user.getId();
+                    GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
+                    user.setRoomId(null);
+                    userRepository.save(user);
+                    if (gameRoom.getPlayer1() != null){
+                        if (
+                                Objects.equals(gameRoom.getPlayer1(), userId) ||
+                                        Objects.equals(gameRoom.getPlayer1() * -1, userId)
+                        ) {
+                            gameRoom.setPlayer1(null);
+                            System.out.println("플레이어1 슬롯에서 제거됨");
+                        }}
+                    if (gameRoom.getPlayer2() != null){
+                        if (
+                                Objects.equals(gameRoom.getPlayer2(), userId) ||
+                                        Objects.equals(gameRoom.getPlayer2() * -1, userId)
+                        ) {
+                            gameRoom.setPlayer2(null);
+                            System.out.println("플레이어2 슬롯에서 제거됨");
+                        }}
+                    if (gameRoom.getPlayer3() != null){
+                        if (
+                                Objects.equals(gameRoom.getPlayer3(), userId) ||
+                                        Objects.equals(gameRoom.getPlayer3() * -1, userId)
+                        ) {
+                            gameRoom.setPlayer3(null);
+                            System.out.println("플레이어3 슬롯에서 제거됨");
+                        }}
+                    if (gameRoom.getPlayer4() != null){
+                        if (
+                                Objects.equals(gameRoom.getPlayer4(), userId) ||
+                                        Objects.equals(gameRoom.getPlayer4() * -1, userId)
+                        ) {
+                            gameRoom.setPlayer4(null);
+                            System.out.println("플레이어4 슬롯에서 제거됨");
+                        }}
+                    gameRoomRepository.save(gameRoom);
+
+                    String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
+                    GameMessage message = new GameMessage();
+                    message.setRoomId(roomId);
+                    message.setContent(userListMessage);
+                    message.setType(GameMessage.MessageType.UPDATE);
+                    messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+
+                    if (gameRoom.getPlayer1() == null &&
+                            gameRoom.getPlayer2() == null &&
+                            gameRoom.getPlayer3() == null &&
+                            gameRoom.getPlayer4() == null) {
+                        gameRoomRepository.delete(gameRoom);
+                    }
+                    user.setRoomId(null);
+                }
+                user.setSessionId(null);
+                userRepository.save(user);
+            }
         System.out.println("웹소켓 연결해제가 감지됨");
     }
 }
