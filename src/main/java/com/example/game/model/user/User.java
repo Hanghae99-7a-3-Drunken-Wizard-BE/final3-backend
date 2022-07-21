@@ -49,7 +49,7 @@ public class User {
     private String sessionId;
 
     @Column
-    private boolean isPlaying;
+    private Boolean isPlaying;
 
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
