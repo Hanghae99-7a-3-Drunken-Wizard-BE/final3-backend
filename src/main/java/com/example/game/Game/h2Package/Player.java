@@ -1,7 +1,6 @@
-package com.example.game.Game.player;
+package com.example.game.Game.h2Package;
 
-import com.example.game.Game.Game;
-import com.example.game.Game.card.Card;
+import com.example.game.Game.player.CharactorClass;
 import com.example.game.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -10,9 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.*;
 
 @Entity
+@Table(name = "player")
 @Getter
 @Setter
 @NoArgsConstructor

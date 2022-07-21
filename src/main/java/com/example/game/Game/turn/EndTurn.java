@@ -1,7 +1,7 @@
 package com.example.game.Game.turn;
 
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.PlayerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;

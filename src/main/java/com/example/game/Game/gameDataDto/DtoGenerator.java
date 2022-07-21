@@ -1,10 +1,10 @@
 package com.example.game.Game.gameDataDto;
 
-import com.example.game.Game.Game;
-import com.example.game.Game.card.Card;
+import com.example.game.Game.h2Package.Game;
+import com.example.game.Game.h2Package.Card;
 import com.example.game.Game.gameDataDto.response.*;
 import com.example.game.Game.player.CharactorClass;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
@@ -13,14 +13,13 @@ import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.dto.response.GameRoomUserResponseDto;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
-import com.example.game.websocket.GameRoom;
+import com.example.game.Game.h2Package.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

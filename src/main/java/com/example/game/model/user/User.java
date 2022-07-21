@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "USER_PLAYER")
+@Table(name = "user_player")
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -55,7 +55,7 @@ public class User {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.nickname = requestDto.getNickname();
-        this. email = requestDto.getEmail();
+        this.email = requestDto.getEmail();
     }
 
     // KakaoService 생성자
@@ -74,5 +74,4 @@ public class User {
         this.nickname = nickname;
         this.email = email;
     }
-
 }

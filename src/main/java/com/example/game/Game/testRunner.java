@@ -1,11 +1,8 @@
 package com.example.game.Game;
 
 import com.example.game.Game.card.ApplyCardToCharacter;
-import com.example.game.Game.card.Card;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.ObjectBuilder;
-import com.example.game.Game.gameDataDto.request.UseCardDto;
-import com.example.game.Game.player.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
@@ -13,24 +10,16 @@ import com.example.game.Game.service.GameStarter;
 import com.example.game.Game.turn.ActionTurn;
 import com.example.game.Game.turn.EndTurn;
 import com.example.game.Game.turn.PreTurn;
-import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameController;
-import com.example.game.websocket.GameRoom;
-import com.example.game.websocket.GameRoomRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+
+
+import com.example.game.Game.repository.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -54,7 +43,6 @@ public class testRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-
 //        User user1 = new User("user1", passwordEncoder.encode("qlalfqjsgh1!"), "nickname1", "email@emal1.com");
 //        User user2 = new User("user2", passwordEncoder.encode("qlalfqjsgh1!"), "nickname2", "email@emal2.com");
 //        User user3 = new User("user3", passwordEncoder.encode("qlalfqjsgh1!"), "nickname3", "email@emal3.com");
@@ -92,7 +80,6 @@ public class testRunner implements ApplicationRunner {
 //        gameRoom.setPlayer3(3L);
 //        gameRoom.setPlayer4(4L);
 //        gameRoomRepository.save(gameRoom);
-
 ////
 //        gameStarter.createGameRoom("1");
 //        Card cm = cardRepository.findByCardName("Panacea").get(0);

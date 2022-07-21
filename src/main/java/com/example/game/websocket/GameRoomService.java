@@ -2,6 +2,8 @@ package com.example.game.websocket;
 
 import com.example.game.Game.gameDataDto.DtoGenerator;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
+import com.example.game.Game.h2Package.GameRoom;
+import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.dto.response.GameRoomCreateResponseDto;
 import com.example.game.dto.response.GameRoomJoinResponseDto;
 import com.example.game.dto.response.GameRoomListResponseDto;

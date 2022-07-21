@@ -1,6 +1,9 @@
-package com.example.game.Game.card;
+package com.example.game.Game.h2Package;
 
-import com.example.game.Game.Game;
+import com.example.game.Game.card.CardType;
+import com.example.game.Game.card.Target;
+import com.example.game.Game.h2Package.Game;
+import com.example.game.Game.h2Package.SpecialEffect;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
@@ -11,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Table(name = "card")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Card {
 

@@ -1,14 +1,14 @@
 package com.example.game.Game.turn;
 
-import com.example.game.Game.Game;
+import com.example.game.Game.h2Package.Game;
 import com.example.game.Game.card.ApplyCardToCharacter;
-import com.example.game.Game.card.Card;
+import com.example.game.Game.h2Package.Card;
 import com.example.game.Game.card.Target;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.request.UseCardDto;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
 import com.example.game.Game.player.CharactorClass;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;

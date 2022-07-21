@@ -1,15 +1,13 @@
 package com.example.game.Game.card;
 
-import com.example.game.Game.Game;
+import com.example.game.Game.h2Package.Card;
+import com.example.game.Game.h2Package.Game;
 import com.example.game.Game.player.CharactorClass;
-import com.example.game.Game.player.Player;
-import com.example.game.Game.repository.CardRepository;
-import com.example.game.Game.repository.GameRepository;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Component

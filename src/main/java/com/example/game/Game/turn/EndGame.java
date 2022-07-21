@@ -1,14 +1,14 @@
 package com.example.game.Game.turn;
 
-import com.example.game.Game.Game;
+import com.example.game.Game.h2Package.Game;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
+import com.example.game.Game.h2Package.GameRoom;
+import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
-import com.example.game.websocket.GameRoom;
-import com.example.game.websocket.GameRoomRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
