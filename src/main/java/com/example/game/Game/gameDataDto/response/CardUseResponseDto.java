@@ -15,5 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class CardUseResponseDto {
     private List<PlayerDto> players;
+    private CardDetailResponseDto usedCard;
     private boolean gameOver;
 }

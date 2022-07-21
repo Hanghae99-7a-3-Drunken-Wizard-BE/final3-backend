@@ -76,13 +76,11 @@ public class GameRoomController {
     }
 
     @PostMapping("/game/{roomId}/leave")
-    public ResponseEntity<Page<GameRoom>> leaveGameRoom(
+    public String leaveGameRoom(
             @PathVariable String roomId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam int page, @RequestParam int size
-    )
+            @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws JsonProcessingException {
-        page = page - 1;
-        return gameRoomService.leaveGameRoom(roomId, page, size, userDetails);
+        gameRoomService.leaveGameRoom(roomId, userDetails);
+        return "퇴장 완료";
     }
 }

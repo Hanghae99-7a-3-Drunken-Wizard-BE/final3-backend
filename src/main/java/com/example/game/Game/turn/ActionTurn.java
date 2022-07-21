@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class ActionTurn {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
         List<Player> appliedPlayerList = new ArrayList<>();
+        Card card = (useCardDto.getCardId() == 0L) ? null : cardRepository.findByCardId(useCardDto.getCardId());
         if (player.getMutedDuration() > 0) {return "침묵됨";}
         if (useCardDto.getCardId() == 0L) {
             if (player.getMana() < (-4+manaCostModification(player)) * -1) {
@@ -52,10 +54,9 @@ public class ActionTurn {
             }
         }
         else {
-            Card card = cardRepository.findByCardId(useCardDto.getCardId());
             System.out.println(player.getUsername());
 
-            if(card.manaCost != null) {
+            if(Objects.requireNonNull(card).manaCost != null) {
             if (player.getMana() < (card.manaCost+manaCostModification(player)) * -1 && player.getCharactorClass() != CharactorClass.BLOODMAGE) {
                 return "마나부족";
             }}
@@ -100,19 +101,18 @@ public class ActionTurn {
         List<Player> enemyTeam = playerRepository.findByGameAndTeam(player.getGame(), !player.isTeam());
         boolean ourGameOver = (playerTeam.get(0).isDead() && playerTeam.get(1).isDead());
         boolean theirGameOver = (enemyTeam.get(0).isDead() && enemyTeam.get(1).isDead());
-        return jsonStringBuilder.cardUseResponseDtoJsonBuilder(appliedPlayerList, ourGameOver||theirGameOver);
+        return jsonStringBuilder.cardUseResponseDtoJsonBuilder(appliedPlayerList, card,ourGameOver||theirGameOver);
     }
 
     @Transactional
     public String discard (Long playerId, DiscardDto discardDto) throws JsonProcessingException {
         Player player = playerRepository.getById(playerId);
-        Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
         Card card = cardRepository.findByCardId(discardDto.getCardId());
         card.addGraveyard();
         player.addMana();
         List<Card> cards = cardRepository.findByLyingPlace(playerId);
 
-        return jsonStringBuilder.discard(player, cards);
+        return jsonStringBuilder.discard(player, cards, card);
     }
 
     public int manaCostModification (Player player) {

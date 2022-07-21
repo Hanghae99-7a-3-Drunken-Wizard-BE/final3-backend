@@ -53,8 +53,8 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String cardUseResponseDtoJsonBuilder(List<Player> players, boolean gameOver) throws JsonProcessingException {
-        CardUseResponseDto responseDto = dtoGenerator.cardUseResponseDtoMaker(players, gameOver);
+    public String cardUseResponseDtoJsonBuilder(List<Player> players, Card card, boolean gameOver) throws JsonProcessingException {
+        CardUseResponseDto responseDto = dtoGenerator.cardUseResponseDtoMaker(players, card, gameOver);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
@@ -71,10 +71,10 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String discard(Player player, List<Card> cards) throws JsonProcessingException {
-        PlayerDto playerDto = new PlayerDto(player, cards);
+    public String discard(Player player, List<Card> cards, Card discard) throws JsonProcessingException {
+        DiscardResponseDto responseDto = new DiscardResponseDto(player, cards, discard);
         ObjectWriter ow = new ObjectMapper().writer();
-        return ow.writeValueAsString(playerDto);
+        return ow.writeValueAsString(responseDto);
     }
 
     public String gameRoomResponseDtoJsonBuilder(GameRoom gameRoom) throws JsonProcessingException {

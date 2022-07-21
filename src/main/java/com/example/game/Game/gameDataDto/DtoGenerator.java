@@ -33,13 +33,14 @@ public class DtoGenerator {
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
-    public CardUseResponseDto cardUseResponseDtoMaker(List<Player> players, boolean gameOver) throws JsonProcessingException {
+    public CardUseResponseDto cardUseResponseDtoMaker(List<Player> players, Card card, boolean gameOver) throws JsonProcessingException {
         CardUseResponseDto cardUseResponseDto = new CardUseResponseDto();
         List<PlayerDto> playerDtos = new ArrayList<>();
         for (Player player : players) {
             playerDtos.add(playerDtoMaker(player));
         }
         cardUseResponseDto.setPlayers(playerDtos);
+        cardUseResponseDto.setUsedCard(new CardDetailResponseDto(card));
         cardUseResponseDto.setGameOver(gameOver);
         return cardUseResponseDto;
     }

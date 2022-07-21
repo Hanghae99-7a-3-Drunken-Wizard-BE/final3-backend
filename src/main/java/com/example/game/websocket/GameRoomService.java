@@ -79,37 +79,47 @@ public class GameRoomService {
     }
 
     @Transactional
-    public ResponseEntity<Page<GameRoom>> leaveGameRoom(String roomId, int page, int size, UserDetailsImpl userDetails) throws JsonProcessingException {
+    public void leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         System.out.println("나가는 유저 조회중 : "+user.getUsername());
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        System.out.println(gameRoom.getRoomName() + " 나가야하는 방 조회중");
         user.setRoomId(null);
         Long userId = user.getId();
+        if (gameRoom.getPlayer1() != null){
         if (
                 Objects.equals(gameRoom.getPlayer1(), userId) ||
                         Objects.equals(gameRoom.getPlayer1() * -1, userId)
         ) {
             gameRoom.setPlayer1(null);
-        }
+            System.out.println("플레이어1 슬롯에서 제거됨");
+        }}
+        if (gameRoom.getPlayer2() != null){
         if (
                 Objects.equals(gameRoom.getPlayer2(), userId) ||
                         Objects.equals(gameRoom.getPlayer2() * -1, userId)
         ) {
             gameRoom.setPlayer2(null);
-        }
+            System.out.println("플레이어2 슬롯에서 제거됨");
+        }}
+        if (gameRoom.getPlayer3() != null){
         if (
                 Objects.equals(gameRoom.getPlayer3(), userId) ||
                         Objects.equals(gameRoom.getPlayer3() * -1, userId)
         ) {
             gameRoom.setPlayer3(null);
-        }
+            System.out.println("플레이어3 슬롯에서 제거됨");
+        }}
+        if (gameRoom.getPlayer4() != null){
         if (
                 Objects.equals(gameRoom.getPlayer4(), userId) ||
                         Objects.equals(gameRoom.getPlayer4() * -1, userId)
         ) {
             gameRoom.setPlayer4(null);
-        }
+            System.out.println("플레이어4 슬롯에서 제거됨");
+        }}
+        System.out.println("슬롯 제거까지 문제 없음");
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
         GameMessage message = new GameMessage();
         message.setRoomId(roomId);
@@ -122,8 +132,6 @@ public class GameRoomService {
             gameRoom.getPlayer4() == null) {
             gameRoomRepository.delete(gameRoom);
         }
-        Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok().body(gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable));
     }
 
     public Page<GameRoom> searchGameRooms(String keyword, int page, int size) {
