@@ -115,7 +115,7 @@ public class SessionSubscribeEventListener {
             User user = userRepository.findBySessionId(headers.getSessionId());
             ChatMessage chatMessage = new ChatMessage();
             if (user != null) {
-                user.setPlaying(false);
+                user.setIsPlaying(false);
                 userRepository.save(user);
                 chatMessage.setType(ChatMessage.MessageType.JOIN);
             }
@@ -174,20 +174,19 @@ public class SessionSubscribeEventListener {
     }
 
     @EventListener
-    public void handleUnsubscribeAtChatEvent(SessionUnsubscribeEvent event) {
+    public void handleSubscribeToGameEvent(SessionSubscribeEvent event) {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String targetDestination = headers.getDestination();
         System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
-        if (targetDestination.equals("/chat/**")) {
+        if (targetDestination.equals("/game/**")) {
             User user = userRepository.findBySessionId(headers.getSessionId());
-            ChatMessage chatMessage = new ChatMessage();
-            if (user != null && user.getRoomId() != null) {
-                user.setPlaying(true);
+            if (user != null) {
+                user.setIsPlaying(true);
                 userRepository.save(user);
-                chatMessage.setType(ChatMessage.MessageType.LEAVE);
             }
-            System.out.println("로비에서 구독 취소");
+            System.out.println("로비에서 구독 취소 후 게임룸 구독");
         }
+    }
 
         // SessionUnsubscribe로 유저 목록에서 삭제
 //    @EventListener
@@ -204,6 +203,5 @@ public class SessionSubscribeEventListener {
 //
 //        return ResponseEntity.ok().body(subUserList + "구독 리스트에서 " + nickName + " 유저를 삭제했습니다." + subUserList.size() + " 명 접속 중");
 //    }
-    }
 }
 
