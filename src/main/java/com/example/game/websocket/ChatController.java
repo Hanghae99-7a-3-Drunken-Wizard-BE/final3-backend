@@ -31,11 +31,17 @@ public class ChatController {
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println(message.getSender() + " 님이 접속을 끊었습니다.");
         }
-        else {
+        else if (ChatMessage.MessageType.CHAT.equals(message.getType())){
             message.setMessage(message.getMessage());
             message.setConnectedUsers(userService.getConnectedUsers());
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println("Chat Message : " + message.getMessage());
         }
+//        else if(GameMessage.MessageType.JOIN.equals(gameMessage.getType())){
+//            message.setMessage(message.getSender() + " 님이 게임룸에 입장하였습니다.");
+//            message.setConnectedUsers(userService.getConnectedUsers());
+//            sendingOperations.convertAndSend("/sub/public", message);
+//            System.out.println(message.getSender() + " 님이 게임룸에 입장하였습니다.");
+//        }
     }
 }
