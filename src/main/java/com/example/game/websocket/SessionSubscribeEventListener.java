@@ -113,11 +113,11 @@ public class SessionSubscribeEventListener {
         System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
         if (targetDestination.equals("/chat/**")) {
             User user = userRepository.findBySessionId(headers.getSessionId());
-            ChatMessage chatMessage = new ChatMessage();
+//            ChatMessage chatMessage = new ChatMessage();
             if (user != null) {
                 user.setIsPlaying(false);
                 userRepository.save(user);
-                chatMessage.setType(ChatMessage.MessageType.JOIN);
+//                chatMessage.setType(ChatMessage.MessageType.JOIN);
             }
             System.out.println("로비에서 구독 취소");
 
@@ -180,9 +180,11 @@ public class SessionSubscribeEventListener {
         System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
         if (targetDestination.equals("/game/**")) {
             User user = userRepository.findBySessionId(headers.getSessionId());
+//            ChatMessage chatMessage = new ChatMessage();
             if (user != null) {
                 user.setIsPlaying(true);
                 userRepository.save(user);
+//                chatMessage.setType(ChatMessage.MessageType.LEAVE);
             }
             System.out.println("로비에서 구독 취소 후 게임룸 구독");
         }
