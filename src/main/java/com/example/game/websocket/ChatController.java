@@ -19,7 +19,7 @@ public class ChatController {
 
     @MessageMapping("/chat/send")
     public void message(ChatMessage message) {
-        if (ChatMessage.MessageType.JOIN.equals(message.getType()) && message.getConnectedUsers() != null) {
+        if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
             message.setMessage(message.getMessage());
             message.setConnectedUsers(userService.getConnectedUsers());
             sendingOperations.convertAndSend("/sub/public", message);

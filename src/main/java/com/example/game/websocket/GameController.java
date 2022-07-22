@@ -84,6 +84,13 @@ public class GameController {
             System.out.println("여기에 들어오나" + message.getType());
             endGame(message);
         }
+
+    }
+
+    @MessageMapping("/wroom/{roomId}")
+    public void roomMessageProxy(@Payload GameMessage message) throws JsonProcessingException {
+        System.out.println("여기에 들어오나 메시지매핑 메서드");
+
         if (GameMessage.MessageType.UPDATE.equals(message.getType())) {
             System.out.println("여기에 들어오나" + message.getType());
             update(message);
@@ -130,6 +137,8 @@ public class GameController {
     }
 
     private void select(GameMessage message) throws JsonProcessingException {
+        System.out.println("여기에 들어오나 셀렉트 메서드");
+        System.out.println(message.getContent() + " 이상 콘텐츠로 들어오는 스트링 내용");
         CardSelectRequestDto requestDto = objectBuilder.drawnCards(message.getContent());
         String messageContent = preTurn.cardDrawResponse(message.getSender(), requestDto);
         GameMessage gameMessage = new GameMessage();
@@ -139,6 +148,9 @@ public class GameController {
         gameMessage.setRoomId(message.getRoomId());
         gameMessage.setSender(message.getSender());
         gameMessage.setContent(messageContent);
+        System.out.println(messageContent);
+        System.out.println(message.getRoomId());
+        System.out.println(message.getSender());
         messagingTemplate.convertAndSend("/sub/game/" + message.getRoomId(), gameMessage);
     }
 
@@ -214,7 +226,7 @@ public class GameController {
         gameMessage.setSender(message.getSender());
         gameMessage.setContent(userListMessage);
         gameMessage.setType(GameMessage.MessageType.UPDATE);
-        messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
+        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
     }
 
     private void ready(GameMessage message) throws JsonProcessingException {
@@ -239,7 +251,7 @@ public class GameController {
         gameMessage.setSender(message.getSender());
         gameMessage.setContent(userListMessage);
         gameMessage.setType(GameMessage.MessageType.UPDATE);
-        messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
+        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
     }
 
 //
