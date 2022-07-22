@@ -3,6 +3,7 @@ package com.example.game.Game;
 import com.example.game.Game.card.ApplyCardToCharacter;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.ObjectBuilder;
+import com.example.game.Game.h2Package.GameRoom;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
@@ -10,6 +11,7 @@ import com.example.game.Game.service.GameStarter;
 import com.example.game.Game.turn.ActionTurn;
 import com.example.game.Game.turn.EndTurn;
 import com.example.game.Game.turn.PreTurn;
+import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.websocket.GameController;
 
@@ -20,6 +22,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -43,28 +48,19 @@ public class testRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        User user1 = new User("user1", passwordEncoder.encode("qlalfqjsgh1!"), "nickname1", "email@emal1.com");
-//        User user2 = new User("user2", passwordEncoder.encode("qlalfqjsgh1!"), "nickname2", "email@emal2.com");
-//        User user3 = new User("user3", passwordEncoder.encode("qlalfqjsgh1!"), "nickname3", "email@emal3.com");
-//        User user4 = new User("user4", passwordEncoder.encode("qlalfqjsgh1!"), "nickname4", "email@emal4.com");
 //        User user5 = new User("user5", "111", "nickname5", "email@emal5.com");
 //        User user6 = new User("user6", "111", "nickname6", "email@emal6.com");
 //        User user7 = new User("user7", "111", "nickname7", "email@emal7.com");
 //        User user8 = new User("user8", "111", "nickname8", "email@emal8.com");
 //
 
-//
-//        user1.setRoomId("1");
-//        user2.setRoomId("1");
-//        user3.setRoomId("1");
-//        user4.setRoomId("1");
 //        List<User> userList = new ArrayList<>();
 //        List<User> userList1 = new ArrayList<>();
 //
-//        userList.add(user1);
-//        userList.add(user2);
-//        userList.add(user3);
-//        userList.add(user4);
+//        userList.add(userRepository.findByUsername("aksdnjs88").orElse(null));
+//        userList.add(userRepository.findById(8L).orElse(null));
+//        userList.add(userRepository.findById(9L).orElse(null));
+//        userList.add(userRepository.findById(10L).orElse(null));
 //        userList1.add(user5);
 //        userList1.add(user6);
 //        userList1.add(user7);
@@ -72,15 +68,15 @@ public class testRunner implements ApplicationRunner {
 //
 //        userRepository.saveAll(userList);
 //        userRepository.saveAll(userList1);
-//
-//        GameRoom gameRoom = new GameRoom("1", "testRoom");
-//
-//        gameRoom.setPlayer1(1L);
-//        gameRoom.setPlayer2(2L);
-//        gameRoom.setPlayer3(3L);
-//        gameRoom.setPlayer4(4L);
-//        gameRoomRepository.save(gameRoom);
 ////
+//        GameRoom gameRoom = new GameRoom("1", "testRoom");
+////
+//        gameRoom.setPlayer1(userRepository.findByUsername("aksdnjs88").orElse(null).getId());
+//        gameRoom.setPlayer2(8L);
+//        gameRoom.setPlayer3(9L);
+//        gameRoom.setPlayer4(10L);
+//        gameRoomRepository.save(gameRoom);
+//////
 //        gameStarter.createGameRoom("1");
 //        Card cm = cardRepository.findByCardName("Panacea").get(0);
 //

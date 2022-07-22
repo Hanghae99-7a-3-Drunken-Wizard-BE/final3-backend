@@ -7,8 +7,10 @@ import lombok.Setter;
 @Setter
 public class GameRoomJoinResponseDto {
     private boolean joinSuccess;
+    private String roomId;
 
-    public GameRoomJoinResponseDto(boolean joinSuccess) {
+    public GameRoomJoinResponseDto(boolean joinSuccess, String roomId) {
         this.joinSuccess = joinSuccess;
+        this.roomId = roomId;
     }
 }

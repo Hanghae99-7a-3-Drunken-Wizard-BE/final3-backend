@@ -20,8 +20,8 @@ import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,21 +35,25 @@ private final GameRoomRepository gameRoomRepository;
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
-    @Transactional
+    @Transactional("gameTransactionManager")
     public void createGameRoom (String roomId){
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        System.out.println(gameRoom.getPlayer1() + " 플레이어 1확인");
+        System.out.println(gameRoom.getPlayer2() + " 플레이어 1확인");
+        System.out.println(gameRoom.getPlayer3() + " 플레이어 1확인");
+        System.out.println(gameRoom.getPlayer4() + " 플레이어 1확인");
         List<User> userInLobby = new ArrayList<>();
         if(gameRoom.getPlayer1() != null && gameRoom.getPlayer1() > 0) {
-            userInLobby.add(userRepository.getById(gameRoom.getPlayer1()));
+            userInLobby.add(userRepository.findById(gameRoom.getPlayer1()).orElse(null));
         }
         if(gameRoom.getPlayer2() != null && gameRoom.getPlayer2() > 0) {
-            userInLobby.add(userRepository.getById(gameRoom.getPlayer2()));
+            userInLobby.add(userRepository.findById(gameRoom.getPlayer2()).orElse(null));
         }
         if(gameRoom.getPlayer3() != null && gameRoom.getPlayer3() > 0) {
-            userInLobby.add(userRepository.getById(gameRoom.getPlayer3()));
+            userInLobby.add(userRepository.findById(gameRoom.getPlayer3()).orElse(null));
         }
         if(gameRoom.getPlayer4() != null && gameRoom.getPlayer4() > 0) {
-            userInLobby.add(userRepository.getById(gameRoom.getPlayer4()));
+            userInLobby.add(userRepository.findById(gameRoom.getPlayer4()).orElse(null));
         }
         if(userInLobby.size() != 4) {return;}
         Game game = new Game(roomId);

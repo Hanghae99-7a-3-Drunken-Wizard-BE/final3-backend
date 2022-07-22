@@ -40,6 +40,7 @@ public class StompHandler implements ChannelInterceptor {
             user.setSessionId(sessionId);
             userRepository.save(user);
             System.out.println(user.getSessionId() + " : 세션 아이디 저장 완료?");;
+            System.out.println(userRepository.findBySessionIdIsNotNull().size() + "커넥트 후 리스트에 남은 유저 수");
         }
 
         return message;

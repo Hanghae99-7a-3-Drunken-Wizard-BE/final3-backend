@@ -15,8 +15,9 @@ import com.example.game.Game.repository.PlayerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,7 @@ public class ActionTurn {
     private final JsonStringBuilder jsonStringBuilder;
 
 
-    @Transactional
+    @Transactional("gameTransactionManager")
     public String cardMoveProcess(Long playerId, UseCardDto useCardDto) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음"));
@@ -46,6 +47,7 @@ public class ActionTurn {
                     useCardDto.getTargetPlayerId() : playerId
             ).orElseThrow(()->new NullPointerException("플레이어 없음"));
             applyCardToCharacter.applyHealerHealtoTarget(player,targetPlayer);
+
             if (player == targetPlayer) {
                 appliedPlayerList.add(player);
             } else {
@@ -104,7 +106,7 @@ public class ActionTurn {
         return jsonStringBuilder.cardUseResponseDtoJsonBuilder(appliedPlayerList, card,ourGameOver||theirGameOver);
     }
 
-    @Transactional
+    @Transactional("gameTransactionManager")
     public String discard (Long playerId, DiscardDto discardDto) throws JsonProcessingException {
         Player player = playerRepository.getById(playerId);
         Card card = cardRepository.findByCardId(discardDto.getCardId());
@@ -112,7 +114,7 @@ public class ActionTurn {
         player.addMana();
         List<Card> cards = cardRepository.findByLyingPlace(playerId);
 
-        return jsonStringBuilder.discard(player, cards, card);
+        return jsonStringBuilder.discard(playerRepository.getById(playerId), cards, cardRepository.findByCardId(discardDto.getCardId()));
     }
 
     public int manaCostModification (Player player) {

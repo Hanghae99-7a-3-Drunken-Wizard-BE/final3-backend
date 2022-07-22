@@ -6,6 +6,7 @@ import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.jwt.JwtDecoder;
+import com.example.game.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,11 @@ import java.util.Objects;
 public class SessionConnectEventListener {
 
     private final JwtDecoder jwtDecoder;
+    private final UserService userService;
     private final UserRepository userRepository;
     private final GameRoomRepository gameRoomRepository;
     private final JsonStringBuilder jsonStringBuilder;
-
-    private static List<String> userList = new ArrayList<>();
+    private final SimpMessageSendingOperations sendingOperations;
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
@@ -77,7 +78,6 @@ public class SessionConnectEventListener {
 //        return userList;
 //    }
 
-    @Transactional
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) throws JsonProcessingException {
         System.out.println("디스커넥트 리스너 작동");
@@ -90,8 +90,6 @@ public class SessionConnectEventListener {
                 if (roomId != null) {
                     Long userId = user.getId();
                     GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
-                    user.setRoomId(null);
-                    userRepository.save(user);
                     if (gameRoom.getPlayer1() != null){
                         if (
                                 Objects.equals(gameRoom.getPlayer1(), userId) ||
@@ -131,7 +129,7 @@ public class SessionConnectEventListener {
                     message.setRoomId(roomId);
                     message.setContent(userListMessage);
                     message.setType(GameMessage.MessageType.UPDATE);
-                    messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+                    messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
 
                     if (gameRoom.getPlayer1() == null &&
                             gameRoom.getPlayer2() == null &&
@@ -139,11 +137,18 @@ public class SessionConnectEventListener {
                             gameRoom.getPlayer4() == null) {
                         gameRoomRepository.delete(gameRoom);
                     }
+                    System.out.println(user.getSessionId()+" 삭제처리 전 유저아이디");
                     user.setRoomId(null);
                 }
                 user.setSessionId(null);
+                System.out.println(user.getSessionId() + "삭제 후 세션아이디");
                 userRepository.save(user);
+                System.out.println(userRepository.findBySessionIdIsNotNull().size() + "디스커넥트 후 리스트에 남은 유저 수");
+                chatMessage.setSender(user.getNickname());
+                chatMessage.setMessage(user.getNickname() + " 님이 접속을 끊었습니다.");
+                chatMessage.setConnectedUsers(userService.getConnectedUsers());
                 chatMessage.setType(ChatMessage.MessageType.LEAVE);
+                sendingOperations.convertAndSend("/sub/public", chatMessage);
             }
         System.out.println("웹소켓 연결해제가 감지됨");
     }

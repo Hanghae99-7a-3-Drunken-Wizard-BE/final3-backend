@@ -49,11 +49,7 @@ public class GameRoomService {
 
     public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) {
         GameRoom room = new GameRoom(UUID.randomUUID().toString(), requestDto.getRoomName());
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                ()-> new NullPointerException("유저 없음"));
         gameRoomRepository.save(room);
-        user.setRoomId(room.getRoomId());
-        userRepository.save(user);
         GameRoomCreateResponseDto responseDto = new GameRoomCreateResponseDto(room.getRoomId(), requestDto.getRoomName());
         System.out.println("gameRoom roomId = " + room.getRoomId()); // roomId 콘솔창에 찍기
         return ResponseEntity.ok().body(responseDto);
@@ -66,34 +62,34 @@ public class GameRoomService {
                 room.getPlayer1() != null && room.getPlayer2() != null && room.getPlayer3() != null && room.getPlayer4() != null
         ) {
             System.out.println("방이 꽉참");
-            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false, roomId);
             return ResponseEntity.ok().body(responseDto);
         }
 
         if (room.getPlayer1() != null) {if (room.getPlayer1() == id || room.getPlayer1() == -id) {
             System.out.println("중복 아이디 존재");
-            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false, roomId);
             return ResponseEntity.ok().body(responseDto);
             }
         }
 
         if (room.getPlayer2() != null) {if (room.getPlayer2() == id || room.getPlayer2() == -id) {
             System.out.println("중복 아이디 존재");
-            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false, roomId);
             return ResponseEntity.ok().body(responseDto);
             }
         }
 
         if (room.getPlayer3() != null) {if (room.getPlayer3() == id || room.getPlayer3() == -id) {
             System.out.println("중복 아이디 존재");
-            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false, roomId);
             return ResponseEntity.ok().body(responseDto);
             }
         }
 
         if (room.getPlayer4() != null) {if (room.getPlayer4() == id || room.getPlayer4() == -id) {
             System.out.println("중복 아이디 존재");
-            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false);
+            GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(false, roomId);
             return ResponseEntity.ok().body(responseDto);
             }
         }
@@ -102,14 +98,14 @@ public class GameRoomService {
                 ()-> new NullPointerException("유저 없음"));
         user.setRoomId(roomId);
         userRepository.save(user);
-        GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(true);
+        GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(true, roomId);
 
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
         GameMessage gameMessage = new GameMessage();
         gameMessage.setRoomId(roomId);
         gameMessage.setContent(userListMessage);
         gameMessage.setType(GameMessage.MessageType.UPDATE);
-        messagingTemplate.convertAndSend("/sub/game/" + roomId, gameMessage);
+        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
         return ResponseEntity.ok().body(responseDto);
     }
 
@@ -160,7 +156,7 @@ public class GameRoomService {
         message.setRoomId(roomId);
         message.setContent(userListMessage);
         message.setType(GameMessage.MessageType.UPDATE);
-        messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
         if (gameRoom.getPlayer1() == null &&
             gameRoom.getPlayer2() == null &&
             gameRoom.getPlayer3() == null &&
