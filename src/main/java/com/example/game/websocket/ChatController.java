@@ -35,6 +35,12 @@ public class ChatController {
             message.setMessage(message.getSender() + " 님이 게임룸에 접속하였습니다.");
             message.setConnectedUsers(userService.getConnectedUsers());
             sendingOperations.convertAndSend("/sub/public", message);
+            System.out.println(message.getSender() + " 님이 게임룸에 접속하였습니다.");
+        }
+        else {
+            message.setMessage(message.getMessage());
+            message.setConnectedUsers(userService.getConnectedUsers());
+            sendingOperations.convertAndSend("/sub/public", message);
             System.out.println("Chat Message : " + message.getMessage());
         }
     }
