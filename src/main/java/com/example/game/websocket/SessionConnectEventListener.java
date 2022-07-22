@@ -83,6 +83,7 @@ public class SessionConnectEventListener {
         System.out.println("디스커넥트 리스너 작동");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
+        ChatMessage chatMessage = new ChatMessage();
             if (user != null) {
                 System.out.println("디스커넥트 리스너에서 조회된 유저 " + user.getUsername());
                 String roomId = user.getRoomId();
@@ -142,7 +143,9 @@ public class SessionConnectEventListener {
                 }
                 user.setSessionId(null);
                 userRepository.save(user);
+                chatMessage.setType(ChatMessage.MessageType.LEAVE);
             }
         System.out.println("웹소켓 연결해제가 감지됨");
     }
+
 }

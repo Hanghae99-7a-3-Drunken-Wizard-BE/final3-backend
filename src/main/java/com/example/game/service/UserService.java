@@ -44,7 +44,7 @@ public class UserService {
             UserResponseDto userResponseDto = new UserResponseDto(
                     user.getId(),
                     user.getNickname(),
-                    user.isPlaying()
+                    user.getIsPlaying()
             );
             userResponseDtos.add(userResponseDto);
         }
