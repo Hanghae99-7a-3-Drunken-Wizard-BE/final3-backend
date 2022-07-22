@@ -34,10 +34,10 @@ public class User {
     private String email;
 
     @Column
-    private int winCount;
+    private Integer winCount;
 
     @Column
-    private int loseCount;
+    private Integer loseCount;
 
     @Column(unique = true)
     private Long kakaoId;
