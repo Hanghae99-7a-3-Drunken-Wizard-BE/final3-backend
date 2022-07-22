@@ -18,7 +18,7 @@ public class ChatController {
     private final UserService userService;
 
     @MessageMapping("/chat/send")
-    public void message(ChatMessage message, GameMessage gameMessage) {
+    public void message(ChatMessage message) {
         if (ChatMessage.MessageType.JOIN.equals(message.getType()) && message.getConnectedUsers() != null) {
             message.setMessage(message.getMessage());
             message.setConnectedUsers(userService.getConnectedUsers());
@@ -33,7 +33,7 @@ public class ChatController {
         }
         else if (ChatMessage.MessageType.CHAT.equals(message.getType())){
             message.setMessage(message.getMessage());
-            message.setConnectedUsers(userService.getConnectedUsers());
+            message.setConnectedUsers(null);
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println("Chat Message : " + message.getMessage());
         }
