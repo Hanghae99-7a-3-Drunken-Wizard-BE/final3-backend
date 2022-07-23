@@ -17,7 +17,8 @@ public class ChatMessage {
 
     private String message;
 //    private String roomId;
-    private String sender;
+    private Long sender;
+    private String nickname;
 
     private MessageType type;
 
@@ -27,8 +28,11 @@ public class ChatMessage {
         CHAT, LEAVE, JOIN
     }
 
-    public ChatMessage(String message, UserDetailsImpl userDetails) {
+    public ChatMessage(String message, MessageType type, UserDetailsImpl userDetails, List<UserResponseDto> connectedUsers) {
         this.message = message;
-        this.sender = userDetails.getUser().getNickname();
+        this.type = type;
+        this.sender = userDetails.getUser().getId();
+        this.nickname = userDetails.getUser().getNickname();
+        this.connectedUsers = connectedUsers;
     }
 }

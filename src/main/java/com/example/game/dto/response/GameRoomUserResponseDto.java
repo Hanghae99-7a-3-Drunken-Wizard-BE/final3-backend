@@ -9,7 +9,7 @@ import lombok.Setter;
 public class GameRoomUserResponseDto {
     private Long id;
     private String nickname;
-    private boolean ready;
+    private Boolean ready;
     private int winCount;
     private  int loseCount;
 

@@ -8,6 +8,7 @@ import com.example.game.Game.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Component
@@ -44,12 +45,14 @@ public class ApplyCardToCharacter {
         }
     }
 
+
     public void applyCardtoTarget (Player player, Player targetPlayer, Card card){
         newStatusUpdate(player, targetPlayer, card);
         newApplyManaCost(player,card);
         bloodmageManaFeedback(player);
         card.addGraveyard();
     }
+
 
     public void applyCardtoMultipleTarget (Player player, List<Player> players, Card card) {
         for (Player playerInList : players) {
@@ -58,6 +61,7 @@ public class ApplyCardToCharacter {
         bloodmageManaFeedback(player);
         card.addGraveyard();
     }
+
 
     public void applyHealerHealtoTarget(Player player, Player targetPlayer) {
         if (player.damageModifierDuration > 0){if (targetPlayer.isShield()&&!(player==targetPlayer)){
@@ -69,11 +73,13 @@ public class ApplyCardToCharacter {
         healerHealmanaCostApply(player);
     }
 
+
     public void healerHealmanaCostApply(Player player) {
         if(player.manaCostModifierDuration > 0){player.applyhealerHealManaCostWithModifierPositive();}
         else if (player.manaCostModifierDuration < 0) {player.applyhealerHealManaCostWithModifierNegative();}
         else{player.applyhealerHealManaCost();}
     }
+
 
     public void newStatusUpdate (Player player, Player targetPlayer, Card card) {
         if (targetPlayer.isShield() && player != targetPlayer) {
@@ -96,11 +102,13 @@ public class ApplyCardToCharacter {
         }
     }
 
+
     public void newApplyManaCost (Player player, Card card) {
         if (card.getManaCost() != null){
             player.setMana(player.getMana() + card.getManaCost() + manaModification(player, card));
         }
     }
+
 
     public int damageModification (Player player, Player targetPlayer, Card card) {
         if (card.getHealthModifier() == null) {return 0;}
@@ -122,6 +130,7 @@ public class ApplyCardToCharacter {
         else {return 0;}
     }
 
+
     public int manaModification (Player player, Card card) {
         if (card.getManaCost() == null) {return 0;}
         int healerAdventage;
@@ -135,6 +144,7 @@ public class ApplyCardToCharacter {
         } else {healerAdventage = 0;}
         return healerAdventage + manaCostModCheck;
     }
+
 
     public void bloodmageManaFeedback(Player player) {
         if(player.getCharactorClass().equals(CharactorClass.BLOODMAGE) && player.getMana() < 0) {

@@ -70,8 +70,8 @@ public class SessionSubscribeEventListener {
         String targetDestination = headers.getDestination();
         String sessionId = headers.getSessionId();
         System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
-        if (targetDestination.length() == 46) {
-            String roomId = targetDestination.substring(10, 46);
+        if (targetDestination.length() == 47) {
+            String roomId = targetDestination.substring(11, 47);
             System.out.println(roomId + " 구독이벤트 내 룸아이디 조회");
 
             User user = userRepository.findBySessionId(sessionId);
@@ -111,15 +111,15 @@ public class SessionSubscribeEventListener {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String targetDestination = headers.getDestination();
         System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
-        if (targetDestination.equals("/chat/**")) {
+        if (targetDestination.length() == 11) {
             User user = userRepository.findBySessionId(headers.getSessionId());
-            ChatMessage chatMessage = new ChatMessage();
+//            ChatMessage chatMessage = new ChatMessage();
             if (user != null) {
                 user.setIsPlaying(false);
                 userRepository.save(user);
-                chatMessage.setType(ChatMessage.MessageType.JOIN);
+//                chatMessage.setType(ChatMessage.MessageType.JOIN);
             }
-            System.out.println("로비에서 구독 취소");
+            System.out.println("채팅에 구독중");
 
             if (user != null) {
                 String roomId = user.getRoomId();
@@ -167,7 +167,7 @@ public class SessionSubscribeEventListener {
                     message.setRoomId(roomId);
                     message.setContent(userListMessage);
                     message.setType(GameMessage.MessageType.UPDATE);
-                    messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+                    messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
                 }
             }
         }
@@ -178,11 +178,13 @@ public class SessionSubscribeEventListener {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String targetDestination = headers.getDestination();
         System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
-        if (targetDestination.equals("/game/**")) {
+        if (targetDestination.length() == 47) {
             User user = userRepository.findBySessionId(headers.getSessionId());
+//            ChatMessage chatMessage = new ChatMessage();
             if (user != null) {
                 user.setIsPlaying(true);
                 userRepository.save(user);
+//                chatMessage.setType(ChatMessage.MessageType.LEAVE);
             }
             System.out.println("로비에서 구독 취소 후 게임룸 구독");
         }

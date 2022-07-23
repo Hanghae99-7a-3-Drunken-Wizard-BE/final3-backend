@@ -56,15 +56,19 @@ public class User {
         this.password = requestDto.getPassword();
         this.nickname = requestDto.getNickname();
         this.email = requestDto.getEmail();
+        this.winCount = 0;
+        this.loseCount = 0;
     }
 
     // KakaoService 생성자
-    public User(String username, String nickname, String password, String email, Long kakaoId){
+    public User(String username, String nickname, String password, String email, Long kakaoId) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.kakaoId = kakaoId;
+        this.winCount = 0;
+        this.loseCount = 0;
     }
 
     // testRunner 생성자
@@ -73,5 +77,7 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.email = email;
+        this.winCount = 0;
+        this.loseCount = 0;
     }
 }
