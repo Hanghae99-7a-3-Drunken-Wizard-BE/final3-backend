@@ -110,7 +110,7 @@ public class SessionSubscribeEventListener {
     public void handleSubscribeAtChatEvent(SessionSubscribeEvent event) throws JsonProcessingException {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String targetDestination = headers.getDestination();
-        System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
+        System.out.println(targetDestination + " SubscribeAtChatEvent 구독이벤트 구독주소 추적");
         if (targetDestination.length() == 11) {
             User user = userRepository.findBySessionId(headers.getSessionId());
 //            ChatMessage chatMessage = new ChatMessage();
@@ -177,7 +177,7 @@ public class SessionSubscribeEventListener {
     public void handleSubscribeToGameEvent(SessionSubscribeEvent event) {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String targetDestination = headers.getDestination();
-        System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
+        System.out.println(targetDestination + " SubscribeToGameEvent 구독이벤트 구독주소 추적");
         if (targetDestination.length() == 47) {
             User user = userRepository.findBySessionId(headers.getSessionId());
 //            ChatMessage chatMessage = new ChatMessage();
