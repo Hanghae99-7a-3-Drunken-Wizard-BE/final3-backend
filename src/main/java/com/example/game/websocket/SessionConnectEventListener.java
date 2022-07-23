@@ -144,7 +144,8 @@ public class SessionConnectEventListener {
                 System.out.println(user.getSessionId() + "삭제 후 세션아이디");
                 userRepository.save(user);
                 System.out.println(userRepository.findBySessionIdIsNotNull().size() + "디스커넥트 후 리스트에 남은 유저 수");
-                chatMessage.setSender(user.getNickname());
+                chatMessage.setSender(user.getId());
+                chatMessage.setNickname(user.getNickname());
                 chatMessage.setMessage(user.getNickname() + " 님이 접속을 끊었습니다.");
                 chatMessage.setConnectedUsers(userService.getConnectedUsers());
                 chatMessage.setType(ChatMessage.MessageType.LEAVE);
