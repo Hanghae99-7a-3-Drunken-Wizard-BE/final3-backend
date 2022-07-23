@@ -80,9 +80,10 @@ public class SessionConnectEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) throws JsonProcessingException {
-        System.out.println("디스커넥트 리스너 작동");
+        System.out.println("디스커넥트 리스너 발동");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
+        System.out.println("DisconnectListener에서 SessionId로 찾은 유저 : " + user);
         ChatMessage chatMessage = new ChatMessage();
             if (user != null) {
                 System.out.println("디스커넥트 리스너에서 조회된 유저 " + user.getUsername());
@@ -141,10 +142,11 @@ public class SessionConnectEventListener {
                     user.setRoomId(null);
                 }
                 user.setSessionId(null);
-                System.out.println(user.getSessionId() + "삭제 후 세션아이디");
+                System.out.println(user.getUsername() + "삭제 한 세션아이디");
                 userRepository.save(user);
                 System.out.println(userRepository.findBySessionIdIsNotNull().size() + "디스커넥트 후 리스트에 남은 유저 수");
-                chatMessage.setSender(user.getNickname());
+                chatMessage.setSender(user.getId());
+                chatMessage.setNickname(user.getNickname());
                 chatMessage.setMessage(user.getNickname() + " 님이 접속을 끊었습니다.");
                 chatMessage.setConnectedUsers(userService.getConnectedUsers());
                 chatMessage.setType(ChatMessage.MessageType.LEAVE);
