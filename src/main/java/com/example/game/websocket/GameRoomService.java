@@ -4,9 +4,11 @@ import com.example.game.Game.gameDataDto.DtoGenerator;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.h2Package.GameRoom;
 import com.example.game.Game.repository.GameRoomRepository;
+import com.example.game.dto.request.SwitchingPositionRequestDto;
 import com.example.game.dto.response.GameRoomCreateResponseDto;
 import com.example.game.dto.response.GameRoomJoinResponseDto;
 import com.example.game.dto.response.GameRoomListResponseDto;
+import com.example.game.dto.response.GameRoomResponseDto;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
@@ -21,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +49,7 @@ public class GameRoomService {
         return gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
-    public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) {
+    public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto) {
         GameRoom room = new GameRoom(UUID.randomUUID().toString(), requestDto.getRoomName());
         gameRoomRepository.save(room);
         GameRoomCreateResponseDto responseDto = new GameRoomCreateResponseDto(room.getRoomId(), requestDto.getRoomName());
@@ -55,6 +57,7 @@ public class GameRoomService {
         return ResponseEntity.ok().body(responseDto);
     }
 
+    @Transactional("gameTransactionManager")
     public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException{
         GameRoom room = gameRoomRepository.findByRoomId(roomId);
         Long id = userDetails.getUser().getId();
@@ -109,7 +112,7 @@ public class GameRoomService {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @Transactional
+    @Transactional("gameTransactionManager")
     public void leaveGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
@@ -174,6 +177,48 @@ public class GameRoomService {
         page -= 1;
         Pageable pageable = PageRequest.of(page, size);
         return gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
+
+    @Transactional("gameTransactionManager")
+    public String switchingPosition(GameRoom room, SwitchingPositionRequestDto requestDto) throws JsonProcessingException {
+        if (requestDto.getSwitchingRequest() == 1) {
+            if (requestDto.getSwitchingSubmit() == 2) {
+                Long switch1 = room.getPlayer1();
+                Long switch2 = room.getPlayer2();
+                room.setPlayer1(switch2);
+                room.setPlayer2(switch1);
+            } else if (requestDto.getSwitchingSubmit() == 3) {
+                Long switch1 = room.getPlayer1();
+                Long switch2 = room.getPlayer3();
+                room.setPlayer1(switch2);
+                room.setPlayer3(switch1);
+            } else if (requestDto.getSwitchingSubmit() == 4) {
+                Long switch1 = room.getPlayer1();
+                Long switch2 = room.getPlayer4();
+                room.setPlayer1(switch2);
+                room.setPlayer4(switch1);
+            }
+        } else if (requestDto.getSwitchingRequest() == 2) {
+            if (requestDto.getSwitchingSubmit() == 3) {
+                Long switch1 = room.getPlayer2();
+                Long switch2 = room.getPlayer3();
+                room.setPlayer2(switch2);
+                room.setPlayer3(switch1);
+            } else if (requestDto.getSwitchingSubmit() == 4) {
+                Long switch1 = room.getPlayer2();
+                Long switch2 = room.getPlayer4();
+                room.setPlayer2(switch2);
+                room.setPlayer4(switch1);
+            }
+        } else if (requestDto.getSwitchingRequest() == 3) {
+            if (requestDto.getSwitchingSubmit() == 4) {
+                Long switch1 = room.getPlayer3();
+                Long switch2 = room.getPlayer4();
+                room.setPlayer3(switch2);
+                room.setPlayer4(switch1);
+            }
+        }
+        return jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
     }
 
 

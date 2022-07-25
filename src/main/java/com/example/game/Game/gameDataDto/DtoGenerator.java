@@ -64,7 +64,7 @@ public class DtoGenerator {
         for (Player player : players) {
             playerDtos.add(playerDtoMaker(player));
         }
-        return new GameStarterResponseDto(playerDtos);
+        return new GameStarterResponseDto(playerDtos, game.getRoomName());
     }
 
     public PreTurnStartCheckResponseDto preTurnStartCheckResponseDtoMaker(Player player, boolean gameOver) throws JsonProcessingException {

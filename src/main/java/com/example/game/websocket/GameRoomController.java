@@ -48,8 +48,8 @@ public class GameRoomController {
     // GameRoom 생성
     @PostMapping(value = "/game/room")
     public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(
-            @RequestBody GameRoomRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return gameRoomService.createGameRoom(requestDto, userDetails);
+            @RequestBody GameRoomRequestDto requestDto) {
+        return gameRoomService.createGameRoom(requestDto);
     }
 
     // ChatRoom roomName으로 검색 조회

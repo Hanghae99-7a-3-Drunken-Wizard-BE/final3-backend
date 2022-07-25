@@ -14,6 +14,7 @@ import com.example.game.Game.turn.ActionTurn;
 import com.example.game.Game.turn.EndGame;
 import com.example.game.Game.turn.EndTurn;
 import com.example.game.Game.turn.PreTurn;
+import com.example.game.dto.request.SwitchingPositionRequestDto;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,7 +34,7 @@ public class GameController {
     private final GameStarter gameStarter;
     private final GameRepository gameRepository;
     private final GameRoomRepository gameRoomRepository;
-    private final UserRepository userRepository;
+    private final GameRoomService gameRoomService;
     private final JsonStringBuilder jsonStringBuilder;
     private final ObjectBuilder objectBuilder;
     private final PreTurn preTurn;
@@ -83,6 +84,10 @@ public class GameController {
         if (GameMessage.MessageType.ENDGAME.equals(message.getType())) {
             System.out.println("여기에 들어오나" + message.getType());
             endGame(message);
+        }
+        if (GameMessage.MessageType.SWITCHING.equals(message.getType())) {
+            System.out.println("여기에 들어오나" + message.getType());
+            switchingPosition(message);
         }
 
     }
@@ -253,6 +258,19 @@ public class GameController {
         gameMessage.setType(GameMessage.MessageType.UPDATE);
         messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
     }
+
+    private void switchingPosition(GameMessage message) throws JsonProcessingException {
+        String roomId = message.getRoomId();
+        GameRoom room = gameRoomRepository.findByRoomId(roomId);
+        SwitchingPositionRequestDto requestDto = objectBuilder.switching(message.getContent());
+        GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(roomId);
+        gameMessage.setSender(message.getSender());
+        gameMessage.setContent(gameRoomService.switchingPosition(room, requestDto));
+        gameMessage.setType(GameMessage.MessageType.UPDATE);
+        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
+    }
+
 
 //
 //    private void leave(GameMessage message) throws JsonProcessingException {
