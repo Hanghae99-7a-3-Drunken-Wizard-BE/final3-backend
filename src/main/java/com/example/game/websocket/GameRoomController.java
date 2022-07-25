@@ -6,6 +6,7 @@ import com.example.game.Game.h2Package.GameRoom;
 import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.dto.response.GameRoomCreateResponseDto;
 import com.example.game.dto.response.GameRoomJoinResponseDto;
+import com.example.game.dto.response.UserDetailResponseDto;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,23 +27,16 @@ public class GameRoomController {
     private final JsonStringBuilder jsonStringBuilder;
     private final DtoGenerator dtoGenerator;
 
-//    // 채팅방 목록 조회 postman 확인용
-//    @GetMapping(value = "/game/rooms")
-//    public ResponseEntity<Page<GameRoom>> readGameRooms(
-//            @RequestParam("page") int page,
-//            @RequestParam("size") int size){
-//
-//        page = page - 1;
-//
-//        return ResponseEntity.ok().body(gameRoomService.getAllGameRooms(page, size));
-//    }
-
-
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
-
     public ResponseEntity<Page<GameRoom>> readGameRooms(@RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok().body(gameRoomService.readGameRooms(page, size));
+    }
+
+    // 전적 불러오기
+    @GetMapping(value = "/userhistory")
+    public ResponseEntity<UserDetailResponseDto> readUserDetail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(new UserDetailResponseDto(userDetails.getUser().getWinCount(), userDetails.getUser().getLoseCount()));
     }
 
     // GameRoom 생성

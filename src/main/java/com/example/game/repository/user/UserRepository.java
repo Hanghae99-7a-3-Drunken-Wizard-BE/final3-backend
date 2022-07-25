@@ -12,5 +12,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findBySessionId(String sessionId);
     List<User> findByRoomId(String roomId);
     List<User> findBySessionIdIsNotNull();
-
 }

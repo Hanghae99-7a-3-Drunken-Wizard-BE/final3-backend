@@ -170,6 +170,7 @@ public class GameRoomService {
         return gameRoomRepository.findByRoomNameContaining(keyword, pageable);
     }
 
+    @Transactional
     public Page<GameRoom> readGameRooms(int page, int size) {
         page -= 1;
         Pageable pageable = PageRequest.of(page, size);

@@ -117,7 +117,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("POST,/login");
         skipPathList.add("POST,/user/signup");
         skipPathList.add("POST,/user/dubcheck");
-        skipPathList.add("GET,/");
+        skipPathList.add("GET,/game/**");
         //카카오 콜백 API 허용
 
         skipPathList.add("GET,/user/kakao/**");
