@@ -34,7 +34,7 @@ public class GameRoomController {
     }
 
     // 전적 불러오기
-    @GetMapping(value = "/userhistory")
+    @GetMapping( "/userhistory")
     public ResponseEntity<UserDetailResponseDto> readUserDetail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(new UserDetailResponseDto(userDetails.getUser().getWinCount(), userDetails.getUser().getLoseCount()));
     }
