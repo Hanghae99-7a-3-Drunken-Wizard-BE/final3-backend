@@ -2,6 +2,7 @@ package com.example.game.Game.gameDataDto;
 
 import com.example.game.Game.gameDataDto.request.*;
 import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
+import com.example.game.dto.request.SwitchingPositionRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
@@ -39,5 +40,10 @@ public class ObjectBuilder {
     public GameStartRequestDto gameStart(String gameStart) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(gameStart, GameStartRequestDto.class);
+    }
+
+    public SwitchingPositionRequestDto switching(String switching) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(switching, SwitchingPositionRequestDto.class);
     }
 }

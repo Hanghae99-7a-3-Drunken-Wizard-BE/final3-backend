@@ -56,7 +56,7 @@ private final GameRoomRepository gameRoomRepository;
             userInLobby.add(userRepository.findById(gameRoom.getPlayer4()).orElse(null));
         }
         if(userInLobby.size() != 4) {return;}
-        Game game = new Game(roomId);
+        Game game = new Game(roomId, gameRoom.getRoomName());
         List<Card> gameDeck = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             gameDeck.add(new BoulderStrike(game));

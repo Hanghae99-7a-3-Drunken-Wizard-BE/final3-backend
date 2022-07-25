@@ -1,16 +1,26 @@
 package com.example.game.websocket;
 
+import com.example.game.Game.gameDataDto.JsonStringBuilder;
+import com.example.game.Game.h2Package.GameRoom;
+import com.example.game.Game.h2Package.Player;
+import com.example.game.Game.repository.GameRepository;
+import com.example.game.Game.repository.GameRoomRepository;
+import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 
 @Slf4j
@@ -19,7 +29,11 @@ import org.springframework.stereotype.Component;
 public class StompHandler implements ChannelInterceptor {
 
     private final UserRepository userRepository;
+    private final PlayerRepository playerRepository;
+    private final GameRoomRepository gameRoomRepository;
+    private final GameRepository gameRepository;
 
+    @SneakyThrows
     @Override
     public synchronized Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
@@ -43,23 +57,28 @@ public class StompHandler implements ChannelInterceptor {
             System.out.println(userRepository.findBySessionIdIsNotNull().size() + "커넥트 후 리스트에 남은 유저 수");
         }
 
-        if(StompCommand.DISCONNECT == accessor.getCommand() &&
-                accessor.getFirstNativeHeader("id") != null) {
+        if(StompCommand.DISCONNECT == accessor.getCommand()) {
             String sessionId = accessor.getSessionId();
             System.out.println("StompCommand.DISCONNECT SessionId : " + sessionId);
-            User user = userRepository.findBySessionId(sessionId);
-            System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
-            user.setSessionId(null);
-            userRepository.save(user);
-            System.out.println(userRepository.findBySessionIdIsNotNull().size() + "Disconnect 후 리스트에 남은 유저 수");
+            if (sessionId != null) {
+                User user = userRepository.findBySessionId(sessionId);
+                System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
+                Long userId = user.getId();
+                System.out.println(user.getUsername() + " 핸들러 디스커넥트에서 조회되는 유저아이디");
+                if (user.getRoomId() != null) {
+                   if (playerRepository.existsById(userId)) {
+                       Player runAwayPlayer = playerRepository.findById(userId).orElseThrow(
+                               ()->new NullPointerException("디스커넥트에서 눌포인트 익셉션"));
+                       runAwayPlayer.setHealth(0);
+                       runAwayPlayer.setDead(true);
+                   }
+                   user.setRoomId(null);
+                }
+                user.setSessionId(null);
+                userRepository.save(user);
+            }
+                System.out.println(userRepository.findBySessionIdIsNotNull().size() + "Disconnect 후 리스트에 남은 유저 수");
         }
-
         return message;
     }
-//    @Override
-//    public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
-//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-//        if(StompCommand.SUBSCRIBE == accessor.getCommand() &&
-//                accessor.getFirstNativeHeader("id") != null)
-//    }
 }
