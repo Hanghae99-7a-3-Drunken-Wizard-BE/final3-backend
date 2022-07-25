@@ -27,7 +27,7 @@ public class ChatController {
             System.out.println(message.getSender() + " 님이 접속하였습니다.");
         }
         else if (ChatMessage.MessageType.LEAVE.equals(message.getType())) {
-            message.setMessage(message.getMessage() + message.getNickname() + " 님이 나가셨습니다.");
+            message.setMessage(message.getMessage());
             message.setConnectedUsers(userService.getConnectedUsers());
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println(message.getSender() + " 님이 접속을 끊었습니다.");

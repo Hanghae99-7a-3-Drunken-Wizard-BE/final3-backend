@@ -32,7 +32,7 @@ public class StompHandler implements ChannelInterceptor {
             System.out.println(accessor.getSessionId());
             Long id = Long.parseLong(stringId);
             System.out.println(id+" Long 변환 완료");
-            System.out.println(sessionId+" : 이건 세션아이디");
+            System.out.println("StompCommand.CONNECT SessionId : " + sessionId);
             User user = userRepository.findById(id).orElseThrow(
                     ()-> new NullPointerException("왜 안되는지 모르겠다")
             );
@@ -42,12 +42,13 @@ public class StompHandler implements ChannelInterceptor {
             System.out.println(user.getSessionId() + " : 세션 아이디 저장 완료?");;
             System.out.println(userRepository.findBySessionIdIsNotNull().size() + "커넥트 후 리스트에 남은 유저 수");
         }
+
         if(StompCommand.DISCONNECT == accessor.getCommand() &&
                 accessor.getFirstNativeHeader("id") != null) {
             String sessionId = accessor.getSessionId();
-            System.out.println(sessionId+" : 이건 세션아이디");
+            System.out.println("StompCommand.DISCONNECT SessionId : " + sessionId);
             User user = userRepository.findBySessionId(sessionId);
-            System.out.println(user.getUsername());
+            System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
             user.setSessionId(null);
             userRepository.save(user);
             System.out.println(userRepository.findBySessionIdIsNotNull().size() + "Disconnect 후 리스트에 남은 유저 수");
