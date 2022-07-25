@@ -1,6 +1,6 @@
 package com.example.game.Game.gameDataDto.response;
 
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Player;
 import lombok.Getter;
 import lombok.Setter;
 

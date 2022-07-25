@@ -18,6 +18,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+application-database.properties
+
 .idea
 *.iws
 *.iml
@@ -35,4 +37,3 @@ out/
 
 ### VS Code ###
 .vscode/
-**/application-database.properties

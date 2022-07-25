@@ -16,6 +16,7 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000");           // 파이어베이스 생성시 한줄더 추가
         config.addAllowedOrigin("http://62442.s3-website.ap-northeast-2.amazonaws.com");
+        config.addAllowedOrigin("http://drunkenwizardtest.s3-website.ap-northeast-2.amazonaws.com/");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("*");

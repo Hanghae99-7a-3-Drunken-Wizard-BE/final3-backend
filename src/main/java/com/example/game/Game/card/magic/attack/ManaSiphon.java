@@ -1,7 +1,7 @@
 package com.example.game.Game.card.magic.attack;
 
-import com.example.game.Game.Game;
-import com.example.game.Game.card.Card;
+import com.example.game.Game.h2Package.Game;
+import com.example.game.Game.h2Package.Card;
 import com.example.game.Game.card.Target;
 
 import static com.example.game.Game.card.CardType.ATTACK;

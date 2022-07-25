@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserResponseDto {
     private Long id;
     private String nickname;
-    private boolean isPlaying;
+    private Boolean isPlaying;
 }

@@ -1,21 +1,18 @@
-package com.example.game.Game;
+package com.example.game.Game.h2Package;
 
 
-import com.example.game.Game.card.Card;
-import com.example.game.Game.player.Player;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "game")
 public class Game {
 
     @Id
@@ -35,17 +32,5 @@ public class Game {
 
     public Game(String roomId) {
         this.roomId = roomId;
-    }
-
-    public void addTograveyard(Card card){
-        card.setLyingPlace(-1L);
-    }
-
-    public void graveyardToDeck (List<Card> graveyard) {
-        Collections.shuffle(graveyard);
-        for(Card card : graveyard) {card.setLyingPlace(this.gameId * -1);}
-    }
-    public void shuffleDeck () {
-        Collections.shuffle(this.deck);
     }
 }

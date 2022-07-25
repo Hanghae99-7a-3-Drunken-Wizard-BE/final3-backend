@@ -1,8 +1,8 @@
 package com.example.game.Game.gameDataDto.response;
 
 import com.example.game.Game.h2Package.Card;
-import com.example.game.Game.player.CharactorClass;
 import com.example.game.Game.h2Package.Player;
+import com.example.game.Game.player.CharactorClass;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PlayerDto {
+public class DiscardResponseDto {
     private Long playerId;
     private String username;
     private boolean team;
@@ -31,8 +31,9 @@ public class PlayerDto {
     public int manaCostModifierDuration;
     private int sleepDuration;
     private List<CardDetailResponseDto> cardsOnHand;
+    private CardDetailResponseDto discard;
 
-    public PlayerDto(Player player, List<Card> cards) throws JsonProcessingException{
+    public DiscardResponseDto(Player player, List<Card> cards, Card discard) throws JsonProcessingException {
         this.playerId = player.getPlayerId();
 
         this.username = player.getUsername();
@@ -72,5 +73,7 @@ public class PlayerDto {
             cardOnHand.add(new CardDetailResponseDto(card));
         }
         this.cardsOnHand = cardOnHand;
+
+        this.discard = new CardDetailResponseDto(discard);
     }
 }

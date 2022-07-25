@@ -1,22 +1,18 @@
 package com.example.game.Game.gameDataDto;
 
-import com.example.game.Game.Game;
-import com.example.game.Game.card.Card;
+import com.example.game.Game.h2Package.Game;
+import com.example.game.Game.h2Package.Card;
 import com.example.game.Game.gameDataDto.response.*;
-import com.example.game.Game.gameDataDto.subDataDto.DiscardDto;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.GameRoom;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.PlayerRepository;
-import com.example.game.dto.response.GameRoomListResponseDto;
 import com.example.game.dto.response.GameRoomResponseDto;
-import com.example.game.model.user.User;
-import com.example.game.websocket.GameRoom;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,14 +28,14 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String poisonDamageCheckResponseDtoJsonBuilder(Player player, boolean gameOver) throws JsonProcessingException {
-        PoisonDamageCheckResponseDto responseDto = dtoGenerator.poisonDamageCheckResponseDtoMaker(player, gameOver);
+    public String preTurnStartCheckResponseDtoJsonBuilder(Player player, boolean gameOver) throws JsonProcessingException {
+        PreTurnStartCheckResponseDto responseDto = dtoGenerator.preTurnStartCheckResponseDtoMaker(player, gameOver);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
 
-    public String cardDrawResponseDtoJsonBuilder(Player player) throws  JsonProcessingException {
-        CardDrawResponseDto responseDto = dtoGenerator.cardDrawResponseDtoMaker(player);
+    public String cardDrawResponseDtoJsonBuilder(int selectable) throws  JsonProcessingException {
+        CardDrawResponseDto responseDto = dtoGenerator.cardDrawResponseDtoMaker(selectable);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
@@ -56,8 +52,8 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String cardUseResponseDtoJsonBuilder(List<Player> players, boolean gameOver) throws JsonProcessingException {
-        CardUseResponseDto responseDto = dtoGenerator.cardUseResponseDtoMaker(players, gameOver);
+    public String cardUseResponseDtoJsonBuilder(List<Player> players, Card card, boolean gameOver) throws JsonProcessingException {
+        CardUseResponseDto responseDto = dtoGenerator.cardUseResponseDtoMaker(players, card, gameOver);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }
@@ -74,14 +70,26 @@ public class JsonStringBuilder  {
         return ow.writeValueAsString(responseDto);
     }
 
-    public String discard(Player player, List<Card> cards) throws JsonProcessingException {
-        PlayerDto playerDto = new PlayerDto(player, cards);
+    public String discard(Player player, List<Card> cards, Card discard) throws JsonProcessingException {
+        DiscardResponseDto responseDto = new DiscardResponseDto(player, cards, discard);
         ObjectWriter ow = new ObjectMapper().writer();
-        return ow.writeValueAsString(playerDto);
+        return ow.writeValueAsString(responseDto);
     }
 
-    public String gameRoomResponseDtoJsonBuilder(String roomId, String roomName, List<User> userList) throws JsonProcessingException {
-        GameRoomResponseDto responseDto = new GameRoomResponseDto(roomId, roomName, userList);
+    public String gameRoomResponseDtoJsonBuilder(GameRoom gameRoom) throws JsonProcessingException {
+        GameRoomResponseDto responseDto = dtoGenerator.gameRoomResponseDtoMaker(gameRoom);
+        ObjectWriter ow = new ObjectMapper().writer();
+        return ow.writeValueAsString(responseDto);
+    }
+
+    public String cardUseFailDtoJsonBuilder(boolean isSuccess) throws JsonProcessingException {
+        CardUseFailDto responseDto = new CardUseFailDto(isSuccess);
+        ObjectWriter ow = new ObjectMapper().writer();
+        return ow.writeValueAsString(responseDto);
+    }
+
+    public String endGameResponseDtoJsonBuilder(Boolean isEnd) throws JsonProcessingException {
+        EndGameResponseDto responseDto = new EndGameResponseDto(isEnd);
         ObjectWriter ow = new ObjectMapper().writer();
         return ow.writeValueAsString(responseDto);
     }

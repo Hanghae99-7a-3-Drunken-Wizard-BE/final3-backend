@@ -68,12 +68,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        /*
-         * 1.
-         * UsernamePasswordAuthenticationFilter 이전에 FormLoginFilter, JwtFilter 를 등록합니다.
-         * FormLoginFilter : 로그인 인증을 실시합니다.
-         * JwtFilter       : 서버에 접근시 JWT 확인 후 인증을 실시합니다.
-         */
         http
                 .addFilter(corsFilter)
                 .addFilterBefore(formLoginFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -115,17 +109,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthFilter jwtFilter() throws Exception {
         List<String> skipPathList = new ArrayList<>();
 
-        skipPathList.add("GET,/**"); // static 폴더 접근 허용
+//        skipPathList.add("GET,/**"); // static 폴더 접근 허용
         // h2-console 허용
         skipPathList.add("GET,/h2-console/**");
         skipPathList.add("POST,/h2-console/**");
+
         // 회원 관리 API 허용
         skipPathList.add("POST,/login");
         skipPathList.add("POST,/user/signup");
         skipPathList.add("POST,/user/dubcheck");
-        skipPathList.add("GET,/");
-        //카카오 콜백 API 허용
+        skipPathList.add("GET,/game/**");
 
+        //카카오 콜백 API 허용
         skipPathList.add("GET,/user/kakao/**");
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(

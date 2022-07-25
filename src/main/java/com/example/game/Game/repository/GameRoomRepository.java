@@ -1,10 +1,9 @@
-package com.example.game.websocket;
+package com.example.game.Game.repository;
 
-
+import com.example.game.Game.h2Package.GameRoom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
 
 public interface GameRoomRepository extends JpaRepository<GameRoom, Long> {
     Page<GameRoom> findAllByOrderByCreatedAtDesc(Pageable pageable);

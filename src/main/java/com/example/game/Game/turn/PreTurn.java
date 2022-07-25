@@ -1,23 +1,21 @@
 package com.example.game.Game.turn;
 
-import com.example.game.Game.Game;
-import com.example.game.Game.card.Card;
+import com.example.game.Game.h2Package.Game;
+import com.example.game.Game.h2Package.Card;
 import com.example.game.Game.card.CardType;
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
 import com.example.game.Game.gameDataDto.request.CardRequestDto;
 import com.example.game.Game.gameDataDto.request.CardSelectRequestDto;
 import com.example.game.Game.player.CharactorClass;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.CardRepository;
 import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.PlayerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -30,65 +28,58 @@ public class PreTurn {
     private final GameRepository gameRepository;
 
 
-    @Transactional
+    @Transactional("gameTransactionManager")
     public String preturnStartCheck(Long playerId) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         player.applyPoison();
+        player.applySleepRegeneration();
         List<Player> playerTeam = playerRepository.findByGameAndTeam(player.getGame(), player.isTeam());
         boolean gameOver = (playerTeam.get(0).isDead() && playerTeam.get(1).isDead());
-        return jsonStringBuilder.poisonDamageCheckResponseDtoJsonBuilder(player, gameOver);
+        return jsonStringBuilder.preTurnStartCheckResponseDtoJsonBuilder(player, gameOver);
     }
 
 
-    @Transactional
+    @Transactional("gameTransactionManager")
     public String cardDrawInitiator(Long playerId) throws JsonProcessingException {
-        Player player = playerRepository.findById(playerId).orElseThrow(
-                () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
-        Game game = player.getGame();
-        List<Card> deck = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game);
         List<Card> cardOnHand = cardRepository.findByLyingPlace(playerId);
-        if (deck.size() < 3) {shuffleGraveyardToDeck(game);}
-        List<Card> cards = new ArrayList<>();
         if (cardOnHand.size() < 6) {
-            if (player.getCharactorClass().equals(CharactorClass.FARSEER)) {
-
-                for (int i = 0; i < 3; i++) {
-                    cards.add(deck.get(i));
-                }
-            } else {
-                for (int i = 0; i < 2; i++) {
-                    cards.add(deck.get(i));
-                }
-            }
-            return jsonStringBuilder.cardDrawResponseDtoJsonBuilder(player);
+            int selectable = Math.min(6 - cardOnHand.size(), 2);
+            return jsonStringBuilder.cardDrawResponseDtoJsonBuilder(selectable);
         } else {
             return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder(cardOnHand);
         }
     }
 
-    @Transactional
+    @Transactional("gameTransactionManager")
     public String cardDrawResponse(Long playerId,CardSelectRequestDto requestDto) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new NullPointerException("해당 플레이어가 존재하지 않습니다"));
         Game game = gameRepository.findByRoomId(player.getGame().getRoomId());
-        List<Card> cardsOnHand = cardRepository.findByLyingPlaceAndGame(playerId, game);
 
-        if (requestDto.getSelectedCards() == null) {
+        if (requestDto == null) {
+            System.out.println("requestDto 없음");
+        } else if (requestDto.getSelectedCards() == null) {
+            System.out.println("selectedCards 안들어옴");
         } else if (requestDto.getSelectedCards().size() == 1 && player.getCharactorClass() != CharactorClass.FARSEER) {
             Card card = cardRepository.findByCardId(requestDto.getSelectedCards().get(0).getCardId());
+            System.out.println("핸드에 카드 추가중 " + card.getCardId());
             player.addOnHand(card);
+            System.out.println(card.getLyingPlace());
         } else if(requestDto.getSelectedCards().size() == 2){
             List<CardRequestDto> selectedCards = requestDto.getSelectedCards();
             for (CardRequestDto selectedCard : selectedCards) {
                 Card card = cardRepository.findByCardId(selectedCard.getCardId());
+                System.out.println("핸드에 카드 추가중 " + card.getCardId());
                 player.addOnHand(card);
+                System.out.println(card.getLyingPlace());
             }
         }
         boolean drawSuccess;
-        Card additionalCard = game.getDeck().get(0);
-        if(cardsOnHand.size() >= 6) {
+        Card additionalCard = cardRepository.findByLyingPlaceAndGameOrderByCardOrderAsc(0,game).get(0);
+        if(cardRepository.findByLyingPlace(playerId).size() >= 6) {
             List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
+            System.out.println("최종 카드리스트 갯수 " + cardList.size());
             return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(cardList, false);}
         else{
             if (
@@ -98,41 +89,37 @@ public class PreTurn {
                 if (player.getCharactorClass().equals(CharactorClass.INVOKER)
                         && additionalCard.getCardType().equals(CardType.ATTACK)){
                     player.addOnHand(additionalCard);
+                    System.out.println(additionalCard.getLyingPlace() + " 추가 드로우 성공위치");
                     drawSuccess = true;}
                 else if (player.getCharactorClass().equals(CharactorClass.ENCHANTER)
                         && additionalCard.getCardType().equals(CardType.ENCHANTMENT)){
                     player.addOnHand(additionalCard);
+                    System.out.println(additionalCard.getLyingPlace() + " 추가 드로우 성공위치");
                     drawSuccess = true;}
                 else if (player.getCharactorClass().equals(CharactorClass.WAROCK)
                         && additionalCard.getCardType().equals(CardType.CURSE)){
                     player.addOnHand(additionalCard);
+                    System.out.println(additionalCard.getLyingPlace() + " 추가 드로우 성공위치");
                     drawSuccess = true;}
                 else {drawSuccess = false;
-                game.addTograveyard(additionalCard);
+                    additionalCard.addGraveyard();
+                    System.out.println(additionalCard.getLyingPlace() + " 추가 드로우 실패위치");
                 }
                 List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
+                System.out.println("최종 카드리스트 갯수 " + cardList.size());
                 return jsonStringBuilder.additionalDrawResponseDtoJsonBuilder(cardList, drawSuccess);
             } else {
                 List<Card> cardList = cardRepository.findByLyingPlace(player.getPlayerId());
+                System.out.println("최종 카드리스트 갯수 " + cardList.size());
                 return jsonStringBuilder.noMoreDrawResponseDtoJsonBuilder(cardList);
             }}
     }
 
+    @Transactional("gameTransactionManager")
     public String actionTurnCheck(Long playerId) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("해당 유저가 존재하지 않습니다"));
         return jsonStringBuilder.preTurnCheckResponseDtoJsonBuilder(player);
-    }
-
-    private void shuffleGraveyardToDeck(Game game) {
-        List<Card> graveyard = cardRepository.findByLyingPlaceAndGame(-1L, game);
-        game.graveyardToDeck(graveyard);
-        List<Card> deck = cardRepository.findByGame(game);
-        Collections.shuffle(deck);
-        for (int i = 0; i < deck.size(); i++) {
-            deck.get(i).setCardOrder(i);
-        }
-        cardRepository.saveAll(deck);
     }
 }
 

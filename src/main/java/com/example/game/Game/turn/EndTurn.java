@@ -1,13 +1,12 @@
 package com.example.game.Game.turn;
 
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
-import com.example.game.Game.player.Player;
+import com.example.game.Game.h2Package.Player;
 import com.example.game.Game.repository.PlayerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -15,7 +14,7 @@ public class EndTurn {
     private final PlayerRepository playerRepository;
     private final JsonStringBuilder jsonStringBuilder;
 
-    @Transactional
+    @Transactional("gameTransactionManager")
     public String EndTurnCheck(Long playerId) throws JsonProcessingException {
         Player player = playerRepository.findById(playerId).orElseThrow(
                 ()->new NullPointerException("플레이어 없음")

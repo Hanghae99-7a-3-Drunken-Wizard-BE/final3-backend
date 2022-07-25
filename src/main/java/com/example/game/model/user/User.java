@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "USER_PLAYER")
+@Table(name = "user_player")
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -33,6 +33,12 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column
+    private int winCount;
+
+    @Column
+    private int loseCount;
+
     @Column(unique = true)
     private Long kakaoId;
 
@@ -43,22 +49,26 @@ public class User {
     private String sessionId;
 
     @Column
-    private boolean isPlaying;
+    private Boolean isPlaying;
 
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.nickname = requestDto.getNickname();
-        this. email = requestDto.getEmail();
+        this.email = requestDto.getEmail();
+        this.winCount = 0;
+        this.loseCount = 0;
     }
 
     // KakaoService 생성자
-    public User(String username, String nickname, String password, String email, Long kakaoId){
+    public User(String username, String nickname, String password, String email, Long kakaoId) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.kakaoId = kakaoId;
+        this.winCount = 0;
+        this.loseCount = 0;
     }
 
     // testRunner 생성자
@@ -67,6 +77,7 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.email = email;
+        this.winCount = 0;
+        this.loseCount = 0;
     }
-
 }

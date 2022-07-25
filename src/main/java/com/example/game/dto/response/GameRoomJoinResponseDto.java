@@ -6,9 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GameRoomJoinResponseDto {
-    private boolean isSuccess;
+    private boolean joinSuccess;
+    private String roomId;
 
-    public GameRoomJoinResponseDto(boolean isSuccess) {
-        this.isSuccess = isSuccess;
+    public GameRoomJoinResponseDto(boolean joinSuccess, String roomId) {
+        this.joinSuccess = joinSuccess;
+        this.roomId = roomId;
     }
 }

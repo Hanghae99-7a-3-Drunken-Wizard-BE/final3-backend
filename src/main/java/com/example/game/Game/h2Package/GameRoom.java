@@ -1,8 +1,9 @@
-package com.example.game.websocket;
+package com.example.game.Game.h2Package;
 
 import com.example.game.model.Timestamped;
 import com.example.game.model.user.User;
 import com.example.game.security.UserDetailsImpl;
+import com.example.game.websocket.GameRoomRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@Table(name = "gameroom")
 public class GameRoom extends Timestamped implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,7 +27,18 @@ public class GameRoom extends Timestamped implements Serializable {
     @Column
     private String roomName;
 
-    @Builder
+    @Column
+    private Long player1;
+
+    @Column
+    private Long player2;
+
+    @Column
+    private Long player3;
+
+    @Column
+    private Long player4;
+
     public GameRoom(String roomId, String roomName) {
         this.roomId = roomId;
         this.roomName = roomName;

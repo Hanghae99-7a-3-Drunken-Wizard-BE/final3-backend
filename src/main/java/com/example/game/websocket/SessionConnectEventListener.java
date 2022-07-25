@@ -75,12 +75,10 @@ public class SessionConnectEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         User user = userRepository.findBySessionId(headerAccessor.getSessionId());
-        ChatMessage chatMessage = new ChatMessage();
         if (user != null) {
             user.setRoomId(null);
             user.setSessionId(null);
             userRepository.save(user);
-            chatMessage.setType(ChatMessage.MessageType.LEAVE);
         }
         System.out.println("웹소켓 연결해제가 감지됨");
     }
