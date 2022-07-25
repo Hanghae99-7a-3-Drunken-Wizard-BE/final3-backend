@@ -9,6 +9,7 @@ import com.example.game.security.jwt.JwtDecoder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
@@ -113,14 +114,7 @@ public class SessionSubscribeEventListener {
         System.out.println(targetDestination + " SubscribeAtChatEvent 구독이벤트 구독주소 추적");
         if (targetDestination.length() == 11) {
             User user = userRepository.findBySessionId(headers.getSessionId());
-//            ChatMessage chatMessage = new ChatMessage();
-            if (user != null) {
-                user.setIsPlaying(false);
-                userRepository.save(user);
-//                chatMessage.setType(ChatMessage.MessageType.JOIN);
-            }
             System.out.println("채팅에 구독중");
-
             if (user != null) {
                 String roomId = user.getRoomId();
                 if (roomId != null) {
@@ -172,38 +166,5 @@ public class SessionSubscribeEventListener {
             }
         }
     }
-
-    @EventListener
-    public void handleSubscribeToGameEvent(SessionSubscribeEvent event) {
-        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-        String targetDestination = headers.getDestination();
-        System.out.println(targetDestination + " SubscribeToGameEvent 구독이벤트 구독주소 추적");
-        if (targetDestination.length() == 47) {
-            User user = userRepository.findBySessionId(headers.getSessionId());
-//            ChatMessage chatMessage = new ChatMessage();
-            if (user != null) {
-                user.setIsPlaying(true);
-                userRepository.save(user);
-//                chatMessage.setType(ChatMessage.MessageType.LEAVE);
-            }
-            System.out.println("로비에서 구독 취소 후 게임룸 구독");
-        }
-    }
-
-        // SessionUnsubscribe로 유저 목록에서 삭제
-//    @EventListener
-//    public ResponseEntity handleUnsubscribeEvent(SessionUnsubscribeEvent event) {
-//        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-//        String nickName = jwtDecoder.decodeUsername(headers.getFirstNativeHeader("Authorization"));
-//
-//        if (nickName != null) {
-//            subUserList.remove(nickName);
-//            System.out.println(subUserList);
-//        }
-//
-//        System.out.println(subUserList);
-//
-//        return ResponseEntity.ok().body(subUserList + "구독 리스트에서 " + nickName + " 유저를 삭제했습니다." + subUserList.size() + " 명 접속 중");
-//    }
 }
 
