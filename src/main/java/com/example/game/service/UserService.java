@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +27,12 @@ public class UserService {
             throw new IllegalArgumentException("존재하는 아이디입니다.");
         }
 
+        Random imageNum = new Random();
+
         User user = new User(requestDto);
         String password = passwordEncoder.encode(requestDto.getPassword());
         user.setPassword(password);
+        user.setImageNum(imageNum.nextInt(5));
         userRepository.save(user);
     }
 
