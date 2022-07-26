@@ -6,7 +6,7 @@ import com.example.game.Game.h2Package.GameRoom;
 import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.dto.response.GameRoomCreateResponseDto;
 import com.example.game.dto.response.GameRoomJoinResponseDto;
-import com.example.game.dto.response.UserDetailResponseDto;
+import com.example.game.dto.response.UserWinRateResponseDto;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,8 +35,8 @@ public class GameRoomController {
 
     // 전적 불러오기
     @GetMapping( "/userhistory")
-    public ResponseEntity<UserDetailResponseDto> readUserDetail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok().body(new UserDetailResponseDto(userDetails.getUser().getWinCount(), userDetails.getUser().getLoseCount()));
+    public ResponseEntity<UserWinRateResponseDto> readUserDetail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(new UserWinRateResponseDto(userDetails.getUser().getWinCount(), userDetails.getUser().getLoseCount()));
     }
 
     // GameRoom 생성
