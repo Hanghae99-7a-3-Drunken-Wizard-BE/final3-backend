@@ -200,7 +200,12 @@ public class GameRoomService {
                 room.setPlayer4(switch1);
             }
         } else if (requestDto.getSwitchingRequest() == 2) {
-            if (requestDto.getSwitchingSubmit() == 3) {
+            if (requestDto.getSwitchingSubmit() == 1) {
+                Long switch1 = room.getPlayer2();
+                Long switch2 = room.getPlayer1();
+                room.setPlayer2(switch2);
+                room.setPlayer1(switch1);
+            } else if (requestDto.getSwitchingSubmit() == 3) {
                 Long switch1 = room.getPlayer2();
                 Long switch2 = room.getPlayer3();
                 room.setPlayer2(switch2);
@@ -212,7 +217,17 @@ public class GameRoomService {
                 room.setPlayer4(switch1);
             }
         } else if (requestDto.getSwitchingRequest() == 3) {
-            if (requestDto.getSwitchingSubmit() == 4) {
+            if (requestDto.getSwitchingSubmit() == 1) {
+                Long switch1 = room.getPlayer3();
+                Long switch2 = room.getPlayer1();
+                room.setPlayer3(switch2);
+                room.setPlayer1(switch1);
+            } else if (requestDto.getSwitchingSubmit() == 2) {
+                Long switch1 = room.getPlayer3();
+                Long switch2 = room.getPlayer2();
+                room.setPlayer3(switch2);
+                room.setPlayer2(switch1);
+            } else if (requestDto.getSwitchingSubmit() == 4) {
                 Long switch1 = room.getPlayer3();
                 Long switch2 = room.getPlayer4();
                 room.setPlayer3(switch2);
