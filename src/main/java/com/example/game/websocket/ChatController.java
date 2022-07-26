@@ -19,8 +19,7 @@ public class ChatController {
 
     @MessageMapping("/chat/send")
     public void message(ChatMessage message) {
-
-        if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
+        if (ChatMessage.MessageType.JOIN.equals(message.getType()) && message.getConnectedUsers() != null) {
             message.setMessage(message.getMessage());
             message.setConnectedUsers(userService.getConnectedUsers());
             sendingOperations.convertAndSend("/sub/public", message);
@@ -32,9 +31,9 @@ public class ChatController {
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println(message.getSender() + " 님이 접속을 끊었습니다.");
         }
-        else if (ChatMessage.MessageType.CHAT.equals(message.getType())){
+        else {
             message.setMessage(message.getMessage());
-            message.setConnectedUsers(null);
+            message.setConnectedUsers(userService.getConnectedUsers());
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println("Chat Message : " + message.getMessage());
         }

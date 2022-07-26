@@ -5,12 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDetailResponseDto {
+public class UserWinRateResponseDto {
     int winCount;
     int loseCount;
     double winRate;
 
-    public UserDetailResponseDto(int winCount, int loseCount) {
+    public UserWinRateResponseDto(int winCount, int loseCount) {
         this.winCount = winCount;
         this.loseCount = loseCount;
         this.winRate = Math.round(setWinRate(winCount, loseCount)*100)/100.0;
