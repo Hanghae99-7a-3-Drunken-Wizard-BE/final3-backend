@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -139,7 +140,10 @@ public class KakaoUserService {
             // email: kakao email
             String email = kakaoUserInfo.getEmail();
 
-            kakaoUser = new User(username ,nickname, encodedPassword, email, kakaoId);
+            // imageNum
+            Random imageNum = new Random();
+
+            kakaoUser = new User(username ,nickname, encodedPassword, email, kakaoId, imageNum.nextInt(5));
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
@@ -161,7 +165,7 @@ public class KakaoUserService {
 
         response.setContentType("application/json; charset=utf-8");
         User user = userDetails1.getUser();
-        LoginResponseDto loginResponseDto = new LoginResponseDto(user.getUsername(), user.getNickname(), user.getId());
+        LoginResponseDto loginResponseDto = new LoginResponseDto(user.getUsername(), user.getNickname(), user.getId(), user.getImageNum());
         String result = mapper.writeValueAsString(loginResponseDto);
         response.getWriter().write(result);
 

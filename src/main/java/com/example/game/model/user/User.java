@@ -64,7 +64,7 @@ public class User {
     }
 
     // KakaoService 생성자
-    public User(String username, String nickname, String password, String email, Long kakaoId) {
+    public User(String username, String nickname, String password, String email, Long kakaoId, int imageNum) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
@@ -72,6 +72,7 @@ public class User {
         this.kakaoId = kakaoId;
         this.winCount = 0;
         this.loseCount = 0;
+        this.imageNum = 0;
     }
 
     // testRunner 생성자
