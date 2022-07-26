@@ -48,8 +48,6 @@ public class User {
     @Column
     private String sessionId;
 
-    @Column
-    private Boolean isPlaying;
 
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
