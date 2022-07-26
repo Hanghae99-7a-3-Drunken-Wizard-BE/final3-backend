@@ -34,7 +34,7 @@ public class GameRoomController {
     }
 
     // 전적 불러오기
-    @GetMapping( "/userhistory")
+    @PostMapping( "/userhistory")
     public ResponseEntity<UserWinRateResponseDto> readUserDetail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(new UserWinRateResponseDto(userDetails.getUser().getWinCount(), userDetails.getUser().getLoseCount()));
     }
@@ -42,8 +42,8 @@ public class GameRoomController {
     // GameRoom 생성
     @PostMapping(value = "/game/room")
     public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(
-            @RequestBody GameRoomRequestDto requestDto) {
-        return gameRoomService.createGameRoom(requestDto);
+            @RequestBody GameRoomRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
+        return gameRoomService.createGameRoom(requestDto, userDetails);
     }
 
     // ChatRoom roomName으로 검색 조회
@@ -63,7 +63,8 @@ public class GameRoomController {
     public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(
             @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws JsonProcessingException {
-        return gameRoomService.joinGameRoom(roomId,userDetails);
+        System.out.println("포스트매핑 조인 메서드 작동중");
+        return gameRoomService.joinGameRoom(roomId,userDetails.getUser().getId());
     }
 
     @PostMapping("/game/{roomId}/leave")

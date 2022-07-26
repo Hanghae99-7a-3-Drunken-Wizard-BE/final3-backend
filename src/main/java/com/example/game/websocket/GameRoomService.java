@@ -49,7 +49,8 @@ public class GameRoomService {
         return gameRoomRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
-    public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto) {
+    public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(GameRoomRequestDto requestDto, UserDetailsImpl userDetails) throws JsonProcessingException {
+        System.out.println("게임서비스 createRoom 메서드 ");
         GameRoom room = new GameRoom(UUID.randomUUID().toString(), requestDto.getRoomName());
         gameRoomRepository.save(room);
         GameRoomCreateResponseDto responseDto = new GameRoomCreateResponseDto(room.getRoomId(), requestDto.getRoomName());
@@ -58,9 +59,8 @@ public class GameRoomService {
     }
 
     @Transactional("gameTransactionManager")
-    public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(String roomId, UserDetailsImpl userDetails) throws JsonProcessingException{
-        GameRoom room = gameRoomRepository.findByRoomId(roomId);
-        Long id = userDetails.getUser().getId();
+    public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(String roomId, Long id) throws JsonProcessingException{
+        GameRoom room = gameRoomRepository.findByRoomId(roomId);;
         if (
                 room.getPlayer1() != null && room.getPlayer2() != null && room.getPlayer3() != null && room.getPlayer4() != null
         ) {
@@ -100,11 +100,11 @@ public class GameRoomService {
         User user = userRepository.findById(id).orElseThrow(
                 ()-> new NullPointerException("유저 없음"));
         user.setRoomId(roomId);
-        userRepository.save(user);
         GameRoomJoinResponseDto responseDto = new GameRoomJoinResponseDto(true, roomId);
 
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
         GameMessage gameMessage = new GameMessage();
+        gameMessage.setSender(id);
         gameMessage.setRoomId(roomId);
         gameMessage.setContent(userListMessage);
         gameMessage.setType(GameMessage.MessageType.UPDATE);

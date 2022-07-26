@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -95,6 +96,10 @@ public class GameController {
     @MessageMapping("/wroom/{roomId}")
     public void roomMessageProxy(@Payload GameMessage message) throws JsonProcessingException {
         System.out.println("여기에 들어오나 메시지매핑 메서드");
+        if (GameMessage.MessageType.JOIN.equals(message.getType())) {
+            System.out.println("여기에 들어오나" + message.getType());
+            join(message);
+        }
 
         if (GameMessage.MessageType.UPDATE.equals(message.getType())) {
             System.out.println("여기에 들어오나" + message.getType());
@@ -104,6 +109,19 @@ public class GameController {
             System.out.println("여기에 들어오나" + message.getType());
             ready(message);
         }
+    }
+
+    private void join(GameMessage message) throws JsonProcessingException {
+        String roomId = message.getRoomId();
+        GameRoom room = gameRoomRepository.findByRoomId(roomId);
+
+        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
+        GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(roomId);
+        gameMessage.setSender(message.getSender());
+        gameMessage.setContent(userListMessage);
+        gameMessage.setType(GameMessage.MessageType.UPDATE);
+        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
     }
 
     public void gameStarter(GameMessage message) throws JsonProcessingException {

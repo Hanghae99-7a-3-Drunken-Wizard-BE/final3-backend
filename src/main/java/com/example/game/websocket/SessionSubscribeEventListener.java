@@ -70,18 +70,17 @@ public class SessionSubscribeEventListener {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String targetDestination = headers.getDestination();
         System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
-        if (targetDestination.equals("/game/**")) {
-            String roomId = targetDestination.substring(6, 42);
+        if (targetDestination.equals("/sub/wroom/**")) {
+            String roomId = targetDestination.substring(12, 48);
             System.out.println(roomId + " 구독이벤트 내 룸아이디 조회");
             GameRoom room = gameRoomRepository.findByRoomId(roomId);
-            List<User> userList = userRepository.findByRoomId(roomId);
             String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(
                     room);
             GameMessage message = new GameMessage();
             message.setRoomId(roomId);
             message.setContent(userListMessage);
-            message.setType(GameMessage.MessageType.JOIN);
-            messagingTemplate.convertAndSend("/sub/game/" + roomId, message);
+            message.setType(GameMessage.MessageType.UPDATE);
+            messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
         }
     }
 
@@ -90,7 +89,7 @@ public class SessionSubscribeEventListener {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String targetDestination = headers.getDestination();
         System.out.println(targetDestination + " 구독이벤트 구독주소 추적");
-        if (targetDestination.equals("/chat/**")) {
+        if (targetDestination.equals("/sub/public")) {
             User user = userRepository.findBySessionId(headers.getSessionId());
             System.out.println("채팅에 구독중");
             if (user != null) {

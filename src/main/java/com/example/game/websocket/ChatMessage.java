@@ -19,9 +19,7 @@ public class ChatMessage {
 //    private String roomId;
     private Long sender;
     private String nickname;
-
     private MessageType type;
-
     private List<UserResponseDto> connectedUsers;
 
     public enum MessageType {

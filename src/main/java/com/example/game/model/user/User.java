@@ -48,15 +48,9 @@ public class User {
     @Column
     private String sessionId;
 
-<<<<<<< HEAD
-    @Column
-    private Boolean isPlaying;
-
     @Column
     private int imageNum;
 
-=======
->>>>>>> 655450e3cc79eeb6c5e77611373add1fc567ba37
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();

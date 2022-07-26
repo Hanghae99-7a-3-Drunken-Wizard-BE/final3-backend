@@ -62,20 +62,22 @@ public class StompHandler implements ChannelInterceptor {
             System.out.println("StompCommand.DISCONNECT SessionId : " + sessionId);
             if (sessionId != null) {
                 User user = userRepository.findBySessionId(sessionId);
-                System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
-                Long userId = user.getId();
-                System.out.println(user.getUsername() + " 핸들러 디스커넥트에서 조회되는 유저아이디");
-                if (user.getRoomId() != null) {
-                   if (playerRepository.existsById(userId)) {
-                       Player runAwayPlayer = playerRepository.findById(userId).orElseThrow(
-                               ()->new NullPointerException("디스커넥트에서 눌포인트 익셉션"));
-                       runAwayPlayer.setHealth(0);
-                       runAwayPlayer.setDead(true);
-                   }
-                   user.setRoomId(null);
+                if (user != null) {
+                    System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
+                    Long userId = user.getId();
+                    System.out.println(user.getUsername() + " 핸들러 디스커넥트에서 조회되는 유저아이디");
+                    if (user.getRoomId() != null) {
+                       if (playerRepository.existsById(userId)) {
+                           Player runAwayPlayer = playerRepository.findById(userId).orElseThrow(
+                                   ()->new NullPointerException("디스커넥트에서 눌포인트 익셉션"));
+                           runAwayPlayer.setHealth(0);
+                           runAwayPlayer.setDead(true);
+                       }
+                       user.setRoomId(null);
+                    }
+                    user.setSessionId(null);
+                    userRepository.save(user);
                 }
-                user.setSessionId(null);
-                userRepository.save(user);
             }
                 System.out.println(userRepository.findBySessionIdIsNotNull().size() + "Disconnect 후 리스트에 남은 유저 수");
         }
