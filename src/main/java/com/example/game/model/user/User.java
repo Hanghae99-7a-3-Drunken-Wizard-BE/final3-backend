@@ -51,6 +51,9 @@ public class User {
     @Column
     private Boolean isPlaying;
 
+    @Column
+    private int imageNum;
+
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
