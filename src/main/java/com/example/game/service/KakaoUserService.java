@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -42,8 +43,6 @@ public class KakaoUserService {
     public void kakaoLogin(String code, HttpServletResponse response) throws IOException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code);
-        System.out.println("param 코드 " + code);
-        System.out.println("엑세스 토큰 변환 되는지 " + accessToken);
 
         // 2. 토큰으로 카카오 API 호출
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
@@ -90,7 +89,6 @@ public class KakaoUserService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-        System.out.println("헤더까지는 받음 헤더 : " + headers);
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
@@ -101,7 +99,6 @@ public class KakaoUserService {
                 kakaoUserInfoRequest,
                 String.class
         );
-        System.out.println("유저정보 받는 post는 통과함");
 
         String responseBody = response.getBody();
 
@@ -116,13 +113,11 @@ public class KakaoUserService {
                 .get("email") != null) ? jsonNode.get("kakao_account")
                 .get("email").asText() : null;
 
-        System.out.println("카카오 사용자 정보 : " + id + ", " + nickname + ", " + email);
         return new KakaoUserInfoDto(id, nickname, email);
     }
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        System.out.println("카톡유저확인 클래스 들어옴");
         Long kakaoId = kakaoUserInfo.getId();
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
                 .orElse(null);
@@ -139,7 +134,10 @@ public class KakaoUserService {
             // email: kakao email
             String email = kakaoUserInfo.getEmail();
 
-            kakaoUser = new User(username ,nickname, encodedPassword, email, kakaoId);
+            Random imageNum = new Random();
+
+            kakaoUser = new User(username ,nickname, encodedPassword, email, kakaoId, imageNum.nextInt(5));
+            System.out.println("확인 " + kakaoUser);
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
@@ -161,7 +159,7 @@ public class KakaoUserService {
 
         response.setContentType("application/json; charset=utf-8");
         User user = userDetails1.getUser();
-        LoginResponseDto loginResponseDto = new LoginResponseDto(user.getUsername(), user.getNickname(), user.getId());
+        LoginResponseDto loginResponseDto = new LoginResponseDto(user.getUsername(), user.getNickname(), user.getId(), user.getImageNum());
         String result = mapper.writeValueAsString(loginResponseDto);
         response.getWriter().write(result);
 
