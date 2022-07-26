@@ -49,9 +49,6 @@ public class User {
     private String sessionId;
 
     @Column
-    private Boolean isPlaying;
-
-    @Column
     private int imageNum;
 
     public User(SignupRequestDto requestDto) {
