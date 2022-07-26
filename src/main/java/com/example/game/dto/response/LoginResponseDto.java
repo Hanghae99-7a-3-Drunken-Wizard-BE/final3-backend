@@ -7,9 +7,9 @@ public class LoginResponseDto {
     private String username;
     private String nickname;
     private Long id;
-    private Integer imageNum;
+    private int imageNum;
 
-    public LoginResponseDto(String username, String nickname, Long id, Integer imageNum) {
+    public LoginResponseDto(String username, String nickname, Long id, int imageNum) {
         this.nickname = nickname;
         this.username = username;
         this.id = id;
