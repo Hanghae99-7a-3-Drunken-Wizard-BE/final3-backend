@@ -34,10 +34,10 @@ public class User {
     private String email;
 
     @Column
-    private Integer winCount;
+    private int winCount;
 
     @Column
-    private Integer loseCount;
+    private int loseCount;
 
     @Column(unique = true)
     private Long kakaoId;
@@ -52,7 +52,7 @@ public class User {
     private Boolean isPlaying;
 
     @Column
-    private Integer imageNum;
+    private int imageNum;
 
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
@@ -65,7 +65,7 @@ public class User {
     }
 
     // KakaoService 생성자
-    public User(String username, String nickname, String password, String email, Long kakaoId, Integer imageNum) {
+    public User(String username, String nickname, String password, String email, Long kakaoId, int imageNum) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;

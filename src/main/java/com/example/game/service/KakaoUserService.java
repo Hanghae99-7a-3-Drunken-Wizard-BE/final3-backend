@@ -137,7 +137,6 @@ public class KakaoUserService {
             Random imageNum = new Random();
 
             kakaoUser = new User(username ,nickname, encodedPassword, email, kakaoId, imageNum.nextInt(5));
-            System.out.println("확인 " + kakaoUser);
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
