@@ -14,12 +14,14 @@ public class GameRoomUserResponseDto {
     private Boolean ready;
     private Integer winCount;
     private  Integer loseCount;
+    private Integer imageNum;
 
-    public GameRoomUserResponseDto (Long id, String nickname, boolean ready, int winCount, int loseCount) {
+    public GameRoomUserResponseDto (Long id, String nickname, boolean ready, int winCount, int loseCount, int imageNum) {
         this.id = id;
         this.nickname = nickname;
         this.ready = ready;
         this.winCount = winCount;
         this.loseCount = loseCount;
+        this.imageNum = imageNum;
     }
 }

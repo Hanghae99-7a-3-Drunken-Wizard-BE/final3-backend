@@ -2,8 +2,12 @@ package com.example.game.websocket;
 
 
 import com.example.game.Game.gameDataDto.JsonStringBuilder;
+import com.example.game.Game.h2Package.Game;
 import com.example.game.Game.h2Package.GameRoom;
+import com.example.game.Game.h2Package.Player;
+import com.example.game.Game.repository.GameRepository;
 import com.example.game.Game.repository.GameRoomRepository;
+import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.model.user.User;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.jwt.JwtDecoder;
@@ -26,10 +30,12 @@ import java.util.Objects;
 public class SessionConnectEventListener {
 
     private final UserRepository userRepository;
+    private final PlayerRepository playerRepository;
     private final GameRoomRepository gameRoomRepository;
     private final JsonStringBuilder jsonStringBuilder;
     private final SimpMessageSendingOperations sendingOperations;
     private final UserService userService;
+    private final GameRepository gameRepository;
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
@@ -84,62 +90,75 @@ public class SessionConnectEventListener {
         if (headerAccessor.getSessionId() != null) {
             User user = userRepository.findBySessionId(headerAccessor.getSessionId());
             if (user != null) {
+                if (playerRepository.existsById(user.getId())) {
+                    Player player = playerRepository.findById(user.getId()).orElseThrow(()->new NullPointerException("플레이어 없음"));
+                    Game game = player.getGame();
+                    player.setHealth(0);
+                    player.setDead(true);
+                    playerRepository.save(player);
+                    List<Player> players = playerRepository.findByGame(game);
+                        if (players.get(0).isDead() && players.get(1).isDead() && players.get(2).isDead() && players.get(3).isDead()) {
+                            gameRepository.delete(game);
+                        }
+                }
                 System.out.println("DisconnectListener에서 SessionId로 찾은 유저 : " + user);
                 System.out.println("디스커넥트 리스너에서 조회된 유저 " + user.getUsername());
                 String roomId = user.getRoomId();
                 if (roomId != null) {
                     Long userId = user.getId();
                     GameRoom gameRoom = gameRoomRepository.findByRoomId(user.getRoomId());
-                    if (gameRoom.getPlayer1() != null) {
-                        if (
-                                Objects.equals(gameRoom.getPlayer1(), userId) ||
-                                        Objects.equals(gameRoom.getPlayer1() * -1, userId)
-                        ) {
-                            gameRoom.setPlayer1(null);
-                            System.out.println("플레이어1 슬롯에서 제거됨");
+                    if (gameRoom != null) {
+                        if (gameRoom.getPlayer1() != null) {
+                            if (
+                                    Objects.equals(gameRoom.getPlayer1(), userId) ||
+                                            Objects.equals(gameRoom.getPlayer1() * -1, userId)
+                            ) {
+                                gameRoom.setPlayer1(null);
+                                System.out.println("플레이어1 슬롯에서 제거됨");
+                            }
                         }
-                    }
-                    if (gameRoom.getPlayer2() != null) {
-                        if (
-                                Objects.equals(gameRoom.getPlayer2(), userId) ||
-                                        Objects.equals(gameRoom.getPlayer2() * -1, userId)
-                        ) {
-                            gameRoom.setPlayer2(null);
-                            System.out.println("플레이어2 슬롯에서 제거됨");
+                        if (gameRoom.getPlayer2() != null) {
+                            if (
+                                    Objects.equals(gameRoom.getPlayer2(), userId) ||
+                                            Objects.equals(gameRoom.getPlayer2() * -1, userId)
+                            ) {
+                                gameRoom.setPlayer2(null);
+                                System.out.println("플레이어2 슬롯에서 제거됨");
+                            }
                         }
-                    }
-                    if (gameRoom.getPlayer3() != null) {
-                        if (
-                                Objects.equals(gameRoom.getPlayer3(), userId) ||
-                                        Objects.equals(gameRoom.getPlayer3() * -1, userId)
-                        ) {
-                            gameRoom.setPlayer3(null);
-                            System.out.println("플레이어3 슬롯에서 제거됨");
+                        if (gameRoom.getPlayer3() != null) {
+                            if (
+                                    Objects.equals(gameRoom.getPlayer3(), userId) ||
+                                            Objects.equals(gameRoom.getPlayer3() * -1, userId)
+                            ) {
+                                gameRoom.setPlayer3(null);
+                                System.out.println("플레이어3 슬롯에서 제거됨");
+                            }
                         }
-                    }
-                    if (gameRoom.getPlayer4() != null) {
-                        if (
-                                Objects.equals(gameRoom.getPlayer4(), userId) ||
-                                        Objects.equals(gameRoom.getPlayer4() * -1, userId)
-                        ) {
-                            gameRoom.setPlayer4(null);
-                            System.out.println("플레이어4 슬롯에서 제거됨");
+                        if (gameRoom.getPlayer4() != null) {
+                            if (
+                                    Objects.equals(gameRoom.getPlayer4(), userId) ||
+                                            Objects.equals(gameRoom.getPlayer4() * -1, userId)
+                            ) {
+                                gameRoom.setPlayer4(null);
+                                System.out.println("플레이어4 슬롯에서 제거됨");
+                            }
                         }
-                    }
-                    gameRoomRepository.save(gameRoom);
+                        gameRoomRepository.save(gameRoom);
 
-                    String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
-                    GameMessage message = new GameMessage();
-                    message.setRoomId(roomId);
-                    message.setContent(userListMessage);
-                    message.setType(GameMessage.MessageType.UPDATE);
-                    messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
+                        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
+                        GameMessage message = new GameMessage();
+                        message.setRoomId(roomId);
+                        message.setContent(userListMessage);
+                        message.setType(GameMessage.MessageType.UPDATE);
+                        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
 
-                    if (gameRoom.getPlayer1() == null &&
-                            gameRoom.getPlayer2() == null &&
-                            gameRoom.getPlayer3() == null &&
-                            gameRoom.getPlayer4() == null) {
-                        gameRoomRepository.delete(gameRoom);
+                        if (gameRoom.getPlayer1() == null &&
+                                gameRoom.getPlayer2() == null &&
+                                gameRoom.getPlayer3() == null &&
+                                gameRoom.getPlayer4() == null) {
+                            gameRoomRepository.delete(gameRoom);
+                        }
                     }
                     System.out.println(user.getSessionId() + " 삭제처리 전 유저아이디");
                     user.setRoomId(null);

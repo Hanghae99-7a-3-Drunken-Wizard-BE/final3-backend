@@ -86,11 +86,6 @@ public class GameController {
             System.out.println("여기에 들어오나" + message.getType());
             endGame(message);
         }
-        if (GameMessage.MessageType.SWITCHING.equals(message.getType())) {
-            System.out.println("여기에 들어오나" + message.getType());
-            switchingPosition(message);
-        }
-
     }
 
     @MessageMapping("/wroom/{roomId}")
@@ -108,6 +103,11 @@ public class GameController {
         if (GameMessage.MessageType.READY.equals(message.getType())) {
             System.out.println("여기에 들어오나" + message.getType());
             ready(message);
+        }
+
+        if (GameMessage.MessageType.SWITCHING.equals(message.getType())) {
+            System.out.println("여기에 들어오나" + message.getType());
+            switchingPosition(message);
         }
     }
 
@@ -242,42 +242,58 @@ public class GameController {
     private void update(GameMessage message) throws JsonProcessingException {
         String roomId = message.getRoomId();
         GameRoom room = gameRoomRepository.findByRoomId(roomId);
-
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
-        GameMessage gameMessage = new GameMessage();
-        gameMessage.setRoomId(roomId);
-        gameMessage.setSender(message.getSender());
-        gameMessage.setContent(userListMessage);
-        gameMessage.setType(GameMessage.MessageType.UPDATE);
-        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
+        if (room != null) {
+            String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
+            GameMessage gameMessage = new GameMessage();
+            gameMessage.setRoomId(roomId);
+            gameMessage.setSender(message.getSender());
+            gameMessage.setContent(userListMessage);
+            gameMessage.setType(GameMessage.MessageType.UPDATE);
+            messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
+        }
     }
 
     private void ready(GameMessage message) throws JsonProcessingException {
         String roomId = message.getRoomId();
         GameRoom room = gameRoomRepository.findByRoomId(roomId);
-        if (room.getPlayer1() != null) {
-        if (room.getPlayer1().equals(message.getSender()) ||
-            room.getPlayer1().equals(message.getSender() * -1)) {room.setPlayer1(room.getPlayer1() * -1);}}
-        if (room.getPlayer2() != null) {
-        if (room.getPlayer2().equals(message.getSender()) ||
-            room.getPlayer2().equals(message.getSender() * -1)) {room.setPlayer2(room.getPlayer2() * -1);}}
-        if (room.getPlayer3() != null) {
-        if (room.getPlayer3().equals(message.getSender()) ||
-            room.getPlayer3().equals(message.getSender() * -1)) {room.setPlayer3(room.getPlayer3() * -1);}}
-        if (room.getPlayer4() != null) {
-        if (room.getPlayer4().equals(message.getSender()) ||
-            room.getPlayer4().equals(message.getSender() * -1)) {room.setPlayer4(room.getPlayer4() * -1);}}
-        gameRoomRepository.save(room);
-        String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
-        GameMessage gameMessage = new GameMessage();
-        gameMessage.setRoomId(roomId);
-        gameMessage.setSender(message.getSender());
-        gameMessage.setContent(userListMessage);
-        gameMessage.setType(GameMessage.MessageType.UPDATE);
-        messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
+        if (room != null) {
+            if (room.getPlayer1() != null) {
+                if (room.getPlayer1().equals(message.getSender()) ||
+                        room.getPlayer1().equals(message.getSender() * -1)) {
+                    room.setPlayer1(room.getPlayer1() * -1);
+                }
+            }
+            if (room.getPlayer2() != null) {
+                if (room.getPlayer2().equals(message.getSender()) ||
+                        room.getPlayer2().equals(message.getSender() * -1)) {
+                    room.setPlayer2(room.getPlayer2() * -1);
+                }
+            }
+            if (room.getPlayer3() != null) {
+                if (room.getPlayer3().equals(message.getSender()) ||
+                        room.getPlayer3().equals(message.getSender() * -1)) {
+                    room.setPlayer3(room.getPlayer3() * -1);
+                }
+            }
+            if (room.getPlayer4() != null) {
+                if (room.getPlayer4().equals(message.getSender()) ||
+                        room.getPlayer4().equals(message.getSender() * -1)) {
+                    room.setPlayer4(room.getPlayer4() * -1);
+                }
+            }
+            gameRoomRepository.save(room);
+            String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(room);
+            GameMessage gameMessage = new GameMessage();
+            gameMessage.setRoomId(roomId);
+            gameMessage.setSender(message.getSender());
+            gameMessage.setContent(userListMessage);
+            gameMessage.setType(GameMessage.MessageType.UPDATE);
+            messagingTemplate.convertAndSend("/sub/wroom/" + roomId, gameMessage);
+        }
     }
 
     private void switchingPosition(GameMessage message) throws JsonProcessingException {
+        System.out.println("여기에 들어오나 스위칭 포지션");
         String roomId = message.getRoomId();
         GameRoom room = gameRoomRepository.findByRoomId(roomId);
         SwitchingPositionRequestDto requestDto = objectBuilder.switching(message.getContent());

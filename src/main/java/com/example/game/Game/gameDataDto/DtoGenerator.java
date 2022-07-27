@@ -124,7 +124,7 @@ public class DtoGenerator {
             ready = false;
             user = userRepository.findById(id*-1).orElseThrow(()->new NullPointerException("유저 없음"));
         }
-        return new GameRoomUserResponseDto(user.getId(), user.getNickname(), ready, user.getWinCount(), user.getLoseCount());
+        return new GameRoomUserResponseDto(user.getId(), user.getNickname(), ready, user.getWinCount(), user.getLoseCount(), user.getImageNum());
     }
 
     public void GraveyardToDeck(Game game) {

@@ -47,6 +47,10 @@ public class EndGame {
                 user2.setWinCount(user2.getWinCount() + 1);
                 user3.setLoseCount(user3.getLoseCount() + 1);
                 user4.setLoseCount(user4.getLoseCount() + 1);
+                userRepository.save(user1);
+                userRepository.save(user2);
+                userRepository.save(user3);
+                userRepository.save(user4);
                 return jsonStringBuilder.endGameResponseDtoJsonBuilder(false);
             } else if (team2Eliminated) {
                 User user1 = userRepository.findById(team1.get(0).getPlayerId()).orElseThrow(()->new NullPointerException("유저없음"));
@@ -57,6 +61,10 @@ public class EndGame {
                 user2.setWinCount(user2.getWinCount() + 1);
                 user3.setLoseCount(user3.getLoseCount() + 1);
                 user4.setLoseCount(user4.getLoseCount() + 1);
+                userRepository.save(user1);
+                userRepository.save(user2);
+                userRepository.save(user3);
+                userRepository.save(user4);
                 return jsonStringBuilder.endGameResponseDtoJsonBuilder(true);
             } else {
                 throw new IllegalArgumentException("게임 진행중");
