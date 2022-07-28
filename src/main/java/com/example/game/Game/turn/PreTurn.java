@@ -61,7 +61,7 @@ public class PreTurn {
             System.out.println("requestDto 없음");
         } else if (requestDto.getSelectedCards() == null) {
             System.out.println("selectedCards 안들어옴");
-        } else if (requestDto.getSelectedCards().size() == 1 && player.getCharactorClass() != CharactorClass.FARSEER) {
+        } else if (requestDto.getSelectedCards().size() == 1) {
             Card card = cardRepository.findByCardId(requestDto.getSelectedCards().get(0).getCardId());
             System.out.println("핸드에 카드 추가중 " + card.getCardId());
             player.addOnHand(card);
