@@ -17,8 +17,10 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.ArrayList;
@@ -39,22 +41,30 @@ public class SessionConnectEventListener {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-////     SessionConnect시 username을 전달하여 사용자 목록에 추가
+//     SessionConnect시 username을 전달하여 사용자 목록에 추가
 //    @EventListener
-//    public List<String> handleWebSocketConnectListener(SessionConnectedEvent event) {
-//        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-//        String username = jwtDecoder.decodeUsername(headers.getFirstNativeHeader("token"));
+//    public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 //
-//        if (StompCommand.CONNECTED == headers.getCommand()) {
-//            System.out.println(username + " 님이 WebSocket에 연결되었습니다.");
-//
-//            if (username != null) {
-//                userList.add(username);
-//                System.out.println(userList + "접속유저 리스트에서 " + username + " 유저를 추가하였습니다." + userList.size() + " 명 접속 중");
-//            }
-//            return userList;
+//        if (StompCommand.CONNECT == headerAccessor.getCommand() &&
+//                headerAccessor.getFirstNativeHeader("id") != null) {
+//            String stringId = headerAccessor.getFirstNativeHeader("id");
+//            String sessionId = headerAccessor.getSessionId();
+//            System.out.println(stringId + " 핸들러 preSend 영역" + headerAccessor.getCommand());
+//            System.out.println(headerAccessor.getSessionId());
+//            Long id = Long.parseLong(stringId);
+//            System.out.println(id + " Long 변환 완료");
+//            System.out.println("StompCommand.CONNECT SessionId : " + sessionId);
+//            User user = userRepository.findById(id).orElseThrow(
+//                    () -> new NullPointerException("왜 안되는지 모르겠다")
+//            );
+//            System.out.println(user.getUsername());
+//            user.setSessionId(sessionId);
+//            userRepository.save(user);
+//            System.out.println(user.getSessionId() + " : 세션 아이디 저장 완료?");
+//            ;
+//            System.out.println(userRepository.findBySessionIdIsNotNull().size() + "커넥트 후 리스트에 남은 유저 수");
 //        }
-//        return userList;
 //    }
 
     // SessionDisconnect시 username을 전달하여 사용자 목록에서 삭제
@@ -88,6 +98,7 @@ public class SessionConnectEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         if (headerAccessor.getSessionId() != null) {
+            System.out.println(headerAccessor.getSessionId() + " 디스커넥트 리스너 세션아이디 최초 조회");
             User user = userRepository.findBySessionId(headerAccessor.getSessionId());
             if (user != null) {
                 if (playerRepository.existsById(user.getId())) {
@@ -152,16 +163,14 @@ public class SessionConnectEventListener {
                         message.setContent(userListMessage);
                         message.setType(GameMessage.MessageType.UPDATE);
                         messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
-
-                        if (gameRoom.getPlayer1() == null &&
-                                gameRoom.getPlayer2() == null &&
-                                gameRoom.getPlayer3() == null &&
-                                gameRoom.getPlayer4() == null) {
-                            gameRoomRepository.delete(gameRoom);
                         }
                     }
                     System.out.println(user.getSessionId() + " 삭제처리 전 유저아이디");
                     user.setRoomId(null);
+                System.out.println(userRepository.findByRoomId(roomId).size() + "룸아이디를 가진 유저");
+                if (userRepository.findByRoomId(roomId).size() == 0) {
+                    System.out.println("게임룸 삭제 시퀀스");
+                    gameRoomRepository.deleteByRoomId(roomId);
                 }
                 user.setSessionId(null);
                 System.out.println(user.getUsername() + "삭제 한 세션아이디");

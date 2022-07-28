@@ -20,6 +20,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -60,26 +61,30 @@ public class StompHandler implements ChannelInterceptor {
         if(StompCommand.DISCONNECT == accessor.getCommand()) {
             String sessionId = accessor.getSessionId();
             System.out.println("StompCommand.DISCONNECT SessionId : " + sessionId);
-            if (sessionId != null) {
-                User user = userRepository.findBySessionId(sessionId);
-                if (user != null) {
-                    System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
-                    Long userId = user.getId();
-                    System.out.println(user.getUsername() + " 핸들러 디스커넥트에서 조회되는 유저아이디");
-                    if (user.getRoomId() != null) {
-                       if (playerRepository.existsById(userId)) {
-                           Player runAwayPlayer = playerRepository.findById(userId).orElseThrow(
-                                   ()->new NullPointerException("디스커넥트에서 눌포인트 익셉션"));
-                           runAwayPlayer.setHealth(0);
-                           runAwayPlayer.setDead(true);
-                       }
-                       user.setRoomId(null);
-                    }
-                    user.setSessionId(null);
-                    userRepository.save(user);
-                }
-            }
-                System.out.println(userRepository.findBySessionIdIsNotNull().size() + "Disconnect 후 리스트에 남은 유저 수");
+//            if (sessionId != null) {
+//                User user = userRepository.findBySessionId(sessionId);
+//                if (user != null) {
+//                    System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
+//                    Long userId = user.getId();
+//                    System.out.println(user.getUsername() + " 핸들러 디스커넥트에서 조회되는 유저아이디");
+//                    if (user.getRoomId() != null) {
+//                       if (playerRepository.existsById(userId)) {
+//                           Player runAwayPlayer = playerRepository.findById(userId).orElseThrow(
+//                                   ()->new NullPointerException("디스커넥트에서 눌포인트 익셉션"));
+//                           runAwayPlayer.setHealth(0);
+//                           runAwayPlayer.setDead(true);
+//
+//                           List<Player> players = playerRepository.findByGame(runAwayPlayer.getGame());
+//                           if (players.get(0).isDead() && players.get(1).isDead() && players.get(2).isDead() && players.get(3).isDead()) {
+//                               gameRepository.delete(runAwayPlayer.getGame());
+//                           }
+//                       }
+//                       user.setRoomId(null);
+//                    }
+//                    user.setSessionId(null);
+//                    userRepository.save(user);
+//                }
+//            }
         }
         return message;
     }

@@ -182,6 +182,12 @@ public class SessionSubscribeEventListener {
                         message.setContent(userListMessage);
                         message.setType(GameMessage.MessageType.UPDATE);
                         messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
+
+                        System.out.println(userRepository.findByRoomId(roomId).size() + "룸아이디를 가진 유저(리스너)");
+                        if (userRepository.findByRoomId(roomId).size() == 0) {
+                            System.out.println("subscribeListner에서 게임룸 삭제 시퀀스");
+                            gameRoomRepository.delete(gameRoom);
+                        }
                     }
                 }
             }
