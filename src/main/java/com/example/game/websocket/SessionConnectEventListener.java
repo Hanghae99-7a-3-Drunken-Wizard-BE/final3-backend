@@ -101,17 +101,17 @@ public class SessionConnectEventListener {
             System.out.println(headerAccessor.getSessionId() + " 디스커넥트 리스너 세션아이디 최초 조회");
             User user = userRepository.findBySessionId(headerAccessor.getSessionId());
             if (user != null) {
-                if (playerRepository.existsById(user.getId())) {
-                    Player player = playerRepository.findById(user.getId()).orElseThrow(()->new NullPointerException("플레이어 없음"));
-                    Game game = player.getGame();
-                    player.setHealth(0);
-                    player.setDead(true);
-                    playerRepository.save(player);
-                    List<Player> players = playerRepository.findByGame(game);
-                        if (players.get(0).isDead() && players.get(1).isDead() && players.get(2).isDead() && players.get(3).isDead()) {
-                            gameRepository.delete(game);
-                        }
-                }
+//                if (playerRepository.existsById(user.getId())) {
+//                    Player player = playerRepository.findById(user.getId()).orElseThrow(()->new NullPointerException("플레이어 없음"));
+//                    Game game = player.getGame();
+//                    player.setHealth(0);
+//                    player.setDead(true);
+//                    playerRepository.save(player);
+//                    List<Player> players = playerRepository.findByGame(game);
+//                        if (players.get(0).isDead() && players.get(1).isDead() && players.get(2).isDead() && players.get(3).isDead()) {
+//                            gameRepository.delete(game);
+//                        }
+//                }
                 System.out.println("DisconnectListener에서 SessionId로 찾은 유저 : " + user);
                 System.out.println("디스커넥트 리스너에서 조회된 유저 " + user.getUsername());
                 String roomId = user.getRoomId();
