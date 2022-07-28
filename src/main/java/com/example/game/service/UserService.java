@@ -48,15 +48,17 @@ public class UserService {
 
         for (User user : users) {
             String nickName;
-            if (user.getRoomId() != null) {
-                if (playerRepository.existsById(user.getId())){
-                    nickName = user.getNickname() + "(게임중)";
-                } else { nickName = user.getNickname()+"(대기중)";}
-            } else {nickName = user.getNickname();}
+//            if (user.getRoomId() != null) {
+//                if (playerRepository.existsById(user.getId())){
+//                    nickName = user.getNickname() + "(게임중)";
+//                } else { nickName = user.getNickname()+"(대기중)";}
+//            } else {nickName = user.getNickname();}
 
             UserResponseDto userResponseDto = new UserResponseDto(
                     user.getId(),
-                    nickName
+                    user.getNickname(),
+                    user.getImageNum(),
+                    user.getRoomId() != null || playerRepository.existsById(user.getId())
             );
             userResponseDtos.add(userResponseDto);
         }
