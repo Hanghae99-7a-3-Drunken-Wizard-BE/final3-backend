@@ -125,17 +125,17 @@ public class SessionSubscribeEventListener {
             User user = userRepository.findBySessionId(headers.getSessionId());
             System.out.println("채팅에 구독중");
             if (user != null) {
-                if (playerRepository.existsById(user.getId())) {
-                    Player player = playerRepository.findById(user.getId()).orElseThrow(()->new NullPointerException("플레이어 없음"));
-                    Game game = player.getGame();
-                    player.setHealth(0);
-                    player.setDead(true);
-                    playerRepository.save(player);
-                    List<Player> players = playerRepository.findByGame(game);
-                    if (players.get(0).isDead() && players.get(1).isDead() && players.get(2).isDead() && players.get(3).isDead()) {
-                        gameRepository.delete(game);
-                    }
-                }
+//                if (playerRepository.existsById(user.getId())) {
+//                    Player player = playerRepository.findById(user.getId()).orElseThrow(()->new NullPointerException("플레이어 없음"));
+//                    Game game = player.getGame();
+//                    player.setHealth(0);
+//                    player.setDead(true);
+//                    playerRepository.save(player);
+//                    List<Player> players = playerRepository.findByGame(game);
+//                    if (players.get(0).isDead() && players.get(1).isDead() && players.get(2).isDead() && players.get(3).isDead()) {
+//                        gameRepository.delete(game);
+//                    }
+//                }
                 String roomId = user.getRoomId();
                 if (roomId != null) {
                     Long userId = user.getId();
