@@ -1,5 +1,6 @@
 package com.example.game.service;
 
+import com.example.game.Game.repository.PlayerRepository;
 import com.example.game.dto.response.UserResponseDto;
 import com.example.game.dto.user.DubCheckRequestDto;
 import com.example.game.dto.user.SignupRequestDto;
@@ -19,6 +20,7 @@ import java.util.Random;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PlayerRepository playerRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -45,10 +47,18 @@ public class UserService {
         List<UserResponseDto> userResponseDtos = new ArrayList<>();
 
         for (User user : users) {
+            String nickName;
+//            if (user.getRoomId() != null) {
+//                if (playerRepository.existsById(user.getId())){
+//                    nickName = user.getNickname() + "(게임중)";
+//                } else { nickName = user.getNickname()+"(대기중)";}
+//            } else {nickName = user.getNickname();}
+
             UserResponseDto userResponseDto = new UserResponseDto(
                     user.getId(),
                     user.getNickname(),
-                    user.getIsPlaying()
+                    user.getImageNum(),
+                    user.getRoomId() != null || playerRepository.existsById(user.getId())
             );
             userResponseDtos.add(userResponseDto);
         }

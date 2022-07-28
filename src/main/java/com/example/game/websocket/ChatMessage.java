@@ -19,13 +19,14 @@ public class ChatMessage {
 //    private String roomId;
     private Long sender;
     private String nickname;
-
     private MessageType type;
-
+    private Integer imageNum;
     private List<UserResponseDto> connectedUsers;
 
     public enum MessageType {
-        CHAT, LEAVE, JOIN
+        CHAT,
+        LEAVE,
+        JOIN
     }
 
     public ChatMessage(String message, MessageType type, UserDetailsImpl userDetails, List<UserResponseDto> connectedUsers) {
@@ -33,6 +34,7 @@ public class ChatMessage {
         this.type = type;
         this.sender = userDetails.getUser().getId();
         this.nickname = userDetails.getUser().getNickname();
+        this.imageNum = userDetails.getUser().getImageNum();
         this.connectedUsers = connectedUsers;
     }
 }

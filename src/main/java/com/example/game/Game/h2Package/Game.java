@@ -23,6 +23,9 @@ public class Game {
     private String roomId;
 
     @Column
+    private String roomName;
+
+    @Column
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Card> deck;
 
@@ -30,7 +33,8 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Player> playerList;
 
-    public Game(String roomId) {
+    public Game(String roomId, String roomName) {
         this.roomId = roomId;
+        this.roomName = roomName;
     }
 }

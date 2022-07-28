@@ -134,6 +134,7 @@ public class KakaoUserService {
             // email: kakao email
             String email = kakaoUserInfo.getEmail();
 
+            // imageNum
             Random imageNum = new Random();
 
             kakaoUser = new User(username ,nickname, encodedPassword, email, kakaoId, imageNum.nextInt(5));

@@ -8,9 +8,11 @@ import lombok.Setter;
 public class GameRoomJoinResponseDto {
     private boolean joinSuccess;
     private String roomId;
+    private String roomName;
 
-    public GameRoomJoinResponseDto(boolean joinSuccess, String roomId) {
+    public GameRoomJoinResponseDto(boolean joinSuccess, String roomId, String roomName) {
         this.joinSuccess = joinSuccess;
         this.roomId = roomId;
+        this.roomName = roomName;
     }
 }

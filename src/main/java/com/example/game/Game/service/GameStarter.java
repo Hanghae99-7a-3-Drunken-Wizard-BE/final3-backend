@@ -56,24 +56,24 @@ private final GameRoomRepository gameRoomRepository;
             userInLobby.add(userRepository.findById(gameRoom.getPlayer4()).orElse(null));
         }
         if(userInLobby.size() != 4) {return;}
-        Game game = new Game(roomId);
+        Game game = new Game(roomId, gameRoom.getRoomName());
         List<Card> gameDeck = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             gameDeck.add(new BoulderStrike(game));
         }
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             gameDeck.add(new DeathRay(game));
         }
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             gameDeck.add(new FireBall(game));
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 15; i++) {
             gameDeck.add(new MagicMissile(game));
         }
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             gameDeck.add(new ManaSiphon(game));
         }
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             gameDeck.add(new PoisonArrow(game));
         }
         for (int i = 0; i < 2; i++) {

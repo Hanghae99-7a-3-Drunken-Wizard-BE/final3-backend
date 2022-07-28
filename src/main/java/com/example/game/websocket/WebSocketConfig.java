@@ -1,5 +1,6 @@
 package com.example.game.websocket;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,12 +13,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 //@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final StompHandler stompHandler;
-    public WebSocketConfig(StompHandler stompHandler) {
-        this.stompHandler = stompHandler;
-    }
+//    public WebSocketConfig(StompHandler stompHandler) {
+//        this.stompHandler = stompHandler;
+//    }
 
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry registry) {

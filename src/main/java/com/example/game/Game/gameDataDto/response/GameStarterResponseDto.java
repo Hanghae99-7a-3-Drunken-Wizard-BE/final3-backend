@@ -10,9 +10,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class GameStarterResponseDto {
+
+    private String roomName;
     private List<PlayerDto> players;
 
-    public GameStarterResponseDto(List<PlayerDto> players) {
+    public GameStarterResponseDto(List<PlayerDto> players, String roomName) {
+        this.roomName = roomName;
         this.players = players;
     }
 }

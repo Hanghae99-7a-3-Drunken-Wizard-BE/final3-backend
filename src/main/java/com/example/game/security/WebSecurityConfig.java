@@ -113,13 +113,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // h2-console 허용
         skipPathList.add("GET,/h2-console/**");
         skipPathList.add("POST,/h2-console/**");
+
         // 회원 관리 API 허용
         skipPathList.add("POST,/login");
         skipPathList.add("POST,/user/signup");
         skipPathList.add("POST,/user/dubcheck");
-        skipPathList.add("GET,/");
-        //카카오 콜백 API 허용
+        skipPathList.add("GET,/game/**");
 
+        //카카오 콜백 API 허용
         skipPathList.add("GET,/user/kakao/**");
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(

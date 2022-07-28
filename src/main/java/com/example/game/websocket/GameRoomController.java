@@ -6,6 +6,7 @@ import com.example.game.Game.h2Package.GameRoom;
 import com.example.game.Game.repository.GameRoomRepository;
 import com.example.game.dto.response.GameRoomCreateResponseDto;
 import com.example.game.dto.response.GameRoomJoinResponseDto;
+import com.example.game.dto.response.UserWinRateResponseDto;
 import com.example.game.repository.user.UserRepository;
 import com.example.game.security.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,29 +27,22 @@ public class GameRoomController {
     private final JsonStringBuilder jsonStringBuilder;
     private final DtoGenerator dtoGenerator;
 
-//    // 채팅방 목록 조회 postman 확인용
-//    @GetMapping(value = "/game/rooms")
-//    public ResponseEntity<Page<GameRoom>> readGameRooms(
-//            @RequestParam("page") int page,
-//            @RequestParam("size") int size){
-//
-//        page = page - 1;
-//
-//        return ResponseEntity.ok().body(gameRoomService.getAllGameRooms(page, size));
-//    }
-
-
     // 채팅방 목록 조회
     @GetMapping(value = "/game/rooms")
-
     public ResponseEntity<Page<GameRoom>> readGameRooms(@RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok().body(gameRoomService.readGameRooms(page, size));
+    }
+
+    // 전적 불러오기
+    @PostMapping( "/userhistory")
+    public ResponseEntity<UserWinRateResponseDto> readUserDetail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(new UserWinRateResponseDto(userDetails.getUser().getWinCount(), userDetails.getUser().getLoseCount()));
     }
 
     // GameRoom 생성
     @PostMapping(value = "/game/room")
     public ResponseEntity<GameRoomCreateResponseDto> createGameRoom(
-            @RequestBody GameRoomRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @RequestBody GameRoomRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
         return gameRoomService.createGameRoom(requestDto, userDetails);
     }
 
@@ -69,7 +63,8 @@ public class GameRoomController {
     public ResponseEntity<GameRoomJoinResponseDto> joinGameRoom(
             @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws JsonProcessingException {
-        return gameRoomService.joinGameRoom(roomId,userDetails);
+        System.out.println("포스트매핑 조인 메서드 작동중");
+        return gameRoomService.joinGameRoom(roomId,userDetails.getUser().getId());
     }
 
     @PostMapping("/game/{roomId}/leave")
