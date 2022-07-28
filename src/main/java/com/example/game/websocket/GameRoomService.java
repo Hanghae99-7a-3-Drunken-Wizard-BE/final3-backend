@@ -164,6 +164,7 @@ public class GameRoomService {
                 System.out.println("플레이어4 슬롯에서 제거됨");
             }
         }
+        gameRoomRepository.save(gameRoom);
         System.out.println("슬롯 제거까지 문제 없음");
         String userListMessage = jsonStringBuilder.gameRoomResponseDtoJsonBuilder(gameRoom);
         GameMessage message = new GameMessage();
@@ -171,10 +172,7 @@ public class GameRoomService {
         message.setContent(userListMessage);
         message.setType(GameMessage.MessageType.UPDATE);
         messagingTemplate.convertAndSend("/sub/wroom/" + roomId, message);
-        if (gameRoom.getPlayer1() == null &&
-                gameRoom.getPlayer2() == null &&
-                gameRoom.getPlayer3() == null &&
-                gameRoom.getPlayer4() == null) {
+        if (userRepository.findByRoomId(roomId).size() == 0) {
             gameRoomRepository.delete(gameRoom);
         }
     }
