@@ -121,7 +121,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("GET,/game/**");
 
         //카카오 콜백 API 허용
-        skipPathList.add("GET,/user/kakao/**");
+        skipPathList.add("GET,/auth/kakao/**");
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,
