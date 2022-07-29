@@ -63,7 +63,7 @@ public class KakaoUserService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "a726ea61587396de89413a1bf0c9771b");              // rest api 키
-        body.add("redirect_uri", "https://drunken-wizard.com/auth/kakao/callback");  // 플랫폼
+        body.add("redirect_uri", "http://drunken-wizard.com/auth/kakao/callback");  // 플랫폼
         body.add("code", code);
 
         // HTTP 요청 보내기
