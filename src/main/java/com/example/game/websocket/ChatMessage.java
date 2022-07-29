@@ -16,7 +16,7 @@ import java.util.List;
 public class ChatMessage {
 
     private String message;
-//    private String roomId;
+    //    private String roomId;
     private Long sender;
     private String nickname;
     private MessageType type;

@@ -32,7 +32,7 @@ public class UserController {
     }
 
     // 카카오 아이디
-    @GetMapping("/user/kakao/callback") // username, nickname 같이 보내기
+    @GetMapping("/auth/kakao/callback") // username, nickname 같이 보내기
     public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
         kakaoUserService.kakaoLogin(code, response);
     }
