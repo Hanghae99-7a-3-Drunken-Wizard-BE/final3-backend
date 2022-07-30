@@ -39,52 +39,39 @@ public class StompHandler implements ChannelInterceptor {
     public synchronized Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-        if(StompCommand.CONNECT == accessor.getCommand() &&
+        if (StompCommand.CONNECT == accessor.getCommand() &&
                 accessor.getFirstNativeHeader("id") != null) {
             String stringId = accessor.getFirstNativeHeader("id");
             String sessionId = accessor.getSessionId();
             System.out.println(stringId + " 핸들러 preSend 영역" + accessor.getCommand());
             System.out.println(accessor.getSessionId());
             Long id = Long.parseLong(stringId);
-            System.out.println(id+" Long 변환 완료");
+            System.out.println(id + " Long 변환 완료");
             System.out.println("StompCommand.CONNECT SessionId : " + sessionId);
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new NullPointerException("왜 안되는지 모르겠다")
+                    () -> new NullPointerException("왜 안되는지 모르겠다")
             );
             System.out.println(user.getUsername());
             user.setSessionId(sessionId);
             userRepository.save(user);
-            System.out.println(user.getSessionId() + " : 세션 아이디 저장 완료?");;
+            System.out.println(user.getSessionId() + " : 세션 아이디 저장 완료?");
+            ;
             System.out.println(userRepository.findBySessionIdIsNotNull().size() + "커넥트 후 리스트에 남은 유저 수");
         }
 
-        if(StompCommand.DISCONNECT == accessor.getCommand()) {
+        if (StompCommand.DISCONNECT == accessor.getCommand()) {
             String sessionId = accessor.getSessionId();
             System.out.println("StompCommand.DISCONNECT SessionId : " + sessionId);
-//            if (sessionId != null) {
-//                User user = userRepository.findBySessionId(sessionId);
-//                if (user != null) {
-//                    System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
-//                    Long userId = user.getId();
-//                    System.out.println(user.getUsername() + " 핸들러 디스커넥트에서 조회되는 유저아이디");
-//                    if (user.getRoomId() != null) {
-//                       if (playerRepository.existsById(userId)) {
-//                           Player runAwayPlayer = playerRepository.findById(userId).orElseThrow(
-//                                   ()->new NullPointerException("디스커넥트에서 눌포인트 익셉션"));
-//                           runAwayPlayer.setHealth(0);
-//                           runAwayPlayer.setDead(true);
-//
-//                           List<Player> players = playerRepository.findByGame(runAwayPlayer.getGame());
-//                           if (players.get(0).isDead() && players.get(1).isDead() && players.get(2).isDead() && players.get(3).isDead()) {
-//                               gameRepository.delete(runAwayPlayer.getGame());
-//                           }
-//                       }
-//                       user.setRoomId(null);
-//                    }
-//                    user.setSessionId(null);
-//                    userRepository.save(user);
-//                }
-//            }
+            if (sessionId != null) {
+                User user = userRepository.findBySessionId(sessionId);
+                if (user.getRoomId() != null) {
+                    System.out.println("StompCommand.DISCONNECT findBySessionId로 찾은 username: " + user.getUsername());
+                    user.setRoomId(null);
+                }
+                user.setSessionId(null);
+                userRepository.save(user);
+                System.out.println("DISCONNECT 적용 한 유저: " + user.getUsername() + ", SessionId: " + user.getSessionId() + ", RoomId: " + user.getRoomId());
+            }
         }
         return message;
     }
