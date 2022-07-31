@@ -15,10 +15,12 @@ public class CardDetailResponseDto {
     private Integer manaCost;
 
     public CardDetailResponseDto(Card card) {
-        this.cardId = card.getCardId();
-        this.cardName = card.getCardName();
-        this.description = card.getDescription();
-        this.target = card.getTarget();
-        this.manaCost = card.getManaCost();
+        if (card != null) {
+            this.cardId = card.getCardId();
+            this.cardName = card.getCardName();
+            this.description = card.getDescription();
+            this.target = card.getTarget();
+            this.manaCost = card.getManaCost();
+        }
     }
 }

@@ -25,6 +25,7 @@ public class ApplyCardToCharacter {
                     applyCardtoTarget(player, player, card);
                 }
                 if (card.getTarget() == Target.SELECT) {
+                    System.out.println("카드이니시에이터 셀렉타입");
                     applyCardtoTarget(player, targetPlayer, card);
                 }
                 if (card.getTarget() == Target.ALL) {
@@ -47,6 +48,10 @@ public class ApplyCardToCharacter {
 
 
     public void applyCardtoTarget (Player player, Player targetPlayer, Card card){
+        System.out.println("어플라이 카드 투 타겟");
+        System.out.println("유저 " + player.getUsername());
+        System.out.println("타겟 " + targetPlayer.getUsername());
+        System.out.println("사용된 카드 " + card.getCardName());
         newStatusUpdate(player, targetPlayer, card);
         newApplyManaCost(player,card);
         bloodmageManaFeedback(player);
@@ -82,9 +87,14 @@ public class ApplyCardToCharacter {
 
 
     public void newStatusUpdate (Player player, Player targetPlayer, Card card) {
+        System.out.println("new status update 메서드 시작점");
         if (targetPlayer.isShield() && player != targetPlayer) {
+            System.out.println("타겟플레이어의 실드가 있을 때 ");
+            System.out.println("처리 전 타겟 플레이어 실드 상태 " + targetPlayer.isShield());
             targetPlayer.setShield(false);
+            System.out.println("처리 후 타겟 플레이어 실드 상태" + targetPlayer.isShield());
         } else {
+            System.out.println("타겟플레이어의 실드가 없을 때");
             if (targetPlayer.getPetrifiedDuration() <= 0) {
                 if (card.getHealthModifier() != null) {
                     targetPlayer.setHealth(
@@ -99,6 +109,7 @@ public class ApplyCardToCharacter {
             targetPlayer.setDead(targetPlayer.getHealth() <=0);
             targetPlayer.applyAdditionalEffect(card);
             }
+
         }
     }
 
