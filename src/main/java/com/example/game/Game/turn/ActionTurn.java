@@ -43,8 +43,9 @@ public class ActionTurn {
             if (player.getMana() < (-4+manaCostModification(player)) * -1) {
                 return "마나부족";
             }
-            Player targetPlayer = playerRepository.findById((useCardDto.getTargetPlayerId() != null) ?
-                    useCardDto.getTargetPlayerId() : playerId
+            Long targetPlayerId = (useCardDto.getTargetPlayerId() != null) ?
+                    useCardDto.getTargetPlayerId() : playerId;
+            Player targetPlayer = playerRepository.findById(targetPlayerId
             ).orElseThrow(()->new NullPointerException("플레이어 없음"));
             applyCardToCharacter.applyHealerHealtoTarget(player,targetPlayer);
 

@@ -49,7 +49,7 @@ public class PlayerDto {
 
         this.mana = player.getMana();
 
-        this.dead = player.isDead();
+        this.dead = player.getHealth() <= 0;
 
         this.poisonedDuration = player.getPoisonedDuration();
 
