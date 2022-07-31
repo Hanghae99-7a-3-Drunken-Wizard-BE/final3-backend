@@ -105,6 +105,8 @@ public class Player {
             this.manaCostModifierDuration = 0;
             this.sleepDuration = 0;
         } else {
+            this.shield = (card.getShield() != null) ?
+                    ((card.getShield() == true) ? true : false) : false;
             this.poisonedDuration = (card.getPoisonDuration() != null) ?
                     ((card.getPoisonDuration() == 0 && this.getPoisonedDuration() > 0) ? 0 : this.poisonedDuration + card.getPoisonDuration()) : this.poisonedDuration;
             this.stunnedDuration = (card.getStunDuration() != null) ?
