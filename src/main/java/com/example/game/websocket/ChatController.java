@@ -27,17 +27,12 @@ public class ChatController {
             sendingOperations.convertAndSend("/sub/public", message);
             System.out.println(message.getNickname() + " 님이 접속하였습니다.");
         }
-//        else if (ChatMessage.MessageType.LEAVE.equals(message.getType())) {
-//            System.out.println("채팅 LEAVE 메서드 작동중");
-//            System.out.println(message.getNickname());
-//            System.out.println(message.getSender());
-//            message.setMessage(message.getNickname() + " 님이 접속을 끊었습니다.");
-//            message.setConnectedUsers(userService.getConnectedUsers());
-//            sendingOperations.convertAndSend("/sub/public", message);
-//            System.out.println(message.getNickname() + " 님이 접속을 끊었습니다.");
-//        }
+        else if (ChatMessage.MessageType.LEAVE.equals(message.getType())) {
+            message.setMessage(message.getMessage());
+            message.setConnectedUsers(userService.getConnectedUsers());
+            sendingOperations.convertAndSend("/sub/public", message);
+        }
         else if  (ChatMessage.MessageType.CHAT.equals(message.getType())){
-
             message.setMessage(message.getMessage());
             message.setConnectedUsers(null);
             message.setImageNum(userRepository.findById(message.getSender()).orElseThrow(

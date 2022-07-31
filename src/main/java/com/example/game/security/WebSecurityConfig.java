@@ -83,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .exceptionHandling();
-                // "접근 불가" 페이지 URL 설정
+        // "접근 불가" 페이지 URL 설정
 //                .accessDeniedPage("/");
     }
 
