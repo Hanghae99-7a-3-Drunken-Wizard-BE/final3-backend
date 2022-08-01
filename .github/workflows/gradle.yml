@@ -11,6 +11,7 @@ on:
   push:
     branches: 
       - hyunsuk
+      - main
 
 jobs:
   build:
