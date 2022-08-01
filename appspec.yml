@@ -1,0 +1,6 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/drunken-wizard # 프로젝트 이름
+    overwrite: yes
