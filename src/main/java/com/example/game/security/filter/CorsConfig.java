@@ -20,15 +20,12 @@ public class CorsConfig {
         config.addAllowedOrigin("https://drunken-wizard-frontend-32c82zchp-kordobby.vercel.app/");  // 윤님 주소
         config.addAllowedOrigin("https://drunken-wizard.vercel.app");   // 윤님 주소
         config.addAllowedOrigin("https://drunken-wizard-iota.vercel.app");  // 정욱님 주소
-        config.addAllowedOrigin("http://drunken-wizard.com");
         config.addAllowedOrigin("https://drunken-wizard.com");
+        config.addAllowedOrigin("https://www.drunken-wizard.com");
         config.addAllowedOrigin("https://mo-greene.shop");
-//        config.addAllowedOrigin("https://mo-greene.shop/SufficientAmountOfAlcohol");
-//        config.addAllowedOrigin("http://127.0.0.1:8000");
-//        config.addAllowedOrigin("https://127.0.0.1:8000");
-//        config.addAllowedOrigin("http://61.75.78.153");
-//        config.addAllowedOrigin("https://61.75.78.153");
-//        config.addAllowedOriginPattern("*");
+        config.addAllowedOrigin("http://127.0.0.1:8080");
+        config.addAllowedOrigin("https://127.0.0.1:8081");
+        config.addAllowedOrigin("https://127.0.0.1:8082");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("*");
