@@ -54,4 +54,4 @@ jobs:
       run: aws s3 cp --region ap-northeast-2 ./drunken.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/drunken.zip
 
     - name: Code Deploy
-      run: aws deploy create-deployment --application-name springboot-codedeploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name springboot-codedeploy-group --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/drunken.zip
+      run: aws deploy create-deployment --application-name drunken-wizard --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name drunken-wizard-group --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/drunken.zip
