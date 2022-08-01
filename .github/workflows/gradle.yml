@@ -33,3 +33,4 @@ jobs:
     
     - name: Build with Gradle
       run: ./gradlew clean build
+      shell: bash
