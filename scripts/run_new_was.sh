@@ -21,7 +21,7 @@ if [ ! -z ${TARGET_PID} ]; then
   echo "> Kill WAS running at ${TARGET_PORT}."
   sudo kill ${TARGET_PID}
 fi
-JAR_NAME=$(ls -tr /home/ubuntu/drunken-wizard/build/libs/*.jar | tail -n 1)
+JAR_NAME=$(ls -tr /home/ubuntu/drunken-wizard/build/libs/game-0.0.1-SNAPSHOT.jar | tail -n 1)
 echo "> JAR Name: $JAR_NAME"
 chmod +x $JAR_NAME
 nohup java -jar -Dserver.port=${TARGET_PORT} $JAR_NAME > /home/ubuntu/nohup.out 2>&1 &
