@@ -33,12 +33,10 @@ jobs:
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-      working-directory: ./drunken-wizard
       shell: bash
     
     - name: Build with Gradle
       run: ./gradlew build
-      working-directory: ./drunken-wizard
       shell: bash
 
     - name: Make zip file
@@ -57,4 +55,3 @@ jobs:
 
     - name: Code Deploy
       run: aws deploy create-deployment --application-name drunken-wizard --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name drunken-wizard-group --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/drunken.zip
-      working-directory: ./drunken-wizard
