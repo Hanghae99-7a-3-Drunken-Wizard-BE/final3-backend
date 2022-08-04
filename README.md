@@ -6,83 +6,94 @@
 
 ### 🧙 드렁큰 위자드 🍻
 
+![img.png](imgsrc/Group 364.png)
 
 ### 📆 프로젝트 기간
 
-- 2022/06/24 ~ 2022/08/03
+- 2022/06/24 ~ 2022/08/04
 
 ### 🏗 서비스 아키텍쳐
 
+![img.png](imgsrc/service_arc.png)
 
 <details>
-<summary>💖 Front-end </summary>
+<summary> 💻 Back-End 주요기술 설명</summary> 
 
-#### React + Typescript
+### Web Socket (STOMP)
 
-<li>자바스크립트 라이브러리인 리액트를 중심으로 개발</li>
-<li>Typescript : 컴파일 단계에서 타입 관련 에러를 막을 수 있으며, 크로스 브라우징(브라우저 호환성) 문제 해결</li>
+선택이유
+<li>프론트/백엔드간 지체없는 실시간 통신을 위하여 도입</li>
+<br>
+장점
+<li>게임 정보가 플레이어에게 실시간으로 보여지는 TCP 접속방식</li>
+<li>TCP 연결 중에서도 구현이 단순하며 메시징 타입을 커스텀하기 용이함</li>
+<br>
+단
+<li>구현과정에서 웹소켓 연결이 매우 불안정한 편이라는 사실을 알게됨 </li>
+<br>
+<br>
 
-#### React Query
+### Multiple Database
 
-<li>데이터 캐싱이 가능하고 Redux의 불필요한 코드를 작성할 필요가 없음</li>
-<li>에러, 로딩, fetching 기능을 한 번에 사용이 가능함</li>
-
-#### Redux Toolkit
-
-<li>Ingame 페이지에서 관리해야하는 상태가 많아지고 구조가 복잡해지면서 상태관리 시 props 사용이 부담스러웠고, state 갱신에 관한 에러를 방지하기 위해 Redux를 사용
-<li>Redux Toolkit을 사용하면 Redux의 보일러 플레이트 코드가 줄고, redux devtool, immer, reselect 등의 라이브러리들이 내장되어 있어서 패키지 의존성을 줄여주기 때문에 Redux Tookit 사용을 결정</li>
-
-#### Stomp & sockJS
-
-<li> Java Spring과의 통신 및 webSocket 채팅 기능을 구현</li>
+가능한 선택지
+<li>IMDB(H2), Redis, MQ</li>
+<br>
+특징
+<li>인메모리 데이터베이스, 레디스와 메시지 큐 모두 물리적으로 서버 내의 영역을 활용하여  작동 한다는 점에서 빠른 읽기 쓰기 속도를 구현</li>
+<li>네트워크 계층을 활용하지 않고 데이터를 조회한다는 점에서 게임데이터를 저장하기 용이</li>
+<br>
+최종선택
+<li>IMDB H2 데이터베이스와 MySQL의 멀티 소스 DB 구축</li>
+<br>
+선택이유
+<li>빈번하게 발생하는 게임데이터 변경을 병목없이 처리하기 위해 안정성과 속도 두마리 토끼를 잡기위한 선택이 필요</li>
+<li>레디스와 MQ의 경우 데이터의 저장형식이 한정적이고 데이터 조회시에 데이터 전체를 조회하게 되므로 부하로 작용가능성 존재</li>
+<li>IMDB H2는 조회를 위하여 jpa 레포지토리를 활용하며 이미 그 활용법에 대해서는 지난 항해99 과정동안 익숙한 편이므로 복잡한 게임 로직 프로세싱 구조를 짜는데 유리하다고 생각하였음</li>
+<br>
+장점
+<li>게임데이터처리시 IMDB의 탁월한 읽기, 쓰기 속도, 트래픽 발생 X</li>
+<li>안정성이 필요한 유저데이터는 MySQL을 통해 안정적으로 저장</li>
+<br>
+단점
+<li>인메모리 데이터베이스가 서버의 메모리와 CPU 사용량 일부를 점유</li>
+<br>
 </details>
+
+
 
 ### 💻 BE 게임 로직 구현
 
-![img](./src/images/readme/gameLogic.webp)
+![img.png](imgsrc/img.png)
 
-<details>
-<summary>👉 턴 컨트롤러 구현 방법 </summary>
 
-- [1] 웹소켓에서 받는 메세지 타입으로 현재의 턴을 인지
-- [2] senderId와 플레이어 고유 Id를 비교해 nowPlayer와 waitingPlayer 구분
-- [3] useState를 이용, 게임의 status를 변경해 유저들이 각기 다른 액션을 취하고 데이터를 저장할 수 있도록 함
-</details>
+### 💻 기술 스택
 
-### 🎨 와이어 프레임
-
-[ 👉 기능 구성 와이어 프레임 ](https://www.figma.com/file/OPlDwSHBgppHPfrDZBmtef/Untitled?node-id=259%3A2)
-
-[ 👉 디자이너 와이어 프레임 ](https://www.figma.com/file/shuiI7skCdbrlCa7CElXDc/%ED%95%AD%ED%95%B47%EA%B8%B0_%EC%A3%BD%EC%96%B4%EC%84%9C%EA%B0%90%EB%8A%94%EB%88%88_Drunken-Wizard?node-id=0%3A1)
-
-### 💻 Back-end 기술 스택
-
-<center>
 <br/>
 <div style="display: inline;">
-<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white">
-<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
-<img src="https://img.shields.io/badge/redux_toolkit-764ABC?style=for-the-badge&logo=redux&logoColor=white">
-<img src="https://img.shields.io/badge/reactquery-61DAFB?style=for-the-badge&logo=reactquery&logoColor=FF4154">
+<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> 
+<img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white">
+<img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
+<img src="https://img.shields.io/badge/JWT-02303A?style=for-the-badge&logo=jwt&logoColor=white">
 </div>
 
 <div style="display: inline;">
-<img src="https://img.shields.io/badge/styled_components-DB7093?style=for-the-badge&logo=styledcomponents&logoColor=white">
-<img src="https://img.shields.io/badge/axios-6236FF?style=for-the-badge&logo=axios&logoColor=white">
-<img src="https://img.shields.io/badge/stompjs-010101?style=for-the-badge&logo=&logoColor=white">
-<img src="https://img.shields.io/badge/sass-CC6699?style=for-the-badge&logo=sass&logoColor=white">
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/h2-4479A1?style=for-the-badge&logo=h2&logoColor=white">
+<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=AmazonAWS&logoColor=white"> 
+<img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">
 </div>
 
 <div style="display: inline;">
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
-<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"> 
+<img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">
+<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">
 </div>
 
 <div style="display: inline;">
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"></div>
-</center>
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
+</div>
 <br>
 
 ### 🔧 주요 기능
@@ -114,8 +125,8 @@
 
 #### 👪 &nbsp; 팀원
 
-|   이름    |         깃허브 주소         |                            역할 분담                            |
-| :-------: | :-------------------------: | :-------------------------------------------------------------: |
-|  서만원[리더]  | https://github.com/Luwin-Seo |                     홈 화면, 인게임 페이지                      |
-|  이영균  | https://github.com/lirongzzuin | 로그인/회원가입 페이지,<br/> 룰북 페이지<br/>로비/대기실 페이지 |
-|  장현석  | https://github.com/Mo-Greene | 로그인/회원가입 페이지,<br/> 룰북 페이지<br/>로비/대기실 페이지 |
+|   이름    |         깃허브 주소         |  역할  |
+| :-------: | :-------------------------: |:----:|
+|  서만원 | https://github.com/Luwin-Seo | [리더] |
+|  이영균  | https://github.com/lirongzzuin | [조원] |
+|  장현석  | https://github.com/Mo-Greene | [조원] |
