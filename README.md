@@ -6,7 +6,6 @@
 
 ### 🧙 드렁큰 위자드 🍻
 
-![img](./src/images/readme/bg.webp)
 
 ### 📆 프로젝트 기간
 
@@ -14,7 +13,6 @@
 
 ### 🏗 서비스 아키텍쳐
 
-![img](./src/images/readme/architecture.webp)
 
 <details>
 <summary>💖 Front-end </summary>
@@ -39,7 +37,7 @@
 <li> Java Spring과의 통신 및 webSocket 채팅 기능을 구현</li>
 </details>
 
-### 💻 FE 게임 로직 구현
+### 💻 BE 게임 로직 구현
 
 ![img](./src/images/readme/gameLogic.webp)
 
@@ -57,7 +55,7 @@
 
 [ 👉 디자이너 와이어 프레임 ](https://www.figma.com/file/shuiI7skCdbrlCa7CElXDc/%ED%95%AD%ED%95%B47%EA%B8%B0_%EC%A3%BD%EC%96%B4%EC%84%9C%EA%B0%90%EB%8A%94%EB%88%88_Drunken-Wizard?node-id=0%3A1)
 
-### 💻 프론트엔드 기술 스택
+### 💻 Back-end 기술 스택
 
 <center>
 <br/>
@@ -110,17 +108,14 @@
 - 각 캐릭터마다의 고유 특성이 있어, 직업에 따른 다양한 전략을 구상할 수 있습니다.
 </details>
 
-### 🔥 &nbsp;트러블슈팅
-
-https://github.com/kordobby/drunken_wizard--frontend/issues
-
 <hr/>
 
-### 💖 About Front-end
+### 💖 About Back-end
 
 #### 👪 &nbsp; 팀원
 
 |   이름    |         깃허브 주소         |                            역할 분담                            |
 | :-------: | :-------------------------: | :-------------------------------------------------------------: |
-|  👧 이윤  | https://github.com/kordobby |                     홈 화면, 인게임 페이지                      |
-| 👦 김정욱 | https://github.com/junguk11 | 로그인/회원가입 페이지,<br/> 룰북 페이지<br/>로비/대기실 페이지 |
+|  서만원[리더]  | https://github.com/Luwin-Seo |                     홈 화면, 인게임 페이지                      |
+|  이영균  | https://github.com/lirongzzuin | 로그인/회원가입 페이지,<br/> 룰북 페이지<br/>로비/대기실 페이지 |
+|  장현석  | https://github.com/Mo-Greene | 로그인/회원가입 페이지,<br/> 룰북 페이지<br/>로비/대기실 페이지 |
