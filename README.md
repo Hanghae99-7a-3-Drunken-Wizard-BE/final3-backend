@@ -4,6 +4,8 @@
 
 * [🔮 Drunken Wizard 바로가기](https://drunken-wizard.com)
 
+![img.png](imgsrc/프로젝트상.png)
+
 ### 🧙 드렁큰 위자드 🍻
 
 ![img.png](imgsrc/Group_364.png)
